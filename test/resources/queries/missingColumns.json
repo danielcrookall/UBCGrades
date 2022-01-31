@@ -1,0 +1,15 @@
+{
+  "title": "Invalid Query (deleted columns)",
+  "input": {
+    "WHERE": {
+      "GT": {
+        "courses_avg": 97
+      }
+    },
+    "OPTIONS": {
+
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}
