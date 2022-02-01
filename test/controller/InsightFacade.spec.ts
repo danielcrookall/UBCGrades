@@ -14,6 +14,7 @@ import {folderTest} from "@ubccpsc310/folder-test";
 
 describe("InsightFacade", function () {
 	let courses: string;
+	let oneCourse: string;
 	let invalidJSONCourses: string;
 	let notZip: string;
 	let noCourseDirectory: string;
@@ -23,6 +24,7 @@ describe("InsightFacade", function () {
 		invalidJSONCourses = getContentFromArchives("invalidJSONCourses.zip");
 		notZip = getContentFromArchives("notZip.json");
 		noCourseDirectory = getContentFromArchives("noCourseDirectory.zip");
+		oneCourse = getContentFromArchives("1course.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -94,6 +96,11 @@ describe("InsightFacade", function () {
 
 		it("should resolve if one dataset is added and id is valid", async function () {
 			const addedIds = await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+		});
+
+		it("should resolve if one dataset with 1 course is added and id is valid", async function () {
+			const addedIds = await facade.addDataset("courses", oneCourse, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
 		});
 

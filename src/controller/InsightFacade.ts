@@ -27,6 +27,7 @@ export default class InsightFacade implements IInsightFacade {
 				reject(new InsightError());
 			} else {
 				this.addedIds.push(id);
+				this.processDataset(content).then();
 				resolve(this.addedIds);
 			}
 
@@ -42,8 +43,16 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async processDataset(content: string) {
-		let zip = new JSZip();
-		await zip.loadAsync(content,{base64: true});
+		let processedDataset = [];
+		let newZip = new JSZip();
+		const zip = await newZip.loadAsync(content,{base64: true});
+		zip.folder("courses")?.forEach((async (relativePath, file) => { // within folder iterating over files
+			let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
+			let object = JSON.parse(resultsArr);
+			let jsonSection = {};
+			console.log(resultsArr);
+			console.log(object);
+		}));
 	}
 
 	public removeDataset(id: string): Promise<string> {
