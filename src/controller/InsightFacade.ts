@@ -23,15 +23,32 @@ export default class InsightFacade implements IInsightFacade {
 
 	public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		return new Promise((resolve, reject) => {
-			if(!this.isValidID(id)) { // reject if invalid ID or same as previously added
+			if(!this.isValidID(id)) { // reject if invalid ID or same as previously added or not zip
 				reject(new InsightError());
-			} else {
+			}
+
+			(async () => {
+				const isZip = await this.isZip(content);
+				if(!isZip){
+					reject (new InsightError());
+				}
 				this.addedIds.push(id);
 				this.processDataset(content).then();
 				resolve(this.addedIds);
-			}
+			})();
+
 
 		});
+	}
+
+	public async isZip(content: string) {
+		let newZip = new JSZip();
+		try {
+			await newZip.loadAsync(content, {base64: true});
+			return true;
+		} catch (err) {
+			return false;
+		}
 	}
 
 	public isValidID(id: string){
@@ -43,16 +60,42 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async processDataset(content: string) {
-		let processedDataset = [];
+		let processedDataset: any[] = [];
 		let newZip = new JSZip();
-		const zip = await newZip.loadAsync(content,{base64: true});
+
+		const zip = await newZip.loadAsync(content, {base64: true});
 		zip.folder("courses")?.forEach((async (relativePath, file) => { // within folder iterating over files
 			let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
-			let object = JSON.parse(resultsArr);
-			let jsonSection = {};
-			console.log(resultsArr);
-			console.log(object);
+			let courseObject = JSON.parse(resultsArr);
+			let arrSections = courseObject.result;
+			for (let object of arrSections) {
+				const jsonSection = {
+					avg: object.Avg,
+					pass: object.Pass,
+					fail: object.Fail,
+					audit: object.Audit,
+					year: object.Year,
+					dept: object.Subject,
+					id: object.Course,
+					instructor: object.Professor,
+					title: object.Title,
+					uuid: object.id
+				};
+
+				let isMissingAttribute = false;
+				let sectionValues = Object.values(jsonSection);
+				for(let value of sectionValues){
+					if (value === undefined) {
+						isMissingAttribute = true;
+						break;
+					}
+				}
+				if(!isMissingAttribute) {
+					processedDataset.push(jsonSection);
+				}
+			}
 		}));
+
 	}
 
 	public removeDataset(id: string): Promise<string> {

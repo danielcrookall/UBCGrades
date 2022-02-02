@@ -18,6 +18,7 @@ describe("InsightFacade", function () {
 	let invalidJSONCourses: string;
 	let notZip: string;
 	let noCourseDirectory: string;
+	let coursesWithMissingAttribute: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -25,6 +26,7 @@ describe("InsightFacade", function () {
 		notZip = getContentFromArchives("notZip.json");
 		noCourseDirectory = getContentFromArchives("noCourseDirectory.zip");
 		oneCourse = getContentFromArchives("1course.zip");
+		coursesWithMissingAttribute = getContentFromArchives("1courseSectionWithNoProf.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -101,6 +103,12 @@ describe("InsightFacade", function () {
 
 		it("should resolve if one dataset with 1 course is added and id is valid", async function () {
 			const addedIds = await facade.addDataset("courses", oneCourse, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+		});
+
+		it("should resolve if an invalid section missing an attribute is added", async function () {
+			const addedIds =
+				await facade.addDataset("courses", coursesWithMissingAttribute, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
 		});
 
