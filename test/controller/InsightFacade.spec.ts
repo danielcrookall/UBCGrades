@@ -112,6 +112,13 @@ describe("InsightFacade", function () {
 			expect(addedIds).to.deep.equal(["courses"]);
 		});
 
+		it("should resolve if 2 valid datasets are added", async function () {
+			const addedId = await facade.addDataset("courses", oneCourse, InsightDatasetKind.Courses);
+			expect(addedId).to.deep.equal(["courses"]);
+			const addedIds = await facade.addDataset("courses2.0", invalidAndValidJson, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses", "courses2.0"]);
+		});
+
 		it("should resolve if an invalid section missing an attribute is added", async function () {
 			const addedIds =
 				await facade.addDataset("courses", coursesWithMissingAttribute, InsightDatasetKind.Courses);
@@ -147,14 +154,14 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should skip over a dataset added that has invalid JSON ", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
+		it("should skip over a dataset added that has invalid JSON in 1 course section", async function () {
+			const addedIds = await facade.addDataset("courses", invalidJsonOneSection, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
 
 		});
 
-		it("should skip over a dataset added that has invalid JSON in 1 course section", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJsonOneSection, InsightDatasetKind.Courses);
+		it("should skip over a dataset added that has invalid JSON ", async function () {
+			const addedIds = await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
 
 		});

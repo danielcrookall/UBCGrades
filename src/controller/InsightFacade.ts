@@ -9,59 +9,56 @@ import {
 import JSZip from "jszip";
 import * as fs from "fs-extra";
 
+
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private addedIds: string[] = [];
+	private dataDir = "./data/";
 
 	constructor() {
 		let a = 5;
-
 	}
 
 	public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
+		let addedIds: string[] = [];
 		return new Promise((resolve, reject) => {
-			if(!this.isValidID(id)) { // reject if invalid ID or same as previously added or not zip
-				reject(new InsightError());
-			}
 
+			(async () => {
+				await this.getExistingDataSetIds(addedIds);
+				if(!this.isValidID(id,addedIds)) { // reject if invalid ID or same as previously added or not zip
+					reject(new InsightError());
+				}
+			})();
 			(async () => {
 				const isZip = await this.isZip(content);
 				if(!isZip){
 					reject (new InsightError());
 				}
-				this.addedIds.push(id);
 				try {
 					await this.processDataset(content, id);
+					addedIds.push(id);
 				} catch (err) {
 					reject (new InsightError());
 				}
-				resolve(this.addedIds);
+				resolve(addedIds);
 			})();
-
-
-		});
+		}
+		);
 	}
 
-	public async isZip(content: string) {
-		let newZip = new JSZip();
-		try {
-			await newZip.loadAsync(content, {base64: true});
-			return true;
-		} catch (err) {
-			return false;
+	private async getExistingDataSetIds(addedIds: string[]) {
+		const path = require("path");
+		if (fs.existsSync(this.dataDir)) {
+			const dir = await fs.promises.opendir(this.dataDir);
+			for await (const file of dir) {
+				let filename = file.name;
+				let id = path.parse(filename).name;
+				addedIds.push(id);
+			}
 		}
-	}
-
-	public isValidID(id: string){
-		if (id.includes("_") || this.addedIds.includes(id)) {
-			return false;
-		}
-		return id.replace(/\s/g, "").length; // removes all whitespace in string
-		// then checks length. if 0, the string was all whitespace and we return false
 	}
 
 	public async processDataset(content: string, id: string){
@@ -113,9 +110,20 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async writeDataSet(processedDataset: any, id: string){
-		let object = JSON.stringify(processedDataset);
-		await fs.mkdir("./data/");
-		await fs.writeFile("./data/" + id + ".json", object);
+		const dataDir = "./data/";
+		try {
+			if (!fs.existsSync(dataDir)) {
+				await fs.mkdir(dataDir);
+			}
+		} catch (err){
+			console.log("Failed to create directory");
+		}
+		let object = JSON.stringify(processedDataset, null, 4);
+		try {
+			await fs.writeFile(dataDir + id + ".json", object);
+		} catch (err){
+			console.log("Failed to write to directory");
+		}
 	}
 
 	public isMissingAttribute(sectionValues: any[]){
@@ -134,6 +142,24 @@ export default class InsightFacade implements IInsightFacade {
 			return false;
 		}
 		return true;
+	}
+
+	public async isZip(content: string) {
+		let newZip = new JSZip();
+		try {
+			await newZip.loadAsync(content, {base64: true});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	public isValidID(id: string, addedIds: string[]){
+		if (id.includes("_") || addedIds.includes(id)) {
+			return false;
+		}
+		return id.replace(/\s/g, "").length; // removes all whitespace in string
+		// then checks length. if 0, the string was all whitespace and we return false
 	}
 
 	public removeDataset(id: string): Promise<string> {
