@@ -64,7 +64,7 @@ export default class InsightFacade implements IInsightFacade {
 		// then checks length. if 0, the string was all whitespace and we return false
 	}
 
-	public async processDataset(content: string, id: string) {
+	public async processDataset(content: string, id: string){
 		let processedDataset: any[] = [];
 		let newZip = new JSZip();
 		const zip = await newZip.loadAsync(content, {base64: true});
@@ -74,35 +74,42 @@ export default class InsightFacade implements IInsightFacade {
 		if (zip.folder(/courses/).length === 0){ // no course directory inside the zip file
 			throw new Error("No courses directory");
 		}
-		zip.folder("courses")?.forEach((async (relativePath, file) => { // within folder iterating over files
-			let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
-			if(!this.isValidJSON(resultsArr)){
-				return; // the entire file is invalid, move onto next course in the for each loop.
-			}
-			let courseObject = JSON.parse(resultsArr);
-			let arrSections = courseObject.result;
-			for (let object of arrSections) {
-				const jsonSection = {
-					avg: object.Avg,
-					pass: object.Pass,
-					fail: object.Fail,
-					audit: object.Audit,
-					year: object.Year,
-					dept: object.Subject,
-					id: object.Course,
-					instructor: object.Professor,
-					title: object.Title,
-					uuid: object.id
-				};
-				let sectionValues = Object.values(jsonSection);
-				if (!this.isMissingAttribute(sectionValues)){
-					processedDataset.push(jsonSection);
-				}
-				// console.log(jsonSection);
-			}
-		}));
-		await this.writeDataSet(processedDataset, id).then();
+		let promises: Array<Promise<any>> = [];
+		zip.folder("courses")?.forEach(((relativePath, file) => {
+			promises.push(this.parseCourses(processedDataset, file));
+		}
+		));
+		await Promise.all(promises);
+		await this.writeDataSet(processedDataset, id);
+	}
 
+
+	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject) {
+		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
+		if(!this.isValidJSON(resultsArr)){
+			return; // the entire file is invalid, move onto next course in the for each loop.
+		}
+		let courseObject = JSON.parse(resultsArr);
+		let arrSections = courseObject.result;
+		for (let object of arrSections) {
+			const jsonSection = {
+				avg: object.Avg,
+				pass: object.Pass,
+				fail: object.Fail,
+				audit: object.Audit,
+				year: object.Year,
+				dept: object.Subject,
+				id: object.Course,
+				instructor: object.Professor,
+				title: object.Title,
+				uuid: object.id
+			};
+			let sectionValues = Object.values(jsonSection);
+			if (!this.isMissingAttribute(sectionValues)){
+				processedDataset.push(jsonSection);
+			}
+			// console.log(jsonSection);
+		}
 	}
 
 	public async writeDataSet(processedDataset: any, id: string){
