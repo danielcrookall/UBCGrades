@@ -14,15 +14,25 @@ import {folderTest} from "@ubccpsc310/folder-test";
 
 describe("InsightFacade", function () {
 	let courses: string;
+	let oneCourse: string;
 	let invalidJSONCourses: string;
 	let notZip: string;
 	let noCourseDirectory: string;
+	let coursesWithMissingAttribute: string;
+	let invalidJsonOneSection: string;
+	let invalidAndValidJson: string;
+	let empty: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
 		invalidJSONCourses = getContentFromArchives("invalidJSONCourses.zip");
 		notZip = getContentFromArchives("notZip.json");
 		noCourseDirectory = getContentFromArchives("noCourseDirectory.zip");
+		oneCourse = getContentFromArchives("1course.zip");
+		coursesWithMissingAttribute = getContentFromArchives("1courseSectionWithNoProf.zip");
+		invalidJsonOneSection = getContentFromArchives("invalidJson1Section.zip");
+		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
+		empty = getContentFromArchives("empty.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -97,6 +107,24 @@ describe("InsightFacade", function () {
 			expect(addedIds).to.deep.equal(["courses"]);
 		});
 
+		it("should resolve if one dataset with 1 course is added and id is valid", async function () {
+			const addedIds = await facade.addDataset("courses", oneCourse, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+		});
+
+		it("should resolve if 2 valid datasets are added", async function () {
+			const addedId = await facade.addDataset("courses", oneCourse, InsightDatasetKind.Courses);
+			expect(addedId).to.deep.equal(["courses"]);
+			const addedIds = await facade.addDataset("courses2.0", invalidAndValidJson, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses", "courses2.0"]);
+		});
+
+		it("should resolve if an invalid section missing an attribute is added", async function () {
+			const addedIds =
+				await facade.addDataset("courses", coursesWithMissingAttribute, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+		});
+
 		it("should reject if id contains an underscore", async function () {
 			try {
 				await facade.addDataset("courses_", courses, InsightDatasetKind.Courses);
@@ -126,8 +154,21 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should skip over a dataset added that has invalid JSON in 1 course section", async function () {
+			const addedIds = await facade.addDataset("courses", invalidJsonOneSection, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+
+		});
+
 		it("should skip over a dataset added that has invalid JSON ", async function () {
 			const addedIds = await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["courses"]);
+
+		});
+
+		it("should skip over a dataset added that has invalid JSON in 1 course section but include the other course" +
+			" with valid json", async function () {
+			const addedIds = await facade.addDataset("courses", invalidAndValidJson, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
 
 		});
@@ -144,6 +185,15 @@ describe("InsightFacade", function () {
 		it("should reject if the file being added does not contain directory courses", async function () {
 			try {
 				await facade.addDataset("courses", noCourseDirectory, InsightDatasetKind.Courses);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should reject if the dataset being added has no data", async function () {
+			try {
+				await facade.addDataset("courses", empty, InsightDatasetKind.Courses);
 				expect.fail("Should have rejected!");
 			} catch (err) {
 				expect(err).to.be.an.instanceof(InsightError);
