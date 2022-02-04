@@ -8,6 +8,7 @@ import {
 } from "./IInsightFacade";
 import JSZip from "jszip";
 import * as fs from "fs-extra";
+import path from "path";
 
 
 /**
@@ -22,35 +23,27 @@ export default class InsightFacade implements IInsightFacade {
 		let a = 5;
 	}
 
-	public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
+	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		let addedIds: string[] = [];
-		return new Promise((resolve, reject) => {
-
-			(async () => {
-				await this.getExistingDataSetIds(addedIds);
-				if(!this.isValidID(id,addedIds)) { // reject if invalid ID or same as previously added or not zip
-					reject(new InsightError());
-				}
-			})();
-			(async () => {
-				const isZip = await this.isZip(content);
-				if(!isZip){
-					reject (new InsightError());
-				}
-				try {
-					await this.processDataset(content, id);
-					addedIds.push(id);
-				} catch (err) {
-					reject (new InsightError());
-				}
-				resolve(addedIds);
-			})();
+		await this.getExistingDataSetIds(addedIds);
+		if(!this.isValidID(id,addedIds)) { // reject if invalid ID or same as previously added or not zip
+			return Promise.reject(new InsightError());
 		}
-		);
+		const isZip = await this.isZip(content);
+		if(!isZip){
+			return Promise.reject(new InsightError());
+		}
+		try {
+			await this.processDataset(content, id);
+			addedIds.push(id);
+		} catch (err) {
+			return Promise.reject(new InsightError());
+		}
+		return Promise.resolve(addedIds);
+
 	}
 
 	private async getExistingDataSetIds(addedIds: string[]) {
-		const path = require("path");
 		if (fs.existsSync(this.dataDir)) {
 			const dir = await fs.promises.opendir(this.dataDir);
 			for await (const file of dir) {
@@ -166,8 +159,31 @@ export default class InsightFacade implements IInsightFacade {
 		return Promise.resolve("");
 	}
 
-	public performQuery(query: unknown): Promise<InsightResult[]> {
+	public async performQuery(query: unknown): Promise<InsightResult[]> {
+		let id = "courses";
+		try {
+			await this.loadDataset(id);
+		} catch (err){
+			return Promise.reject(InsightError);
+		}
 		return Promise.resolve([]);
+	}
+
+	private async loadDataset(id: string) {
+		let dataset;
+		fs.readFile(`data/${id}.json`, (err, jsonString) => {
+			if (err) {
+				console.log("File read from disk failed", err);
+				throw err;
+			}
+			try {
+				dataset = JSON.parse(jsonString.toString());
+				console.log("File data:", dataset);
+			} catch (err2) {
+				console.log("Error parsing JSON string", err2);
+			}
+
+		});
 	}
 
 	public listDatasets(): Promise<InsightDataset[]> {
