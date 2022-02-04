@@ -160,30 +160,35 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
+		console.log(query);
+		let string = JSON.stringify(query);
+		console.log(string);
+		let object = JSON.parse(string);
+		console.log(Object.keys(object));
+		console.log("OBJECT WHERE ");
+
+		console.log(object.WHERE);
 		let id = "courses";
+		let queriedDataset;
 		try {
-			await this.loadDataset(id);
+			queriedDataset = InsightFacade.loadDataset(id);
+			// console.log(queriedDataset[0].avg);
+
 		} catch (err){
 			return Promise.reject(InsightError);
 		}
 		return Promise.resolve([]);
 	}
 
-	private async loadDataset(id: string) {
+	private static loadDataset(id: string) {
 		let dataset;
-		fs.readFile(`data/${id}.json`, (err, jsonString) => {
-			if (err) {
-				console.log("File read from disk failed", err);
-				throw err;
-			}
-			try {
-				dataset = JSON.parse(jsonString.toString());
-				console.log("File data:", dataset);
-			} catch (err2) {
-				console.log("Error parsing JSON string", err2);
-			}
-
-		});
+		try {
+			const jsonString = fs.readFileSync(`data/${id}.json`);
+			dataset = JSON.parse(jsonString.toString());
+			return dataset;
+		} catch(err) {
+			throw new Error("Dataset does not exist");
+		}
 	}
 
 	public listDatasets(): Promise<InsightDataset[]> {
