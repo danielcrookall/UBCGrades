@@ -10,7 +10,6 @@ import JSZip from "jszip";
 import * as fs from "fs-extra";
 import path from "path";
 
-
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
@@ -160,24 +159,104 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		console.log(query);
-		let string = JSON.stringify(query);
-		console.log(string);
-		let object = JSON.parse(string);
-		console.log(Object.keys(object));
-		console.log("OBJECT WHERE ");
-
-		console.log(object.WHERE);
 		let id = "courses";
-		let queriedDataset;
+		let dataset;
 		try {
-			queriedDataset = InsightFacade.loadDataset(id);
+			dataset = InsightFacade.loadDataset(id);
 			// console.log(queriedDataset[0].avg);
 
 		} catch (err){
 			return Promise.reject(InsightError);
 		}
+
+		let queryObject = this.getQueryObject(query);
+		let filter = queryObject.WHERE;
+		console.log(filter);
+		this.performFilter(filter,dataset);
+
+		// console.log(query);
+		// let string = JSON.stringify(query);
+		// console.log(string);
+		// let object = JSON.parse(string);
+		// console.log(Object.keys(object));
+		// console.log("OBJECT WHERE ");
+		//
+		// console.log(object.WHERE);
+		// console.log(object.WHERE.GT);
 		return Promise.resolve([]);
+	}
+
+	private performFilter(filter: any, dataset: any){
+		let filterKey = Object.keys(filter);
+		console.log(Object.keys(filter));
+		// let obj = filter.IS;
+		// let str = Object.keys(obj);
+		// console.log(str[0].slice(str[0].indexOf("_") + 1));
+
+
+		switch(filterKey[0]) {
+			case "IS":
+				return this.doIS(filter.IS, dataset);
+			case "LT":
+				return this.doLT(filter.LT, dataset);
+			case "GT":
+				return this.doGT(filter.GT,dataset);
+			case "EQ":
+				return this.doEQ(filter.EQ,dataset);
+			case "NOT":
+				return this.doNOT(filter.NOT,dataset);
+			case "AND":
+				return this.doAND(filter.AND,dataset);
+			case "OR":
+				return this.doOR(filter.OR,dataset);
+			default:
+				throw new Error("Illegal filter key");
+		}
+	}
+
+	// Take an isObj with format {skey: inputstring} and return list of all course sections
+	// where the sfield of the skey matches inputstring (no wild cards atm).
+	// Allowed sfields: dept,id,instructor,title,uuid
+	// skey ::= idstring '_' sfield (idstring is the dataset name)
+	private doIS(filter: any, dataset: any){
+		console.log(this.trimIdString(filter.IS));
+
+	}
+
+	private doLT(filter: any, dataset: any){
+		return null;
+	}
+
+	private doGT(filter: any, dataset: any){
+		return null;
+	}
+	private doEQ(filter: any, dataset: any){
+		return null;
+	}
+
+	private doNOT(filter: any, dataset: any){
+		return null;
+	}
+
+	private doAND(filter: any, dataset: any){
+		return null;
+	}
+
+	private doOR(filter: any, dataset: any){
+		return null;
+	}
+
+	private trimIdString(filterObj: any){
+		let str = Object.keys(filterObj);
+		let trimmedStr = (str[0].slice(str[0].indexOf("_") + 1)); // find the first underscore and return everything after
+		return trimmedStr;
+	}
+
+	private getQueryObject(query: unknown) {
+		let string = JSON.stringify(query);
+		console.log(string);
+		let queryObject = JSON.parse(string);
+		return queryObject;
 	}
 
 	private static loadDataset(id: string) {
