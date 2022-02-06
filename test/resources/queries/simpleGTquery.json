@@ -1,0 +1,44 @@
+{
+	"title": "Simple GT Query",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"courses_avg": 99
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_dept",
+				"courses_id",
+				"courses_year",
+				"courses_avg",
+				"courses_instructor"
+			],
+			"ORDER": "courses_year"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_dept": "math",
+			"courses_id": "527",
+			"courses_year": 1900,
+			"courses_avg": 99.78,
+			"courses_instructor": ""
+		},
+		{
+			"courses_dept": "math",
+			"courses_id": "527",
+			"courses_year": 2009,
+			"courses_avg": 99.78,
+			"courses_instructor": "gomez, jose"
+		},
+		{
+			"courses_dept": "cnps",
+			"courses_id": "574",
+			"courses_year": 2012,
+			"courses_avg": 99.19,
+			"courses_instructor": "cox, daniel"
+		}
+	]
+}

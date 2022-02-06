@@ -1,0 +1,35 @@
+{
+	"title": "Simple AND with CUSTOM dataset Query",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"ANDDataset_avg": 85
+					}
+				},
+				{
+					"LT": {
+						"ANDDataset_year": 2020
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"ANDDataset_dept",
+				"ANDDataset_id",
+				"ANDDataset_avg"
+			],
+			"ORDER": "ANDDataset_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"ANDDataset_dept": "adhe",
+			"ANDDataset_id": "329",
+			"ANDDataset_avg": 85.86
+		}
+	]
+}
