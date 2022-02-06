@@ -44,13 +44,53 @@ export  class PerformQueryFilters {
 		}
 	}
 
+	public performColumns(options: any, dataset: any){
+		let filteredResults = [];
+		let columns = options.COLUMNS; // this is an array of the columns to filter by, eg courses_dept
+		let desiredColumns: string[] = [];
+		for (let key of columns){
+			desiredColumns.push(this.trimId(key));
+		}
+		for (let section of dataset){
+			const filtered = Object.keys(section)
+				.filter((key) => desiredColumns.includes(key))
+				.reduce((obj: Record<string, any>, key) => {
+					obj[key] = section[key];
+					return obj;
+				}, {});
+			filteredResults.push(filtered);
+
+		}
+		return filteredResults;
+	}
+
+	public performOrder(options: any, dataset: any){
+		let orderKey = this.trimId(options.ORDER);
+		dataset.sort((a: any, b: any) => {
+			let valA = a[orderKey];
+			let valB = b[orderKey];
+			if (valA < valB) {
+				return -1;
+			}
+			if (valA > valB) {
+				return 1;
+			}
+			return 0;
+
+		});
+
+		return dataset;
+
+
+	}
+
 	// Take an isObj with format {skey: inputstring} and return list of all course sections
 	// where the sfield of the skey matches inputstring (no wild cards atm).
 	// Allowed sfields: dept,id,instructor,title,uuid
 	// skey ::= idstring '_' sfield (idstring is the dataset name)
 	private doIS(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let sField = this.trimIdString(filter); // takes courses_instructor and returns instructor without quotes
+		let sField = this.trimObjIdString(filter); // takes courses_instructor and returns instructor without quotes
 		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
 		if((this.containsAsterix(inputString))){ // STILL HAVE TO CHECK FOR ASTERIX THAT AREN"T AT BEGINNING AND END INVALIDATING QUERY.
 			courseList = this.doISWildcard(filter, dataset, sField);
@@ -102,7 +142,7 @@ export  class PerformQueryFilters {
 
 	private doLT(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+		let mField = this.trimObjIdString(filter);
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -116,7 +156,7 @@ export  class PerformQueryFilters {
 
 	private doGT(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+		let mField = this.trimObjIdString(filter);
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -129,7 +169,7 @@ export  class PerformQueryFilters {
 	}
 	private doEQ(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+		let mField = this.trimObjIdString(filter);
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -204,9 +244,14 @@ export  class PerformQueryFilters {
 		return courseList;
 	}
 
-	private trimIdString(filterObj: any){
+	private trimObjIdString(filterObj: any){
 		let str = Object.keys(filterObj);
 		let trimmedStr = (str[0].slice(str[0].indexOf("_") + 1)); // find the first underscore and return everything after
+		return trimmedStr;
+	}
+
+	private trimId(str: any){
+		let trimmedStr = (str.slice(str.indexOf("_") + 1)); // find the first underscore and return everything after
 		return trimmedStr;
 	}
 

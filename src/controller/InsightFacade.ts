@@ -77,8 +77,20 @@ export default class InsightFacade implements IInsightFacade {
 
 		let queryObject = performQuery.getQueryObject(query);
 		let filter = queryObject.WHERE;
+		let options = queryObject.OPTIONS;
 		let queryResults = performQuery.performFilter(filter,dataset);
+		let columnResults = performQuery.performColumns(options, queryResults);
+		console.log(columnResults);
+		let orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
+		// console.log(filter);
+
+		// console.log(queryObject.OPTIONS);
+		// console.log(queryObject.OPTIONS.COLUMNS);
+		// console.log(queryObject.OPTIONS.ORDER);
+
 		console.log(queryResults);
+		// console.log(columnResults);
+		console.log(orderedResults);
 
 		// console.log(query);
 		// let string = JSON.stringify(query);

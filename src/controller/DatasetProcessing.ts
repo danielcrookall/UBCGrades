@@ -67,7 +67,6 @@ export  class DatasetProcessing {
 			if (!this.isMissingAttribute(sectionValues)){
 				processedDataset.push(jsonSection);
 			}
-			// console.log(jsonSection);
 		}
 	}
 
