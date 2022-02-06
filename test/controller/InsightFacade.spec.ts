@@ -22,6 +22,7 @@ describe("InsightFacade", function () {
 	let invalidJsonOneSection: string;
 	let invalidAndValidJson: string;
 	let empty: string;
+	let course1SectionAVGGT98YearLT1985: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -33,6 +34,7 @@ describe("InsightFacade", function () {
 		invalidJsonOneSection = getContentFromArchives("invalidJson1Section.zip");
 		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
 		empty = getContentFromArchives("empty.zip");
+		course1SectionAVGGT98YearLT1985 = getContentFromArchives("courseWith1SectionAVGGT98YEARLT1985.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -105,6 +107,12 @@ describe("InsightFacade", function () {
 		it("should resolve if one dataset is added and id is valid", async function () {
 			const addedIds = await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
 			expect(addedIds).to.deep.equal(["courses"]);
+		});
+
+		it("should resolve if AND dataset is added", async function () {
+			const addedIds = await facade.addDataset("ANDDataset", course1SectionAVGGT98YearLT1985,
+				InsightDatasetKind.Courses);
+			expect(addedIds).to.deep.equal(["ANDDataset"]);
 		});
 
 		it("should resolve if one dataset with 1 course is added and id is valid", async function () {

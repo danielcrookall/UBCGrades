@@ -1,0 +1,37 @@
+{
+	"title": "Simple And not 1900 Query",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"courses_avg": 98
+					}
+				},
+				{
+					"IS": {
+						"courses_instructor": "brew, nancy"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_dept",
+				"courses_id",
+				"courses_avg",
+				"courses_year"
+			],
+			"ORDER": "courses_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_dept": "nurs",
+			"courses_id": "509",
+			"courses_avg": 98.71,
+			"courses_year": 2011
+		}
+	]
+}
