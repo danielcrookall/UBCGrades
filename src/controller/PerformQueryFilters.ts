@@ -21,9 +21,6 @@ export  class PerformQueryFilters {
 
 	public performFilter(filter: any, dataset: CourseSection[]){
 		let filterKey = Object.keys(filter);
-		// let obj = filter.IS;
-		// let str = Object.keys(obj);
-		// console.log(str[0].slice(str[0].indexOf("_") + 1));
 		switch(filterKey[0]) {
 			case "IS":
 				return this.doIS(filter.IS, dataset);
@@ -46,11 +43,7 @@ export  class PerformQueryFilters {
 
 	public performColumns(options: any, dataset: any){
 		let filteredResults = [];
-		let columns = options.COLUMNS; // this is an array of the columns to filter by, eg courses_dept
-		let desiredColumns: string[] = [];
-		for (let key of columns){
-			desiredColumns.push(this.trimId(key));
-		}
+		let desiredColumns = options.COLUMNS; // this is an array of the columns to filter by, eg courses_dept
 		for (let section of dataset){
 			const filtered = Object.keys(section)
 				.filter((key) => desiredColumns.includes(key))
@@ -65,7 +58,7 @@ export  class PerformQueryFilters {
 	}
 
 	public performOrder(options: any, dataset: any){
-		let orderKey = this.trimId(options.ORDER);
+		let orderKey = options.ORDER;
 		dataset.sort((a: any, b: any) => {
 			let valA = a[orderKey];
 			let valB = b[orderKey];
@@ -90,7 +83,7 @@ export  class PerformQueryFilters {
 	// skey ::= idstring '_' sfield (idstring is the dataset name)
 	private doIS(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let sField = this.trimObjIdString(filter); // takes courses_instructor and returns instructor without quotes
+		let sField = Object.keys(filter)[0];
 		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
 		if((this.containsAsterix(inputString))){ // STILL HAVE TO CHECK FOR ASTERIX THAT AREN"T AT BEGINNING AND END INVALIDATING QUERY.
 			courseList = this.doISWildcard(filter, dataset, sField);
@@ -142,7 +135,7 @@ export  class PerformQueryFilters {
 
 	private doLT(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimObjIdString(filter);
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -156,7 +149,7 @@ export  class PerformQueryFilters {
 
 	private doGT(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimObjIdString(filter);
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -169,7 +162,7 @@ export  class PerformQueryFilters {
 	}
 	private doEQ(filter: any, dataset: CourseSection[]){
 		let courseList: CourseSection[] = [];
-		let mField = this.trimObjIdString(filter);
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -271,5 +264,9 @@ export  class PerformQueryFilters {
 			throw new Error("Dataset does not exist");
 		}
 	}
+
+	// public validateQuery(){
+	//
+	// }
 
 }

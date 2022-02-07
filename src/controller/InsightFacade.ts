@@ -4,7 +4,7 @@ import {
 	InsightDatasetKind,
 	InsightError,
 	InsightResult,
-	NotFoundError
+	NotFoundError, ResultTooLargeError
 } from "./IInsightFacade";
 import JSZip from "jszip";
 import * as fs from "fs-extra";
@@ -70,7 +70,6 @@ export default class InsightFacade implements IInsightFacade {
 		try {
 			dataset = performQuery.loadDataset(id);
 			// console.log(queriedDataset[0].avg);
-
 		} catch (err){
 			return Promise.reject(InsightError);
 		}
@@ -80,27 +79,12 @@ export default class InsightFacade implements IInsightFacade {
 		let options = queryObject.OPTIONS;
 		let queryResults = performQuery.performFilter(filter,dataset);
 		let columnResults = performQuery.performColumns(options, queryResults);
-		console.log(columnResults);
 		let orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
-		// console.log(filter);
 
-		// console.log(queryObject.OPTIONS);
-		// console.log(queryObject.OPTIONS.COLUMNS);
-		// console.log(queryObject.OPTIONS.ORDER);
-
-		console.log(queryResults);
-		// console.log(columnResults);
+		if(orderedResults.length > 50000){
+			return Promise.reject(ResultTooLargeError);
+		}
 		console.log(orderedResults);
-
-		// console.log(query);
-		// let string = JSON.stringify(query);
-		// console.log(string);
-		// let object = JSON.parse(string);
-		// console.log(Object.keys(object));
-		// console.log("OBJECT WHERE ");
-		//
-		// console.log(object.WHERE);
-		// console.log(object.WHERE.GT);
 		return Promise.resolve([]);
 	}
 

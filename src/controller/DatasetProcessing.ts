@@ -32,14 +32,14 @@ export  class DatasetProcessing {
 		}
 		let promises: Array<Promise<any>> = [];
 		zip.folder("courses")?.forEach(((relativePath, file) => {
-			promises.push(this.parseCourses(processedDataset, file));
+			promises.push(this.parseCourses(processedDataset, file, id));
 		}
 		));
 		await Promise.all(promises);
 		await this.writeDataSet(processedDataset, id);
 	}
 
-	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject) {
+	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
 		if(!this.isValidJSON(resultsArr)){
 			return; // the entire file is invalid, move onto next course in the for each loop.
@@ -47,21 +47,22 @@ export  class DatasetProcessing {
 		let courseObject = JSON.parse(resultsArr);
 		let arrSections = courseObject.result;
 		for (let object of arrSections) {
+
 			const jsonSection = {
-				avg: object.Avg,
-				pass: object.Pass,
-				fail: object.Fail,
-				audit: object.Audit,
-				year: object.Year,
-				dept: object.Subject,
-				id: object.Course,
-				instructor: object.Professor,
-				title: object.Title,
-				uuid: object.id,
-				section: object.Section
+				[datasetId + "_avg"]: object.Avg,
+				[datasetId + "_pass"]: object.Pass,
+				[datasetId + "_fail"]: object.Fail,
+				[datasetId + "_audit"]: object.Audit,
+				[datasetId + "_year"]: object.Year,
+				[datasetId + "_dept"]: object.Subject,
+				[datasetId + "_id"]: object.Course,
+				[datasetId + "_instructor"]: object.Professor,
+				[datasetId + "_title"]: object.Title,
+				[datasetId + "_uuid"]: object.id,
+				[datasetId + "_section"]: object.Section
 			};
-			if(jsonSection.section === "overall"){
-				jsonSection.year = "1900";
+			if(jsonSection[datasetId + "_section"] === "overall"){
+				jsonSection[datasetId + "_year"] = "1900";
 			}
 			let sectionValues = Object.values(jsonSection);
 			if (!this.isMissingAttribute(sectionValues)){
