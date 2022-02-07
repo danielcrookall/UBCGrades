@@ -53,12 +53,12 @@ export  class DatasetProcessing {
 				[datasetId + "_pass"]: object.Pass,
 				[datasetId + "_fail"]: object.Fail,
 				[datasetId + "_audit"]: object.Audit,
-				[datasetId + "_year"]: object.Year,
+				[datasetId + "_year"]: Number(object.Year),
 				[datasetId + "_dept"]: object.Subject,
 				[datasetId + "_id"]: object.Course,
 				[datasetId + "_instructor"]: object.Professor,
 				[datasetId + "_title"]: object.Title,
-				[datasetId + "_uuid"]: object.id,
+				[datasetId + "_uuid"]: object["id"].toString(10),
 				[datasetId + "_section"]: object.Section
 			};
 			if(jsonSection[datasetId + "_section"] === "overall"){

@@ -15,8 +15,8 @@
 				"courses_dept",
 				"courses_uuid",
 				"courses_avg"
-			],
-			"ORDER": "courses_avg"
+			]
+
 		}
 	},
 	"errorExpected": false,

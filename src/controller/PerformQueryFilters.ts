@@ -74,7 +74,7 @@ export  class PerformQueryFilters {
 		let courseList: any[] = [];
 		let sField = Object.keys(filter)[0];
 		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
-		if((this.containsAsterix(inputString))){ // STILL HAVE TO CHECK FOR ASTERIX THAT AREN"T AT BEGINNING AND END INVALIDATING QUERY.
+		if((this.containsAsterix(inputString))){
 			courseList = this.doISWildcard(filter, dataset, sField);
 		} else {
 			for (let section of dataset) {
