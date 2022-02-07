@@ -1,0 +1,43 @@
+{
+	"title": "Invalid key in COLUMNS",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"courses_avg": 98
+					}
+				},
+				{
+					"IS": {
+						"courses_instructor": "brew, nancy"
+					}
+				}
+			]
+		},"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"courses_avg": 98
+					}
+				},
+				{
+					"IS": {
+						"courses_instructor": "brew, nancy"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_depdt",
+				"courses_id",
+				"courses_avg",
+				"courses_year"
+			],
+			"ORDER": "courses_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

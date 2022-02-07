@@ -12,11 +12,11 @@
     },
     "OPTIONS": {
       "COLUMNS": [
-        "courses_dept",
-        "courses_uuid",
-        "courses_avg"
+        "cours_es_dept",
+        "cours_es_uuid",
+        "cours_es_avg"
       ],
-      "ORDER": "courses_avg"
+      "ORDER": "cours_es_avg"
     }
   },
   "errorExpected": true,

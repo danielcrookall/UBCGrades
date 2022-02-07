@@ -276,7 +276,7 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries/singleQuery",
+			"./test/resources/queries/errorQueries",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
