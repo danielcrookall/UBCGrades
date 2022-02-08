@@ -86,7 +86,7 @@ export default class InsightFacade implements IInsightFacade {
 			orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 		}
 
-		if(orderedResults.length > 50000){
+		if(orderedResults.length > 5000){
 			console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(ResultTooLargeError);
 		}
