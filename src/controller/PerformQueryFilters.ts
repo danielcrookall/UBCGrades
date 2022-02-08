@@ -1,17 +1,6 @@
 import * as fs from "fs-extra";
 
-interface CourseSection {
-	"avg": number,
-	"pass": number,
-	"fail": number,
-	"audit": number,
-	"year": number,
-	"dept": string,
-	"id": string,
-	"instructor": string,
-	"title": string,
-	"uuid": string
-}
+
 export  class PerformQueryFilters {
 	private dataDir;
 
@@ -19,11 +8,8 @@ export  class PerformQueryFilters {
 		this.dataDir = "./data/";
 	}
 
-	public performFilter(filter: any, dataset: CourseSection[]){
+	public performFilter(filter: any, dataset: any[]){
 		let filterKey = Object.keys(filter);
-		// let obj = filter.IS;
-		// let str = Object.keys(obj);
-		// console.log(str[0].slice(str[0].indexOf("_") + 1));
 		switch(filterKey[0]) {
 			case "IS":
 				return this.doIS(filter.IS, dataset);
@@ -44,15 +30,51 @@ export  class PerformQueryFilters {
 		}
 	}
 
+	public performColumns(options: any, dataset: any){
+		let filteredResults = [];
+		let desiredColumns = options.COLUMNS; // this is an array of the columns to filter by, eg courses_dept
+		for (let section of dataset){
+			const filtered = Object.keys(section)
+				.filter((key) => desiredColumns.includes(key))
+				.reduce((obj: Record<string, any>, key) => {
+					obj[key] = section[key];
+					return obj;
+				}, {});
+			filteredResults.push(filtered);
+
+		}
+		return filteredResults;
+	}
+
+	public performOrder(options: any, dataset: any){
+		let orderKey = options.ORDER;
+		dataset.sort((a: any, b: any) => {
+			let valA = a[orderKey];
+			let valB = b[orderKey];
+			if (valA < valB) {
+				return -1;
+			}
+			if (valA > valB) {
+				return 1;
+			}
+			return 0;
+
+		});
+
+		return dataset;
+
+
+	}
+
 	// Take an isObj with format {skey: inputstring} and return list of all course sections
 	// where the sfield of the skey matches inputstring (no wild cards atm).
 	// Allowed sfields: dept,id,instructor,title,uuid
 	// skey ::= idstring '_' sfield (idstring is the dataset name)
-	private doIS(filter: any, dataset: CourseSection[]){
-		let courseList: CourseSection[] = [];
-		let sField = this.trimIdString(filter); // takes courses_instructor and returns instructor without quotes
+	private doIS(filter: any, dataset: any[]){
+		let courseList: any[] = [];
+		let sField = Object.keys(filter)[0];
 		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
-		if((this.containsAsterix(inputString))){ // STILL HAVE TO CHECK FOR ASTERIX THAT AREN"T AT BEGINNING AND END INVALIDATING QUERY.
+		if((this.containsAsterix(inputString))){
 			courseList = this.doISWildcard(filter, dataset, sField);
 		} else {
 			for (let section of dataset) {
@@ -64,9 +86,9 @@ export  class PerformQueryFilters {
 		return courseList;
 	}
 
-	private doISWildcard(filter: any, dataset: CourseSection[], sField: string){
+	private doISWildcard(filter: any, dataset: any[], sField: string){
 		let arrDatasetSFieldKeysValues = [];   // an array of all the values in the dataset that match the skey, eg. all the datasets UUIDs
-		let courseList: CourseSection[] = [];
+		let courseList: any[] = [];
 		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
 		for (let section of dataset) {
 			let datasetValue = section[sField as keyof typeof section]; // this is a value in the dataset, like a UUID of 3000
@@ -74,10 +96,10 @@ export  class PerformQueryFilters {
 		}
 		let filteredValues = this.filterByRegex(arrDatasetSFieldKeysValues, inputString); // returns all values in the dataset that match the specified inputString wildcard string
 
-		for (let courseSection of dataset) {
+		for (let any of dataset) {
 			for (let values of filteredValues) {
-				if (courseSection[sField as keyof typeof courseSection] === values) { // returns every section in dataset if its value matches wildcard query
-					courseList.push(courseSection);
+				if (any[sField as keyof typeof any] === values) { // returns every section in dataset if its value matches wildcard query
+					courseList.push(any);
 				}
 			}
 		}
@@ -100,9 +122,9 @@ export  class PerformQueryFilters {
 		return(intputString.charAt(0) === "*" || intputString.charAt(intputString.length - 1) === "*");
 	}
 
-	private doLT(filter: any, dataset: CourseSection[]){
-		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+	private doLT(filter: any, dataset: any[]){
+		let courseList: any[] = [];
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -114,9 +136,9 @@ export  class PerformQueryFilters {
 		return courseList;
 	}
 
-	private doGT(filter: any, dataset: CourseSection[]){
-		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+	private doGT(filter: any, dataset: any[]){
+		let courseList: any[] = [];
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -127,9 +149,9 @@ export  class PerformQueryFilters {
 		}
 		return courseList;
 	}
-	private doEQ(filter: any, dataset: CourseSection[]){
-		let courseList: CourseSection[] = [];
-		let mField = this.trimIdString(filter);
+	private doEQ(filter: any, dataset: any[]){
+		let courseList: any[] = [];
+		let mField = Object.keys(filter)[0];
 
 		let dataSetMField: any = Object.values(filter)[0];
 
@@ -141,8 +163,8 @@ export  class PerformQueryFilters {
 		return courseList;
 	}
 
-	private doNOT(filter: any, dataset: CourseSection[]){
-		let complementCourseList: CourseSection[] = [];
+	private doNOT(filter: any, dataset: any[]){
+		let complementCourseList: any[] = [];
 		let filteredDataset: any = this.performFilter(filter,dataset);
 		for (let originalSection of dataset) {
 			if(!filteredDataset.includes(originalSection)){
@@ -152,7 +174,7 @@ export  class PerformQueryFilters {
 		return complementCourseList as any;
 	}
 
-	private doAND(filterArr: any, dataset: CourseSection[]){
+	private doAND(filterArr: any, dataset: any[]){
 		if(filterArr.length === 0){
 			throw new Error("Empty AND clause not supported");
 		}
@@ -164,7 +186,7 @@ export  class PerformQueryFilters {
 		return result as any;
 	}
 
-	private doOR(filterArr: any, dataset: CourseSection[]){
+	private doOR(filterArr: any, dataset: any[]){
 		if(filterArr.length === 0){
 			throw new Error("Empty OR clause not supported");
 		}
@@ -178,8 +200,8 @@ export  class PerformQueryFilters {
 		return null;
 	}
 
-	private inEitherCourselists(dataset1: CourseSection[], dataset2: CourseSection[]){
-		let courseList: CourseSection[] = [];
+	private inEitherCourselists(dataset1: any[], dataset2: any[]){
+		let courseList: any[] = [];
 		for (let section1 of dataset1) {
 			courseList.push(section1);
 		}
@@ -192,8 +214,8 @@ export  class PerformQueryFilters {
 	}
 
 
-	private inBothCourselists(dataset1: CourseSection[], dataset2: CourseSection[]){
-		let courseList: CourseSection[] = [];
+	private inBothCourselists(dataset1: any[], dataset2: any[]){
+		let courseList: any[] = [];
 		for (let section1 of dataset1) {
 			for (let section2 of dataset2) {
 				if (section1 === section2) {
@@ -202,12 +224,6 @@ export  class PerformQueryFilters {
 			}
 		}
 		return courseList;
-	}
-
-	private trimIdString(filterObj: any){
-		let str = Object.keys(filterObj);
-		let trimmedStr = (str[0].slice(str[0].indexOf("_") + 1)); // find the first underscore and return everything after
-		return trimmedStr;
 	}
 
 	public getQueryObject(query: unknown) {

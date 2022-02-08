@@ -3,14 +3,14 @@
   "input": {
     "WHERE": {
       "GT": {
-        "courses_avg": 97
+        "apple_avg": 97
       }
     },
     "OPTIONS": {
       "COLUMNS": [
         "apple_dept"
       ],
-      "ORDER": "courses_avg"
+      "ORDER": "apple_avg"
     }
   },
   "errorExpected": true,

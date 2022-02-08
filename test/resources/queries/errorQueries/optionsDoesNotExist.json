@@ -1,0 +1,14 @@
+{
+	"title": "Options does not exist",
+	"input": {
+		"WHERE": {
+			"NOT": {
+				"GT": {
+					"courses_avg": 10
+				}
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

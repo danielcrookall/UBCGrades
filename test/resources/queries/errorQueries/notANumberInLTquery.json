@@ -1,0 +1,22 @@
+{
+	"title": "Invalid value type in LT, should be number",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"courses_avg": "asdfa"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_dept",
+				"courses_id",
+				"courses_year",
+				"courses_avg",
+				"courses_instructor"
+			],
+			"ORDER": "courses_year"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

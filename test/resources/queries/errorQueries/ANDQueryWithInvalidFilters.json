@@ -1,0 +1,31 @@
+
+{
+	"title": "Invalid filters in AND, Invalid value type in IS, should be string",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"GT": {
+						"courses_avg": 98
+					}
+				},
+				{
+					"IS": {
+						"courses_instructor": 3
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_dept",
+				"courses_id",
+				"courses_avg",
+				"courses_year"
+			],
+			"ORDER": "courses_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

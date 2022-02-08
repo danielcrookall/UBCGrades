@@ -16,7 +16,7 @@
 				"courses_uuid",
 				"courses_avg"
 			],
-			"ORDER": "courses_avg"
+			"ORDER": "courses_uuid"
 		}
 	},
 	"errorExpected": false,
