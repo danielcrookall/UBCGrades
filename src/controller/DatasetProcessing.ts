@@ -36,7 +36,9 @@ export  class DatasetProcessing {
 		}
 		));
 		await Promise.all(promises);
-		// console.log(processedDataset.length);
+		if(processedDataset.length === 0) {
+			throw new Error("A dataset needs at least one valid section overall.");
+		}
 		await this.writeDataSet(processedDataset, id);
 	}
 

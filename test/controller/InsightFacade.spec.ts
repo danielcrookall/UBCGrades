@@ -162,15 +162,15 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should skip over a dataset added that has invalid JSON in 1 course section", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJsonOneSection, InsightDatasetKind.Courses);
-			expect(addedIds).to.deep.equal(["courses"]);
 
-		});
+		it("should reject when a dataset added has invalid JSON and only one course file", async function () {
+			try {
+				await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
 
-		it("should skip over a dataset added that has invalid JSON ", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
-			expect(addedIds).to.deep.equal(["courses"]);
 
 		});
 
@@ -232,13 +232,13 @@ describe("InsightFacade", function () {
 		it("should fulfill upon a successful removal of one dataset when 2 datasets have been added",
 			async function () {
 				await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
-				await facade.addDataset("courses2",course1SectionAVGGT98YearLT1985, InsightDatasetKind.Courses);
+				await facade.addDataset("courses2", course1SectionAVGGT98YearLT1985, InsightDatasetKind.Courses);
 				const removedId = await facade.removeDataset("courses");
 				expect(removedId).to.be.a("string");
 				expect(removedId).to.deep.equal("courses");
-			// const addedDatasets = await facade.listDatasets();
-			// expect(addedDatasets).to.be.an.instanceof(Array);
-			// expect(addedDatasets).to.have.length(0);
+				const addedDatasets = await facade.listDatasets();
+				expect(addedDatasets).to.be.an.instanceof(Array);
+				expect(addedDatasets).to.have.length(1);
 			});
 
 		it("should reject removal if ID is invalid because it contains an underscore", async function () {
@@ -288,12 +288,12 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries",
+			"./test/resources/queries/singleQuery",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
 				},
-				assertOnResult(expected: any[], actual: any, input: any){
+				assertOnResult(expected: any[], actual: any, input: any) {
 					expect(actual).to.be.an.instanceof(Array);
 					expect(actual).to.have.length(expected.length);
 					expect(actual).to.have.deep.members(expected);
