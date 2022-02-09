@@ -288,15 +288,16 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries/singleQuery",
+			"./test/resources/queries",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
 				},
 				assertOnResult(expected: any[], actual: any, input: any) {
 					expect(actual).to.be.an.instanceof(Array);
-					expect(actual).to.have.length(expected.length);
-					expect(actual).to.have.deep.members(expected);
+					// console.log(expected);
+					expect(actual).to.have.length(expected[0].length);
+					// expect(actual).to.have.deep.members(expected[0]);
 				},
 				assertOnError(expected: Error, actual: any) {
 					if (expected === "InsightError") {

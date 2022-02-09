@@ -113,8 +113,8 @@ export default class InsightFacade implements IInsightFacade {
 			console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(ResultTooLargeError);
 		}
-		console.log(orderedResults);
-		console.log(orderedResults.length);
+		// console.log(orderedResults);
+		// console.log(orderedResults.length);
 		return Promise.resolve([orderedResults]);
 	}
 
