@@ -1,5 +1,5 @@
 {
-	"title": "Simple EQ Query",
+	"title": "order by uuid",
 	"input": {
 		"WHERE": {
 			"OR": [
@@ -17,7 +17,7 @@
 				"courses_avg",
 				"courses_year"
 			],
-			"ORDER": "courses_year"
+			"ORDER": "courses_uuid"
 		}
 	},
 	"errorExpected": false,

@@ -31,7 +31,7 @@ describe("InsightFacade", function () {
 		noCourseDirectory = getContentFromArchives("noCourseDirectory.zip");
 		oneCourse = getContentFromArchives("1course.zip");
 		coursesWithMissingAttribute = getContentFromArchives("1courseSectionWithNoProf.zip");
-		invalidJsonOneSection = getContentFromArchives("invalidJson1Section.zip");
+		invalidJsonOneSection = getContentFromArchives("invalidJSon1Section.zip");
 		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
 		empty = getContentFromArchives("empty.zip");
 		course1SectionAVGGT98YearLT1985 = getContentFromArchives("courseWith1SectionAVGGT98YEARLT1985.zip");
