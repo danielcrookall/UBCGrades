@@ -36,6 +36,7 @@ export  class DatasetProcessing {
 		}
 		));
 		await Promise.all(promises);
+		// console.log(processedDataset.length);
 		await this.writeDataSet(processedDataset, id);
 	}
 
@@ -121,6 +122,17 @@ export  class DatasetProcessing {
 		}
 		return id.replace(/\s/g, "").length; // removes all whitespace in string
 		// then checks length. if 0, the string was all whitespace and we return false
+	}
+
+	public loadDataset(id: string) {
+		let dataset;
+		try {
+			const jsonString = fs.readFileSync(`data/${id}.json`);
+			dataset = JSON.parse(jsonString.toString());
+			return dataset;
+		} catch(err) {
+			throw new Error("Dataset does not exist");
+		}
 	}
 
 }

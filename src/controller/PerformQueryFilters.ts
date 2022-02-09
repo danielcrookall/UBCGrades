@@ -197,7 +197,6 @@ export  class PerformQueryFilters {
 		}
 		return result as any;
 
-		return null;
 	}
 
 	private inEitherCourselists(dataset1: any[], dataset2: any[]){
@@ -230,17 +229,6 @@ export  class PerformQueryFilters {
 		let string = JSON.stringify(query);
 		let queryObject = JSON.parse(string);
 		return queryObject;
-	}
-
-	public loadDataset(id: string) {
-		let dataset;
-		try {
-			const jsonString = fs.readFileSync(`data/${id}.json`);
-			dataset = JSON.parse(jsonString.toString());
-			return dataset;
-		} catch(err) {
-			throw new Error("Dataset does not exist");
-		}
 	}
 
 }
