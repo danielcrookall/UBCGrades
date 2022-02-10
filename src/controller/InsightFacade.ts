@@ -121,20 +121,20 @@ export default class InsightFacade implements IInsightFacade {
 	public async listDatasets(): Promise<InsightDataset[]> {
 		let dataProcessor = new DatasetProcessing();
 		let currentlyAddedDatsets: any = [];
-		// if (fs.existsSync(this.dataDir)) {
-		// 	const dir = await fs.promises.opendir(this.dataDir);
-		// 	for await (const file of dir) {
-		// 		let filename = file.name;
-		// 		let id = path.parse(filename).name;
-		// 		const numRows = dataProcessor.loadDataset(id).length;
-		// 		const datasetInfo = {
-		// 			id: id,
-		// 			kind: InsightDatasetKind.Courses,
-		// 			numRows: numRows
-		// 		};
-		// 		currentlyAddedDatsets.push(datasetInfo);
-		// 	}
-		// }
+		if (fs.existsSync(this.dataDir)) {
+			const dir = await fs.promises.opendir(this.dataDir);
+			for await (const file of dir) {
+				let filename = file.name;
+				let id = path.parse(filename).name;
+				const numRows = dataProcessor.loadDataset(id).length;
+				const datasetInfo = {
+					id: id,
+					kind: InsightDatasetKind.Courses,
+					numRows: numRows
+				};
+				currentlyAddedDatsets.push(datasetInfo);
+			}
+		}
 		return Promise.resolve(currentlyAddedDatsets);
 	}
 
