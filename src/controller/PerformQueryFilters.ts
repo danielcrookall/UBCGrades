@@ -171,7 +171,7 @@ export  class PerformQueryFilters {
 				complementCourseList.push(originalSection);
 			}
 		}
-		return complementCourseList as any;
+		return complementCourseList;
 	}
 
 	private doAND(filterArr: any, dataset: any[]){
@@ -195,7 +195,7 @@ export  class PerformQueryFilters {
 			let result2 = this.performFilter(filterArr[i], dataset);
 			result = this.inEitherCourselists(result, result2);
 		}
-		return result as any;
+		return result;
 
 	}
 
