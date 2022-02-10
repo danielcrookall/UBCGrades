@@ -78,8 +78,8 @@ export default class InsightFacade implements IInsightFacade {
 		let dataProcessor = new DatasetProcessing();
 		let dataset: any[];
 		let queryObject = performQuery.getQueryObject(query);
-		let filter = queryObject.WHERE;
-		let options = queryObject.OPTIONS;
+		// let filter = queryObject.WHERE;
+		// let options = queryObject.OPTIONS;
 		// let columns = options.COLUMNS;
 		// let orderKey = options.ORDER;
 		let parser: any;
@@ -87,10 +87,10 @@ export default class InsightFacade implements IInsightFacade {
 			parser = new QueryValidator(queryObject);
 			parser.queryValidation(queryObject); // checking here same reason as below
 			parser.whereValidation(queryObject.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
-			parser.optionsValidation(options);
-			parser.validateFilter(filter);
-			parser.validateColumns(options.COLUMNS);
-			parser.validateOrder(options.ORDER, options.COLUMNS);
+			parser.optionsValidation(queryObject.OPTIONS);
+			parser.validateFilter(queryObject.WHERE);
+			parser.validateColumns(queryObject.OPTIONS.COLUMNS);
+			parser.validateOrder(queryObject.OPTIONS.ORDER, queryObject.OPTIONS.COLUMNS);
 
 			dataset = dataProcessor.loadDataset(parser.datasetID);
 		} catch (err: any){
@@ -100,13 +100,13 @@ export default class InsightFacade implements IInsightFacade {
 		let queryResults: any;
 		let columnResults: any;
 		let orderedResults: any;
-		if(parser.isEmpty(filter)) {// empty where clause, ie. no filter, return all entries in dataset
-			columnResults = performQuery.performColumns(options, dataset);
-			orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
+		if(parser.isEmpty(queryObject.WHERE)) {// empty where clause, ie. no filter, return all entries in dataset
+			columnResults = performQuery.performColumns(queryObject.OPTIONS, dataset);
+			orderedResults = performQuery.performOrder(queryObject.OPTIONS, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 		} else {
-			queryResults = performQuery.performFilter(filter,dataset);
-			columnResults = performQuery.performColumns(options, queryResults);
-			orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
+			queryResults = performQuery.performFilter(queryObject.WHERE,dataset);
+			columnResults = performQuery.performColumns(queryObject.OPTIONS, queryResults);
+			orderedResults = performQuery.performOrder(queryObject.OPTIONS, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 		}
 
 		if(orderedResults.length > 5000){
