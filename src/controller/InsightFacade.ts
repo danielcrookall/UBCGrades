@@ -50,24 +50,24 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		// let dataProcessing = new DatasetProcessing();
-		// let addedIds: string[] = [];
-		// if(!dataProcessing.isValidID(id, addedIds)){
-		// 	return Promise.reject(new InsightError()); // invalid id
-		// }
-		// await dataProcessing.getExistingDataSetIds(addedIds);
-		//
-		// if (!addedIds.includes(id)) {
-		// 	return Promise.reject(new NotFoundError()); // valid id, but it has not been added yet
-		// }
-		//
-		// try {
-		// 	fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
-		//
-		// } catch(err: any){
-		// 	console.error(err.message);
-		// 	return Promise.reject(new InsightError());
-		// }
+		let dataProcessing = new DatasetProcessing();
+		let addedIds: string[] = [];
+		if(!dataProcessing.isValidID(id, addedIds)){
+			return Promise.reject(new InsightError()); // invalid id
+		}
+		await dataProcessing.getExistingDataSetIds(addedIds);
+
+		if (!addedIds.includes(id)) {
+			return Promise.reject(new NotFoundError()); // valid id, but it has not been added yet
+		}
+
+		try {
+			fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
+
+		} catch(err: any){
+			console.error(err.message);
+			return Promise.reject(new InsightError());
+		}
 
 
 		return Promise.resolve(id);
