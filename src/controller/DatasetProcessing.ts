@@ -65,7 +65,7 @@ export  class DatasetProcessing {
 				[datasetId + "_section"]: object.Section
 			};
 			if(jsonSection[datasetId + "_section"] === "overall"){
-				jsonSection[datasetId + "_year"] = "1900";
+				jsonSection[datasetId + "_year"] = 1900;
 			}
 			let sectionValues = Object.values(jsonSection);
 			if (!this.isMissingAttribute(sectionValues)){

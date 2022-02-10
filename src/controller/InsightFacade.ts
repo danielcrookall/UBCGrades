@@ -115,7 +115,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 		// console.log(orderedResults);
 		// console.log(orderedResults.length);
-		return Promise.resolve([orderedResults]);
+		return Promise.resolve(orderedResults);
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

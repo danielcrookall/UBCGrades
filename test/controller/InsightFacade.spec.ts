@@ -293,11 +293,11 @@ describe("InsightFacade", function () {
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
 				},
-				assertOnResult(expected: any[], actual: any, input: any) {
+				assertOnResult(actual: any, expected: any[]) {
 					expect(actual).to.be.an.instanceof(Array);
 					// console.log(expected);
-					expect(actual).to.have.length(expected[0].length);
-					// expect(actual).to.have.deep.members(expected[0]);
+					expect(actual).to.have.length(expected.length);
+					expect(actual).to.have.deep.members(expected);
 				},
 				assertOnError(expected: Error, actual: any) {
 					if (expected === "InsightError") {
