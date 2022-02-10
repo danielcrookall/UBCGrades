@@ -6,7 +6,6 @@ import {
 	InsightResult,
 	NotFoundError, ResultTooLargeError
 } from "./IInsightFacade";
-import JSZip from "jszip";
 import * as fs from "fs-extra";
 import path from "path";
 import {DatasetProcessing} from "./DatasetProcessing";
@@ -35,14 +34,14 @@ export default class InsightFacade implements IInsightFacade {
 		}
 		const isZip = await dataProcessing.isZip(content);
 		if(!isZip){
-			console.error("Not a zip file.");
+			// console.error("Not a zip file.");
 			return Promise.reject(new InsightError());
 		}
 		try {
 			await dataProcessing.processDataset(content, id);
 			addedIds.push(id);
 		} catch (err: any) {
-			console.error(err.message);
+			// console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 		return Promise.resolve(addedIds);
@@ -65,7 +64,7 @@ export default class InsightFacade implements IInsightFacade {
 			fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
 
 		} catch(err: any){
-			console.error(err.message);
+			// console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 
@@ -80,8 +79,8 @@ export default class InsightFacade implements IInsightFacade {
 		let queryObject = performQuery.getQueryObject(query);
 		let filter = queryObject.WHERE;
 		let options = queryObject.OPTIONS;
-		let columns = options.COLUMNS;
-		let orderKey = options.ORDER;
+		// let columns = options.COLUMNS;
+		// let orderKey = options.ORDER;
 		let parser: any;
 		try {
 			parser = new QueryValidator(queryObject);
@@ -89,13 +88,13 @@ export default class InsightFacade implements IInsightFacade {
 			parser.whereValidation(queryObject.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
 			parser.optionsValidation(options);
 			parser.validateFilter(filter);
-			parser.validateColumns(columns);
-			parser.validateOrder(orderKey, columns);
+			parser.validateColumns(options.COLUMNS);
+			parser.validateOrder(options.ORDER, options.COLUMNS);
 
 			dataset = dataProcessor.loadDataset(parser.datasetID);
 		} catch (err: any){
-			console.error(err.message);
-			return Promise.reject(InsightError);
+			// console.error(err.message);
+			return Promise.reject(new InsightError());
 		}
 		let queryResults: any;
 		let columnResults: any;
@@ -110,8 +109,8 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		if(orderedResults.length > 5000){
-			console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
-			return Promise.reject(ResultTooLargeError);
+			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
+			return Promise.reject(new ResultTooLargeError());
 		}
 		// console.log(orderedResults);
 		// console.log(orderedResults.length);

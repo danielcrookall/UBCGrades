@@ -280,7 +280,11 @@ describe("InsightFacade", function () {
 		before(async function () {
 			clearDisk();
 			facade = new InsightFacade();
-			await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+			try {
+				await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+			}catch(err: any){
+				console.error("Dataset could not be loaded for perform query");
+			}
 
 		});
 
@@ -299,7 +303,7 @@ describe("InsightFacade", function () {
 					expect(actual).to.have.length(expected.length);
 					expect(actual).to.have.deep.members(expected);
 				},
-				assertOnError(expected: Error, actual: any) {
+				assertOnError(actual: any, expected: Error) {
 					if (expected === "InsightError") {
 						expect(actual).to.be.an.instanceof(InsightError);
 					} else if (expected === "ResultTooLargeError") {
