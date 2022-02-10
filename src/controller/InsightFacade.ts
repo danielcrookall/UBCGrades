@@ -79,8 +79,6 @@ export default class InsightFacade implements IInsightFacade {
 		let queryObject = performQuery.getQueryObject(query);
 		let filter = queryObject.WHERE;
 		let options = queryObject.OPTIONS;
-		// let columns = options.COLUMNS;
-		// let orderKey = options.ORDER;
 		let parser: any;
 		try {
 			parser = new QueryValidator(queryObject);
@@ -116,10 +114,6 @@ export default class InsightFacade implements IInsightFacade {
 			orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 		}
 
-		if(orderedResults.length > 5000){
-			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
-			return Promise.reject(new ResultTooLargeError());
-		}
 		// console.log(orderedResults);
 		// console.log(orderedResults.length);
 		return Promise.resolve(orderedResults);
@@ -127,7 +121,7 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async listDatasets(): Promise<InsightDataset[]> {
 		let dataProcessor = new DatasetProcessing();
-		let currentlyAddedDatsets = [];
+		let currentlyAddedDatasets = [];
 		if (fs.existsSync(this.dataDir)) {
 			const dir = await fs.promises.opendir(this.dataDir);
 			for await (const file of dir) {
@@ -139,10 +133,10 @@ export default class InsightFacade implements IInsightFacade {
 					kind: InsightDatasetKind.Courses,
 					numRows: numRows
 				};
-				currentlyAddedDatsets.push(datasetInfo);
+				currentlyAddedDatasets.push(datasetInfo);
 			}
 		}
-		return Promise.resolve(currentlyAddedDatsets);
+		return Promise.resolve(currentlyAddedDatasets);
 	}
 
 }
