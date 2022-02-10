@@ -92,7 +92,7 @@ export default class InsightFacade implements IInsightFacade {
 			parser.validateColumns(columns);
 			parser.validateOrder(orderKey, columns);
 
-			dataset = dataProcessor.loadDataset(parser.datasetID);
+			dataset = dataProcessor.loadDataset("courses");
 		} catch (err: any){
 			console.error(err.message);
 			return Promise.reject(InsightError);
