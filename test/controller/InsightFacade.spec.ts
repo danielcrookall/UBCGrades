@@ -280,11 +280,8 @@ describe("InsightFacade", function () {
 		before(async function () {
 			clearDisk();
 			facade = new InsightFacade();
-			try {
-				await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
-			}catch(err: any){
-				console.error("Dataset could not be loaded for perform query");
-			}
+
+			await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
 
 		});
 
