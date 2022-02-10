@@ -73,7 +73,7 @@ export default class InsightFacade implements IInsightFacade {
 		return Promise.resolve(id);
 	}
 
-	public async performQuery(query: unknown): Promise<InsightResult[]> {
+	public performQuery(query: unknown): Promise<InsightResult[]> {
 		let performQuery = new PerformQueryFilters();
 		let dataProcessor = new DatasetProcessing();
 		let dataset: any[];
@@ -120,21 +120,21 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async listDatasets(): Promise<InsightDataset[]> {
 		let dataProcessor = new DatasetProcessing();
-		let currentlyAddedDatsets: any = [];
-		// if (fs.existsSync(this.dataDir)) {
-		// 	const dir = await fs.promises.opendir(this.dataDir);
-		// 	for await (const file of dir) {
-		// 		let filename = file.name;
-		// 		let id = path.parse(filename).name;
-		// 		const numRows = dataProcessor.loadDataset(id).length;
-		// 		const datasetInfo = {
-		// 			id: id,
-		// 			kind: InsightDatasetKind.Courses,
-		// 			numRows: numRows
-		// 		};
-		// 		currentlyAddedDatsets.push(datasetInfo);
-		// 	}
-		// }
+		let currentlyAddedDatsets = [];
+		if (fs.existsSync(this.dataDir)) {
+			const dir = await fs.promises.opendir(this.dataDir);
+			for await (const file of dir) {
+				let filename = file.name;
+				let id = path.parse(filename).name;
+				const numRows = dataProcessor.loadDataset(id).length;
+				const datasetInfo = {
+					id: id,
+					kind: InsightDatasetKind.Courses,
+					numRows: numRows
+				};
+				currentlyAddedDatsets.push(datasetInfo);
+			}
+		}
 		return Promise.resolve(currentlyAddedDatsets);
 	}
 
