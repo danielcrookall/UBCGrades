@@ -35,14 +35,14 @@ export default class InsightFacade implements IInsightFacade {
 		}
 		const isZip = await dataProcessing.isZip(content);
 		if(!isZip){
-			console.error("Not a zip file.");
+			// console.error("Not a zip file.");
 			return Promise.reject(new InsightError());
 		}
 		try {
 			await dataProcessing.processDataset(content, id);
 			addedIds.push(id);
 		} catch (err: any) {
-			console.error(err.message);
+			// console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 		return Promise.resolve(addedIds);
@@ -65,7 +65,7 @@ export default class InsightFacade implements IInsightFacade {
 			fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
 
 		} catch(err: any){
-			console.error(err.message);
+			// console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 
@@ -94,7 +94,7 @@ export default class InsightFacade implements IInsightFacade {
 
 			dataset = dataProcessor.loadDataset(parser.datasetID);
 		} catch (err: any){
-			console.error(err.message);
+			// console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 		let queryResults: any;
@@ -110,7 +110,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		if(orderedResults.length > 5000){
-			console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
+			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(new ResultTooLargeError());
 		}
 		// console.log(orderedResults);
