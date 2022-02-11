@@ -62,11 +62,12 @@ export  class DatasetProcessing {
 				[datasetId + "_instructor"]: object.Professor,
 				[datasetId + "_title"]: object.Title,
 				[datasetId + "_uuid"]: object["id"].toString(10),
-				[datasetId + "_section"]: object.Section
 			};
-			if(jsonSection[datasetId + "_section"] === "overall"){
+
+			if (object.Section === "overall"){
 				jsonSection[datasetId + "_year"] = 1900;
 			}
+
 			let sectionValues = Object.values(jsonSection);
 			if (!this.isMissingAttribute(sectionValues)){
 				processedDataset.push(jsonSection);
