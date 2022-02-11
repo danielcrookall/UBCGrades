@@ -31,7 +31,7 @@ describe("InsightFacade", function () {
 		noCourseDirectory = getContentFromArchives("noCourseDirectory.zip");
 		oneCourse = getContentFromArchives("1course.zip");
 		coursesWithMissingAttribute = getContentFromArchives("1courseSectionWithNoProf.zip");
-		invalidJsonOneSection = getContentFromArchives("invalidJson1Section.zip");
+		invalidJsonOneSection = getContentFromArchives("invalidJSon1Section.zip");
 		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
 		empty = getContentFromArchives("empty.zip");
 		course1SectionAVGGT98YearLT1985 = getContentFromArchives("courseWith1SectionAVGGT98YEARLT1985.zip");
@@ -162,15 +162,15 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should skip over a dataset added that has invalid JSON in 1 course section", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJsonOneSection, InsightDatasetKind.Courses);
-			expect(addedIds).to.deep.equal(["courses"]);
 
-		});
+		it("should reject when a dataset added has invalid JSON and only one course file", async function () {
+			try {
+				await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
 
-		it("should skip over a dataset added that has invalid JSON ", async function () {
-			const addedIds = await facade.addDataset("courses", invalidJSONCourses, InsightDatasetKind.Courses);
-			expect(addedIds).to.deep.equal(["courses"]);
 
 		});
 
@@ -229,6 +229,18 @@ describe("InsightFacade", function () {
 			expect(addedDatasets).to.have.length(0);
 		});
 
+		it("should fulfill upon a successful removal of one dataset when 2 datasets have been added",
+			async function () {
+				await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+				await facade.addDataset("courses2", course1SectionAVGGT98YearLT1985, InsightDatasetKind.Courses);
+				const removedId = await facade.removeDataset("courses");
+				expect(removedId).to.be.a("string");
+				expect(removedId).to.deep.equal("courses");
+				const addedDatasets = await facade.listDatasets();
+				expect(addedDatasets).to.be.an.instanceof(Array);
+				expect(addedDatasets).to.have.length(1);
+			});
+
 		it("should reject removal if ID is invalid because it contains an underscore", async function () {
 			try {
 				await facade.removeDataset("cour_ses");
@@ -268,6 +280,7 @@ describe("InsightFacade", function () {
 		before(async function () {
 			clearDisk();
 			facade = new InsightFacade();
+
 			await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
 
 		});
@@ -276,12 +289,18 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries/singleQuery",
+			"./test/resources/queries",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
 				},
-				assertOnError(expected: Error, actual: any) {
+				assertOnResult(actual: any, expected: any[]) {
+					expect(actual).to.be.an.instanceof(Array);
+					// console.log(expected);
+					expect(actual).to.have.length(expected.length);
+					expect(actual).to.have.deep.members(expected);
+				},
+				assertOnError(actual: any, expected: Error) {
 					if (expected === "InsightError") {
 						expect(actual).to.be.an.instanceof(InsightError);
 					} else if (expected === "ResultTooLargeError") {

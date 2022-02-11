@@ -86,36 +86,18 @@ export  class PerformQueryFilters {
 		return courseList;
 	}
 
+
 	private doISWildcard(filter: any, dataset: any[], sField: string){
-		let arrDatasetSFieldKeysValues = [];   // an array of all the values in the dataset that match the skey, eg. all the datasets UUIDs
 		let courseList: any[] = [];
-		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
+		let inputString: any = Object.values(filter)[0]; // this is something like "313" or "313*"
 		for (let section of dataset) {
 			let datasetValue = section[sField as keyof typeof section]; // this is a value in the dataset, like a UUID of 3000
-			arrDatasetSFieldKeysValues.push(datasetValue);
-		}
-		let filteredValues = this.filterByRegex(arrDatasetSFieldKeysValues, inputString); // returns all values in the dataset that match the specified inputString wildcard string
-
-		for (let any of dataset) {
-			for (let values of filteredValues) {
-				if (any[sField as keyof typeof any] === values) { // returns every section in dataset if its value matches wildcard query
-					courseList.push(any);
-				}
+			let match = new RegExp("^" + inputString.replace(/\*/g, ".*") + "$").test(datasetValue); // replaces all * in inputstring with .* to match any character
+			if(match){
+				courseList.push(section);
 			}
 		}
 		return courseList;
-	}
-
-	// applies regex to every value in the arr and returns an array of results that match
-	private filterByRegex(arr: any, inputString: any){
-		let filteredValues: any[] = [];
-		for (let sectionValue of arr){
-			let match = new RegExp("^" + inputString.replace(/\*/g, ".*") + "$").test(sectionValue); // replaces all * in inputstring with .* to match any character
-			if(match){
-				filteredValues.push(sectionValue);
-			}
-		}
-		return filteredValues;
 	}
 
 	private containsAsterix(intputString: any){
@@ -171,7 +153,7 @@ export  class PerformQueryFilters {
 				complementCourseList.push(originalSection);
 			}
 		}
-		return complementCourseList as any;
+		return complementCourseList;
 	}
 
 	private doAND(filterArr: any, dataset: any[]){
@@ -195,9 +177,8 @@ export  class PerformQueryFilters {
 			let result2 = this.performFilter(filterArr[i], dataset);
 			result = this.inEitherCourselists(result, result2);
 		}
-		return result as any;
+		return result;
 
-		return null;
 	}
 
 	private inEitherCourselists(dataset1: any[], dataset2: any[]){
@@ -230,17 +211,6 @@ export  class PerformQueryFilters {
 		let string = JSON.stringify(query);
 		let queryObject = JSON.parse(string);
 		return queryObject;
-	}
-
-	public loadDataset(id: string) {
-		let dataset;
-		try {
-			const jsonString = fs.readFileSync(`data/${id}.json`);
-			dataset = JSON.parse(jsonString.toString());
-			return dataset;
-		} catch(err) {
-			throw new Error("Dataset does not exist");
-		}
 	}
 
 }

@@ -208,6 +208,11 @@ export class QueryValidator {
 		if (optionsObj.COLUMNS === undefined) {
 			throw new Error("Missing columns");
 		}
+		if (optionsObj.ORDER === undefined){
+			if(optionKeys.length !== 1){
+				throw new Error("Invalid key in options (no order key)"); // if order is undefined, then you can only ever have 1 key: columns.
+			}
+		}
 
 	}
 
@@ -222,6 +227,11 @@ export class QueryValidator {
 		if (queryKeys.length > 2) {
 			throw new Error("Excess keys in query. Query should only contain WHERE and OPTIONS.");
 		}
+		if (queryKeys.length < 2) {
+			throw new Error("Missing keys in query. Query should only contain WHERE and OPTIONS.");
+		}
+
+
 	}
 
 }

@@ -36,6 +36,9 @@ export  class DatasetProcessing {
 		}
 		));
 		await Promise.all(promises);
+		if(processedDataset.length === 0) {
+			throw new Error("A dataset needs at least one valid section overall.");
+		}
 		await this.writeDataSet(processedDataset, id);
 	}
 
@@ -62,7 +65,7 @@ export  class DatasetProcessing {
 				[datasetId + "_section"]: object.Section
 			};
 			if(jsonSection[datasetId + "_section"] === "overall"){
-				jsonSection[datasetId + "_year"] = "1900";
+				jsonSection[datasetId + "_year"] = 1900;
 			}
 			let sectionValues = Object.values(jsonSection);
 			if (!this.isMissingAttribute(sectionValues)){
@@ -121,6 +124,17 @@ export  class DatasetProcessing {
 		}
 		return id.replace(/\s/g, "").length; // removes all whitespace in string
 		// then checks length. if 0, the string was all whitespace and we return false
+	}
+
+	public loadDataset(id: string) {
+		let dataset;
+		try {
+			const jsonString = fs.readFileSync(`data/${id}.json`);
+			dataset = JSON.parse(jsonString.toString());
+			return dataset;
+		} catch(err) {
+			throw new Error("Dataset does not exist");
+		}
 	}
 
 }
