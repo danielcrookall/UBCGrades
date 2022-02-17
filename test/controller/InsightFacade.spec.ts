@@ -23,6 +23,9 @@ describe("InsightFacade", function () {
 	let invalidAndValidJson: string;
 	let empty: string;
 	let course1SectionAVGGT98YearLT1985: string;
+	let rooms: string;
+	let noRoomsDirectory: string;
+	let test: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -35,6 +38,9 @@ describe("InsightFacade", function () {
 		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
 		empty = getContentFromArchives("empty.zip");
 		course1SectionAVGGT98YearLT1985 = getContentFromArchives("courseWith1SectionAVGGT98YEARLT1985.zip");
+		rooms = getContentFromArchives("rooms.zip");
+		noRoomsDirectory = getContentFromArchives("noRoomsDirectory.zip");
+		test = getContentFromArchives("test.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -208,6 +214,20 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject if rooms dataset has no rooms directory", async function () {
+			try {
+				await facade.addDataset("rooms", noRoomsDirectory, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should resolve if one valid rooms dataset is added and id is valid", async function () {
+			const addedIds = await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+			expect(addedIds).to.deep.equal(["rooms"]);
+		});
+
 	});
 
 	describe("removeDataset", function () {
@@ -260,6 +280,7 @@ describe("InsightFacade", function () {
 			}
 
 		});
+
 
 		it("should reject removal if ID is valid but has not yet been added", async function () {
 			try {

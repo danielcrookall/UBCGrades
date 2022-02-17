@@ -34,14 +34,14 @@ export default class InsightFacade implements IInsightFacade {
 		}
 		const isZip = await dataProcessing.isZip(content);
 		if(!isZip){
-			// console.error("Not a zip file.");
+			console.error("Not a zip file.");
 			return Promise.reject(new InsightError());
 		}
 		try {
-			await dataProcessing.processDataset(content, id);
+			await dataProcessing.processDataset(content, id, kind);
 			addedIds.push(id);
 		} catch (err: any) {
-			// console.error(err.message);
+			console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 		return Promise.resolve(addedIds);
@@ -64,7 +64,7 @@ export default class InsightFacade implements IInsightFacade {
 			fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
 
 		} catch(err: any){
-			// console.error(err.message);
+			console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
 

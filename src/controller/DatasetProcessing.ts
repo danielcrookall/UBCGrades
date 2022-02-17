@@ -1,6 +1,8 @@
 import * as fs from "fs-extra";
 import path from "path";
 import JSZip from "jszip";
+import parse5 from "parse5";
+import {InsightDatasetKind} from "./IInsightFacade";
 
 
 export  class DatasetProcessing {
@@ -20,27 +22,52 @@ export  class DatasetProcessing {
 		}
 	}
 
-	public async processDataset(content: string, id: string){
+	public async processDataset(content: string, id: string, kind: InsightDatasetKind){
 		let processedDataset: any[] = [];
 		let newZip = new JSZip();
+		let promises: Array<Promise<any>> = [];
 		const zip = await newZip.loadAsync(content, {base64: true});
 		if (Object.keys(zip.files).length === 0) {
 			throw new Error("Empty zip");
 		}
-		if (zip.folder(/courses/).length === 0){ // no course directory inside the zip file
-			throw new Error("No courses directory");
+		if (kind === "courses") {
+
+			if (zip.folder(/courses/).length === 0) { // no course directory inside the zip file
+				throw new Error("No courses directory");
+			}
+
+			zip.folder("courses")?.forEach(((relativePath, file) => {
+				promises.push(this.parseCourses(processedDataset, file, id));
+			}
+			));
+			await Promise.all(promises);
+			if (processedDataset.length === 0) {
+				throw new Error("A dataset needs at least one valid section overall.");
+			}
+			await this.writeDataSet(processedDataset, id);
+		} else { // kind == rooms
+			console.log((zip.folder(/rooms/).length));
+			const arrMatchingFolders = zip.folder(/rooms/);
+			if (arrMatchingFolders.length === 0 || arrMatchingFolders.length === 1) { // no course directory inside the zip file, for some reason it counts as 1 even when it doesn't exist?
+				throw new Error("No rooms directory");
+			}
+			zip.folder("rooms")?.forEach(((relativePath, file) => {
+				promises.push(this.parseRooms(processedDataset, file, id));
+			}
+			));
+
+
 		}
-		let promises: Array<Promise<any>> = [];
-		zip.folder("courses")?.forEach(((relativePath, file) => {
-			promises.push(this.parseCourses(processedDataset, file, id));
-		}
-		));
-		await Promise.all(promises);
-		if(processedDataset.length === 0) {
-			throw new Error("A dataset needs at least one valid section overall.");
-		}
-		await this.writeDataSet(processedDataset, id);
 	}
+	private async parseRooms(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
+		// parse5.parse(file);
+
+		console.log(file);
+
+
+		// TODO
+	}
+
 
 	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
