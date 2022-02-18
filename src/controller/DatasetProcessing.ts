@@ -60,9 +60,13 @@ export  class DatasetProcessing {
 		}
 	}
 	private async parseRooms(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
-		// parse5.parse(file);
+		if(file.name === "rooms/index.htm") {
+			let test = parse5.parse(await file.async("string"));
+			console.log(test.childNodes);
+		}
 
-		console.log(file);
+
+		// console.log(file);
 
 
 		// TODO
