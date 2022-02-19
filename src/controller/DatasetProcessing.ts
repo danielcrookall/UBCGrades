@@ -4,13 +4,13 @@ import JSZip from "jszip";
 import parse5 from "parse5";
 import {InsightDatasetKind} from "./IInsightFacade";
 
-
-export  class DatasetProcessing {
+export class DatasetProcessing {
 	private dataDir;
 
 	constructor() {
 		this.dataDir = "./data/";
 	}
+
 	public async getExistingDataSetIds(addedIds: string[]) {
 		if (fs.existsSync(this.dataDir)) {
 			const dir = await fs.promises.opendir(this.dataDir);
@@ -22,7 +22,7 @@ export  class DatasetProcessing {
 		}
 	}
 
-	public async processDataset(content: string, id: string, kind: InsightDatasetKind){
+	public async processDataset(content: string, id: string, kind: InsightDatasetKind) {
 		let processedDataset: any[] = [];
 		let newZip = new JSZip();
 		let promises: Array<Promise<any>> = [];
@@ -46,24 +46,31 @@ export  class DatasetProcessing {
 			}
 			await this.writeDataSet(processedDataset, id);
 		} else { // kind == rooms
-			console.log((zip.folder(/rooms/).length));
-			const arrMatchingFolders = zip.folder(/rooms/);
-			if (arrMatchingFolders.length === 0 || arrMatchingFolders.length === 1) { // no course directory inside the zip file, for some reason it counts as 1 even when it doesn't exist?
-				throw new Error("No rooms directory");
+			let indexHTMLFile: any;
+			let htmlTree: any;
+			try {
+				indexHTMLFile = await zip.file("rooms/index.htm")?.async("string");
+				if (indexHTMLFile === null) { // move this check outside of try catch
+					throw new Error("no rooms directory");
+				}
+				if (indexHTMLFile !== undefined) {
+					htmlTree = parse5.parse(indexHTMLFile);
+				}
+			} catch (err) {
+				throw new Error("The index indexHTML in a rooms dataset is either invalid HTML or does not exist.");
 			}
-			zip.folder("rooms")?.forEach(((relativePath, file) => {
-				promises.push(this.parseRooms(processedDataset, file, id));
-			}
-			));
+
+			promises.push(this.parseRooms(processedDataset, htmlTree, id));
 
 
 		}
 	}
-	private async parseRooms(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
-		if(file.name === "rooms/index.htm") {
-			let test = parse5.parse(await file.async("string"));
-			console.log(test.childNodes);
-		}
+
+	private async parseRooms(processedDataset: any[], htmlTree: any, datasetId: any) {
+
+		this.getBuildings(htmlTree);
+
+		// console.log(roomsTree.childNodes[1].nodeName);
 
 
 		// console.log(file);
@@ -72,10 +79,65 @@ export  class DatasetProcessing {
 		// TODO
 	}
 
+	private getBuildings(node: any) {
+
+		const obj: any = {};
+
+		if (node.childNodes === undefined) {
+			return;
+		}
+
+		// if (node.nodeName === "tr") {
+		// 	this.parseTD(node);
+		// }
+
+		if (node.nodeName === "td") { // maybe instead check once you reach a child ndoe if parent is of type TD then you can check parent value attribute and see if it matches, would prevent having to iterate over child nodes here
+			for (let attrbObj of node.attrs) {
+				if (attrbObj.value === "views-field views-field-field-building-code") {
+					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
+						// feels like unecessary iteration through the nodes since we're bound to traverse them all but you can't tell soley off node alone if you need the values? Need the td
+						console.log(childNode.value);
+
+						obj["rooms_shortname"] = childNode.value;
+					}
+				}
+
+				if (attrbObj.value === "views-field views-field-title") {
+					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
+						if (childNode.nodeName === "a") {
+							for (let attr of childNode.attrs) {
+								if (attr.name === "href") {
+									console.log(attr.value);
+								}
+							}
+							for (let cn of childNode.childNodes) {
+								console.log(cn.value);
+							}
+						}
+
+					}
+				}
+
+				if (attrbObj.value === "views-field views-field-field-building-address") {
+					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
+						console.log(childNode.value);
+						obj["rooms_address"] = childNode.value;
+					}
+				}
+
+			}
+		}
+
+		let childNodeCount = node.childNodes.length;
+		for (let i = 0; i < childNodeCount; i++) {
+			this.getBuildings(node.childNodes[i]);
+		}
+	}
+
 
 	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
-		if(!this.isValidJSON(resultsArr)){
+		if (!this.isValidJSON(resultsArr)) {
 			return; // the entire file is invalid, move onto next course in the for each loop.
 		}
 		let courseObject = JSON.parse(resultsArr);
@@ -95,34 +157,34 @@ export  class DatasetProcessing {
 				[datasetId + "_uuid"]: object["id"].toString(10),
 			};
 
-			if (object.Section === "overall"){
+			if (object.Section === "overall") {
 				jsonSection[datasetId + "_year"] = 1900;
 			}
 
 			let sectionValues = Object.values(jsonSection);
-			if (!this.isMissingAttribute(sectionValues)){
+			if (!this.isMissingAttribute(sectionValues)) {
 				processedDataset.push(jsonSection);
 			}
 		}
 	}
 
-	private async writeDataSet(processedDataset: any, id: string){
+	private async writeDataSet(processedDataset: any, id: string) {
 		try {
 			if (!fs.existsSync(this.dataDir)) {
 				await fs.mkdir(this.dataDir);
 			}
-		} catch (err){
+		} catch (err) {
 			console.log("Failed to create directory");
 		}
 		let object = JSON.stringify(processedDataset, null, 4);
 		try {
 			await fs.writeFile(this.dataDir + id + ".json", object);
-		} catch (err){
+		} catch (err) {
 			console.log("Failed to write to directory");
 		}
 	}
 
-	private isMissingAttribute(sectionValues: any[]){
+	private isMissingAttribute(sectionValues: any[]) {
 		for (let value of sectionValues) {
 			if (value === undefined) {
 				return true;
@@ -131,7 +193,7 @@ export  class DatasetProcessing {
 		return false;
 	}
 
-	private isValidJSON(resultArr: string){
+	private isValidJSON(resultArr: string) {
 		try {
 			JSON.parse(resultArr);
 		} catch (e) {
@@ -150,7 +212,7 @@ export  class DatasetProcessing {
 		}
 	}
 
-	public isValidID(id: string, addedIds: string[]){
+	public isValidID(id: string, addedIds: string[]) {
 		if (id.includes("_") || addedIds.includes(id)) {
 			return false;
 		}
@@ -164,10 +226,9 @@ export  class DatasetProcessing {
 			const jsonString = fs.readFileSync(`data/${id}.json`);
 			dataset = JSON.parse(jsonString.toString());
 			return dataset;
-		} catch(err) {
+		} catch (err) {
 			throw new Error("Dataset does not exist");
 		}
 	}
 
 }
-

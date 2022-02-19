@@ -26,6 +26,10 @@ describe("InsightFacade", function () {
 	let rooms: string;
 	let noRoomsDirectory: string;
 	let test: string;
+	let simpleHTMLTable: string;
+	let playgroundHTML: string;
+	let indexText: string;
+	let noIndex: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -41,6 +45,10 @@ describe("InsightFacade", function () {
 		rooms = getContentFromArchives("rooms.zip");
 		noRoomsDirectory = getContentFromArchives("noRoomsDirectory.zip");
 		test = getContentFromArchives("test.zip");
+		simpleHTMLTable = getContentFromArchives("simpleIndexHTMLTable.zip");
+		playgroundHTML = getContentFromArchives("defaultPlaygroundHTML.zip");
+		indexText = getContentFromArchives("indexTextFileInsteadOfHTML.zip");
+		noIndex = getContentFromArchives("noIndex.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -217,6 +225,24 @@ describe("InsightFacade", function () {
 		it("should reject if rooms dataset has no rooms directory", async function () {
 			try {
 				await facade.addDataset("rooms", noRoomsDirectory, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should reject if rooms dataset contains index file that is not HTML", async function () {
+			try {
+				await facade.addDataset("rooms", indexText, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should reject if rooms dataset does not contain an INDEX.html file", async function () {
+			try {
+				await facade.addDataset("rooms", noIndex, InsightDatasetKind.Rooms);
 				expect.fail("Should have rejected!");
 			} catch (err) {
 				expect(err).to.be.an.instanceof(InsightError);
