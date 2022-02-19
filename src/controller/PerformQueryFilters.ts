@@ -131,6 +131,7 @@ export  class PerformQueryFilters {
 		}
 		return courseList;
 	}
+
 	private doEQ(filter: any, dataset: any[]){
 		let courseList: any[] = [];
 		let mField = Object.keys(filter)[0];
