@@ -23,6 +23,13 @@ describe("InsightFacade", function () {
 	let invalidAndValidJson: string;
 	let empty: string;
 	let course1SectionAVGGT98YearLT1985: string;
+	let rooms: string;
+	let noRoomsDirectory: string;
+	let test: string;
+	let simpleHTMLTable: string;
+	let playgroundHTML: string;
+	let indexText: string;
+	let noIndex: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -35,6 +42,13 @@ describe("InsightFacade", function () {
 		invalidAndValidJson = getContentFromArchives("invalidAndValidJSON.zip");
 		empty = getContentFromArchives("empty.zip");
 		course1SectionAVGGT98YearLT1985 = getContentFromArchives("courseWith1SectionAVGGT98YEARLT1985.zip");
+		rooms = getContentFromArchives("rooms.zip");
+		noRoomsDirectory = getContentFromArchives("noRoomsDirectory.zip");
+		test = getContentFromArchives("test.zip");
+		simpleHTMLTable = getContentFromArchives("simpleIndexHTMLTable.zip");
+		playgroundHTML = getContentFromArchives("defaultPlaygroundHTML.zip");
+		indexText = getContentFromArchives("indexTextFileInsteadOfHTML.zip");
+		noIndex = getContentFromArchives("noIndex.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -208,6 +222,38 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject if rooms dataset has no rooms directory", async function () {
+			try {
+				await facade.addDataset("rooms", noRoomsDirectory, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should reject if rooms dataset contains index file that is not HTML", async function () {
+			try {
+				await facade.addDataset("rooms", indexText, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should reject if rooms dataset does not contain an INDEX.html file", async function () {
+			try {
+				await facade.addDataset("rooms", noIndex, InsightDatasetKind.Rooms);
+				expect.fail("Should have rejected!");
+			} catch (err) {
+				expect(err).to.be.an.instanceof(InsightError);
+			}
+		});
+
+		it("should resolve if one valid rooms dataset is added and id is valid", async function () {
+			const addedIds = await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+			expect(addedIds).to.deep.equal(["rooms"]);
+		});
+
 	});
 
 	describe("removeDataset", function () {
@@ -261,6 +307,7 @@ describe("InsightFacade", function () {
 
 		});
 
+
 		it("should reject removal if ID is valid but has not yet been added", async function () {
 			try {
 				await facade.removeDataset("courses3");
@@ -289,7 +336,7 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries",
+			"./test/resources/queries/singleQuery",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";
