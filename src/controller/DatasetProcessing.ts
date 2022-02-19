@@ -55,71 +55,107 @@ export class DatasetProcessing {
 				if (indexHTMLFile === undefined) { // move this check outside of try catch
 					throw new Error("no rooms directory");
 				}
-
 				htmlTree = parse5.parse(indexHTMLFile);
-
 			} catch (err) {
 				throw new Error("The index indexHTML in a rooms dataset is either invalid HTML or does not exist.");
 			}
 
-			promises.push(this.parseRooms(processedDataset, htmlTree));
-
-
+			await this.parseRooms(htmlTree, zip);
 		}
 	}
 
-	private async parseRooms(processedDataset: any[], htmlTree: any) {
+	private async parseRooms(htmlTree: any, zip: JSZip) {
+		let result = [];
+		let buildingInfo: any[] = [];
+		let roomInfo: any[] = [];
 
-		this.getBuildings(htmlTree);
+		this.searchTree(htmlTree, buildingInfo);
+		for(let building of buildingInfo){
+			result.push(this.getRooms(building, zip, roomInfo));
+		}
+		await Promise.all(result);
+		// console.log(buildingInfo);
+		console.log(roomInfo);
 
 	}
 
-	private getBuildings(node: any) {
+	private async getRooms(building: any, zip: JSZip, buildOrRoomData: any){
+		// console.log(building.rooms_href);
+		let roomTree: any;
 
-		const obj: any = {};
+		const filePath = "rooms" + building[`${this.datasetID}_href`].substring(1);
+		let roomFile = await zip.file(filePath)?.async("string");
+		if (roomFile !== undefined) {
+			roomTree = parse5.parse(roomFile);
+		}
+
+		this.searchTree(roomTree, buildOrRoomData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
+
+	}
+
+	private searchTree(node: any, buildOrRoomData: any[] ) {
 
 		if (node.childNodes === undefined) {
 			return;
 		}
 
 		if (node.nodeName === "tr") {
-			this.parseTr(node);
+			this.parseTr(node, buildOrRoomData);
 			return;
 		}
 
 		let childNodeCount = node.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
-			this.getBuildings(node.childNodes[i]);
+			this.searchTree(node.childNodes[i], buildOrRoomData);
 		}
 	}
 
-	private parseTr(trNode: any) {
-		const obj: any = {};
+	private parseTr(trNode: any, buildOrRoomData: any[]) {
+		const roomObj: any = {};
 		let childNodeCount = trNode.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
 			if (trNode.childNodes[i].nodeName === "td") {
-				this.parseTd(trNode.childNodes[i], obj);
+				this.parseTd(trNode.childNodes[i], roomObj);
 			}
 		}
-
-		console.log(obj); // the first one is undefined because it's the building image which we're doing nothing for.
+		if(this.validateBuildInfo(roomObj)){
+			// console.log(roomObj);
+			buildOrRoomData.push(roomObj);
+		}
+		if(this.validateRoomInfo(roomObj)) {
+			buildOrRoomData.push(roomObj);
+		}
 	}
 
-	private parseTd(tdNode: any, obj: any) {
+	private validateRoomInfo (roomObj: any) {
+		let keysArr = Object.keys(roomObj);
+		if(!keysArr.includes(`${this.datasetID}_seats`)){ // The default value for this field (should this value be missing in the dataset) is 0.
+			roomObj[this.datasetID + "_seats"] = 0;
+		}
+		return (keysArr.includes(`${this.datasetID}_number`) && keysArr.includes(`${this.datasetID}_href`)
+			&& keysArr.includes(`${this.datasetID}_href`) && keysArr.includes(`${this.datasetID}_furniture`)
+			&& keysArr.includes(`${this.datasetID}_type`));
+	}
 
+	private validateBuildInfo (roomObj: any){
+		let keysArr = Object.keys(roomObj);
+		return (keysArr.includes(`${this.datasetID}_shortname`) && keysArr.includes(`${this.datasetID}_href`) &&
+		keysArr.includes(`${this.datasetID}_fullname`) && `${this.datasetID}_address`);
+	}
+
+
+	private parseTd(tdNode: any, obj: any) {
 		for (let attrbObj of tdNode.attrs) {
 			switch (attrbObj.value) {
-				case "views-field views-field-field-building-code":
-					for (let childNode of tdNode.childNodes) { // there's just 1 childnode and I think that will always be the case, don't think you can even put another html element inside the TDnode
-						obj[this.datasetID + "_shortname"] = childNode.value.trim(); // remove the /n and whitespaces
-					}
+				case "views-field views-field-field-building-code":// there's just 1 childnode and I think that will always be the case, don't think you can even put another html element inside the TDnode
+					obj[this.datasetID + "_shortname"] = tdNode.childNodes[0].value.trim(); // remove the /n and whitespaces
 					break;
 				case "views-field views-field-title":
 					for (let childNode of tdNode.childNodes) {
 						if (childNode.nodeName === "a") {
 							for (let attr of childNode.attrs) {
 								if (attr.name === "href") {
-									obj[this.datasetID + "_href"] = attr.value;
+									obj[this.datasetID + "_href"] = attr.value;  // this is the link for location of building in zip
 								}
 							}
 							for (let cn of childNode.childNodes) {
@@ -133,10 +169,29 @@ export class DatasetProcessing {
 						obj[this.datasetID + "_address"] = childNode.value.trim();
 					}
 					break;
-
+				case "views-field views-field-field-room-number":
+					for (let childNode of tdNode.childNodes) {
+						if(childNode.nodeName === "a") {
+							for (let attr of childNode.attrs) {
+								if (attr.name === "href") {
+									obj[this.datasetID + "_href"] = attr.value; // this is the href for full details of specific room
+								}
+							}
+							obj[this.datasetID + "_number"] = childNode.childNodes[0].value;
+						}
+					}
+					break;
+				case "views-field views-field-field-room-capacity":
+					obj[this.datasetID + "_seats"] = (Number)(tdNode.childNodes[0].value.trim()); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
+				case "views-field views-field-field-room-furniture":
+					obj[this.datasetID + "_furniture"] = tdNode.childNodes[0].value.trim(); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
+				case "views-field views-field-field-room-type":
+					obj[this.datasetID + "_type"] = tdNode.childNodes[0].value.trim(); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
 			}
 		}
-
 	}
 
 
