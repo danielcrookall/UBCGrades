@@ -6,9 +6,11 @@ import {InsightDatasetKind} from "./IInsightFacade";
 
 export class DatasetProcessing {
 	private dataDir;
+	private datasetID;
 
-	constructor() {
+	constructor(datasetID: string) {
 		this.dataDir = "./data/";
+		this.datasetID = datasetID;
 	}
 
 	public async getExistingDataSetIds(addedIds: string[]) {
@@ -37,46 +39,39 @@ export class DatasetProcessing {
 			}
 
 			zip.folder("courses")?.forEach(((relativePath, file) => {
-				promises.push(this.parseCourses(processedDataset, file, id));
+				promises.push(this.parseCourses(processedDataset, file));
 			}
 			));
 			await Promise.all(promises);
 			if (processedDataset.length === 0) {
 				throw new Error("A dataset needs at least one valid section overall.");
 			}
-			await this.writeDataSet(processedDataset, id);
+			await this.writeDataSet(processedDataset);
 		} else { // kind == rooms
 			let indexHTMLFile: any;
 			let htmlTree: any;
 			try {
 				indexHTMLFile = await zip.file("rooms/index.htm")?.async("string");
-				if (indexHTMLFile === null) { // move this check outside of try catch
+				if (indexHTMLFile === undefined) { // move this check outside of try catch
 					throw new Error("no rooms directory");
 				}
-				if (indexHTMLFile !== undefined) {
-					htmlTree = parse5.parse(indexHTMLFile);
-				}
+
+				htmlTree = parse5.parse(indexHTMLFile);
+
 			} catch (err) {
 				throw new Error("The index indexHTML in a rooms dataset is either invalid HTML or does not exist.");
 			}
 
-			promises.push(this.parseRooms(processedDataset, htmlTree, id));
+			promises.push(this.parseRooms(processedDataset, htmlTree));
 
 
 		}
 	}
 
-	private async parseRooms(processedDataset: any[], htmlTree: any, datasetId: any) {
+	private async parseRooms(processedDataset: any[], htmlTree: any) {
 
 		this.getBuildings(htmlTree);
 
-		// console.log(roomsTree.childNodes[1].nodeName);
-
-
-		// console.log(file);
-
-
-		// TODO
 	}
 
 	private getBuildings(node: any) {
@@ -87,45 +82,9 @@ export class DatasetProcessing {
 			return;
 		}
 
-		// if (node.nodeName === "tr") {
-		// 	this.parseTD(node);
-		// }
-
-		if (node.nodeName === "td") { // maybe instead check once you reach a child ndoe if parent is of type TD then you can check parent value attribute and see if it matches, would prevent having to iterate over child nodes here
-			for (let attrbObj of node.attrs) {
-				if (attrbObj.value === "views-field views-field-field-building-code") {
-					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
-						// feels like unecessary iteration through the nodes since we're bound to traverse them all but you can't tell soley off node alone if you need the values? Need the td
-						console.log(childNode.value);
-
-						obj["rooms_shortname"] = childNode.value;
-					}
-				}
-
-				if (attrbObj.value === "views-field views-field-title") {
-					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
-						if (childNode.nodeName === "a") {
-							for (let attr of childNode.attrs) {
-								if (attr.name === "href") {
-									console.log(attr.value);
-								}
-							}
-							for (let cn of childNode.childNodes) {
-								console.log(cn.value);
-							}
-						}
-
-					}
-				}
-
-				if (attrbObj.value === "views-field views-field-field-building-address") {
-					for (let childNode of node.childNodes) { // is this guaranteed to be the values we need?
-						console.log(childNode.value);
-						obj["rooms_address"] = childNode.value;
-					}
-				}
-
-			}
+		if (node.nodeName === "tr") {
+			this.parseTr(node);
+			return;
 		}
 
 		let childNodeCount = node.childNodes.length;
@@ -134,8 +93,54 @@ export class DatasetProcessing {
 		}
 	}
 
+	private parseTr(trNode: any) {
+		const obj: any = {};
+		let childNodeCount = trNode.childNodes.length;
+		for (let i = 0; i < childNodeCount; i++) {
+			if (trNode.childNodes[i].nodeName === "td") {
+				this.parseTd(trNode.childNodes[i], obj);
+			}
+		}
 
-	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject, datasetId: any) {
+		console.log(obj); // the first one is undefined because it's the building image which we're doing nothing for.
+	}
+
+	private parseTd(tdNode: any, obj: any) {
+
+		for (let attrbObj of tdNode.attrs) {
+			switch (attrbObj.value) {
+				case "views-field views-field-field-building-code":
+					for (let childNode of tdNode.childNodes) { // there's just 1 childnode and I think that will always be the case, don't think you can even put another html element inside the TDnode
+						obj[this.datasetID + "_shortname"] = childNode.value.trim(); // remove the /n and whitespaces
+					}
+					break;
+				case "views-field views-field-title":
+					for (let childNode of tdNode.childNodes) {
+						if (childNode.nodeName === "a") {
+							for (let attr of childNode.attrs) {
+								if (attr.name === "href") {
+									obj[this.datasetID + "_href"] = attr.value;
+								}
+							}
+							for (let cn of childNode.childNodes) {
+								obj[this.datasetID + "_fullname"] = cn.value;
+							}
+						}
+					}
+					break;
+				case "views-field views-field-field-building-address":
+					for (let childNode of tdNode.childNodes) {
+						obj[this.datasetID + "_address"] = childNode.value.trim();
+					}
+					break;
+
+			}
+		}
+
+	}
+
+
+	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
 		if (!this.isValidJSON(resultsArr)) {
 			return; // the entire file is invalid, move onto next course in the for each loop.
@@ -145,20 +150,20 @@ export class DatasetProcessing {
 		for (let object of arrSections) {
 
 			const jsonSection = {
-				[datasetId + "_avg"]: object.Avg,
-				[datasetId + "_pass"]: object.Pass,
-				[datasetId + "_fail"]: object.Fail,
-				[datasetId + "_audit"]: object.Audit,
-				[datasetId + "_year"]: Number(object.Year),
-				[datasetId + "_dept"]: object.Subject,
-				[datasetId + "_id"]: object.Course,
-				[datasetId + "_instructor"]: object.Professor,
-				[datasetId + "_title"]: object.Title,
-				[datasetId + "_uuid"]: object["id"].toString(10),
+				[this.datasetID + "_avg"]: object.Avg,
+				[this.datasetID + "_pass"]: object.Pass,
+				[this.datasetID + "_fail"]: object.Fail,
+				[this.datasetID + "_audit"]: object.Audit,
+				[this.datasetID + "_year"]: Number(object.Year),
+				[this.datasetID + "_dept"]: object.Subject,
+				[this.datasetID + "_id"]: object.Course,
+				[this.datasetID + "_instructor"]: object.Professor,
+				[this.datasetID + "_title"]: object.Title,
+				[this.datasetID + "_uuid"]: object["id"].toString(10),
 			};
 
 			if (object.Section === "overall") {
-				jsonSection[datasetId + "_year"] = 1900;
+				jsonSection[this.datasetID + "_year"] = 1900;
 			}
 
 			let sectionValues = Object.values(jsonSection);
@@ -168,7 +173,7 @@ export class DatasetProcessing {
 		}
 	}
 
-	private async writeDataSet(processedDataset: any, id: string) {
+	private async writeDataSet(processedDataset: any) {
 		try {
 			if (!fs.existsSync(this.dataDir)) {
 				await fs.mkdir(this.dataDir);
@@ -178,7 +183,7 @@ export class DatasetProcessing {
 		}
 		let object = JSON.stringify(processedDataset, null, 4);
 		try {
-			await fs.writeFile(this.dataDir + id + ".json", object);
+			await fs.writeFile(this.dataDir + this.datasetID + ".json", object);
 		} catch (err) {
 			console.log("Failed to write to directory");
 		}
@@ -212,18 +217,18 @@ export class DatasetProcessing {
 		}
 	}
 
-	public isValidID(id: string, addedIds: string[]) {
-		if (id.includes("_") || addedIds.includes(id)) {
+	public isValidID(addedIds: string[]) {
+		if (this.datasetID.includes("_") || addedIds.includes(this.datasetID)) {
 			return false;
 		}
-		return id.replace(/\s/g, "").length; // removes all whitespace in string
+		return this.datasetID.replace(/\s/g, "").length; // removes all whitespace in string
 		// then checks length. if 0, the string was all whitespace and we return false
 	}
 
-	public loadDataset(id: string) {
+	public loadDataset() {
 		let dataset;
 		try {
-			const jsonString = fs.readFileSync(`data/${id}.json`);
+			const jsonString = fs.readFileSync(`data/${this.datasetID}.json`);
 			dataset = JSON.parse(jsonString.toString());
 			return dataset;
 		} catch (err) {

@@ -26,10 +26,10 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		let dataProcessing = new DatasetProcessing();
+		let dataProcessing = new DatasetProcessing(id);
 		let addedIds: string[] = [];
 		await dataProcessing.getExistingDataSetIds(addedIds);
-		if(!dataProcessing.isValidID(id,addedIds)) { // reject if invalid ID or same as previously added
+		if(!dataProcessing.isValidID(addedIds)) { // reject if invalid ID or same as previously added
 			return Promise.reject(new InsightError());
 		}
 		const isZip = await dataProcessing.isZip(content);
@@ -49,9 +49,9 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		let dataProcessing = new DatasetProcessing();
+		let dataProcessing = new DatasetProcessing(id);
 		let addedIds: string[] = [];
-		if(!dataProcessing.isValidID(id, addedIds)){
+		if(!dataProcessing.isValidID(addedIds)){
 			return Promise.reject(new InsightError()); // invalid id
 		}
 		await dataProcessing.getExistingDataSetIds(addedIds);
@@ -74,7 +74,7 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		let performQuery = new PerformQueryFilters();
-		let dataProcessor = new DatasetProcessing();
+
 		let dataset: any[];
 		let queryObject = performQuery.getQueryObject(query);
 		let filter = queryObject.WHERE;
@@ -89,7 +89,8 @@ export default class InsightFacade implements IInsightFacade {
 			parser.validateColumns(options.COLUMNS);
 			parser.validateOrder(options.ORDER, options.COLUMNS);
 
-			dataset = dataProcessor.loadDataset(parser.datasetID);
+			let dataProcessor = new DatasetProcessing(parser.datasetID);
+			dataset = dataProcessor.loadDataset();
 		} catch (err: any){
 			// console.error(err.message);
 			return Promise.reject(new InsightError());
@@ -120,14 +121,14 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
-		let dataProcessor = new DatasetProcessing();
 		let currentlyAddedDatasets = [];
 		if (fs.existsSync(this.dataDir)) {
 			const dir = await fs.promises.opendir(this.dataDir);
 			for await (const file of dir) {
 				let filename = file.name;
 				let id = path.parse(filename).name;
-				const numRows = dataProcessor.loadDataset(id).length;
+				let dataProcessor = new DatasetProcessing(id);
+				const numRows = dataProcessor.loadDataset().length;
 				const datasetInfo = {
 					id: id,
 					kind: InsightDatasetKind.Courses,
