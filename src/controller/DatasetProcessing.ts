@@ -3,14 +3,18 @@ import path from "path";
 import JSZip from "jszip";
 import parse5 from "parse5";
 import {InsightDatasetKind} from "./IInsightFacade";
+import {DatasetValidation} from "./DatasetValidation";
+import * as http from "http";
 
 export class DatasetProcessing {
 	private dataDir;
 	private datasetID;
+	private validator;
 
 	constructor(datasetID: string) {
 		this.dataDir = "./data/";
 		this.datasetID = datasetID;
+		this.validator = new DatasetValidation(this.datasetID);
 	}
 
 	public async getExistingDataSetIds(addedIds: string[]) {
@@ -69,7 +73,7 @@ export class DatasetProcessing {
 		let buildingInfo: any[] = [];
 		let roomInfo: any[] = [];
 
-		this.searchTree(htmlTree, buildingInfo);
+		this.searchTree(htmlTree, buildingInfo,null);  // have no buildData info , maybe shouldn't be null though
 		for(let building of buildingInfo){
 			result.push(this.getRooms(building, zip, roomInfo));
 		}
@@ -79,38 +83,38 @@ export class DatasetProcessing {
 
 	}
 
-	private async getRooms(building: any, zip: JSZip, buildOrRoomData: any){
+	private async getRooms(buildData: any, zip: JSZip, buildOrRoomData: any){
 		// console.log(building.rooms_href);
 		let roomTree: any;
 
-		const filePath = "rooms" + building[`${this.datasetID}_href`].substring(1);
+		const filePath = "rooms" + buildData[`${this.datasetID}_fileHref`].substring(1);
 		let roomFile = await zip.file(filePath)?.async("string");
 		if (roomFile !== undefined) {
 			roomTree = parse5.parse(roomFile);
 		}
 
-		this.searchTree(roomTree, buildOrRoomData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
+		this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
 
 	}
 
-	private searchTree(node: any, buildOrRoomData: any[] ) {
+	private searchTree(node: any, buildOrRoomData: any[], buildData: any ) {
 
 		if (node.childNodes === undefined) {
 			return;
 		}
 
 		if (node.nodeName === "tr") {
-			this.parseTr(node, buildOrRoomData);
+			this.parseTr(node, buildOrRoomData, buildData);
 			return;
 		}
 
 		let childNodeCount = node.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
-			this.searchTree(node.childNodes[i], buildOrRoomData);
+			this.searchTree(node.childNodes[i], buildOrRoomData, buildData);
 		}
 	}
 
-	private parseTr(trNode: any, buildOrRoomData: any[]) {
+	private parseTr(trNode: any, buildOrRoomData: any[], buildData: any) {
 		const roomObj: any = {};
 		let childNodeCount = trNode.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
@@ -118,29 +122,44 @@ export class DatasetProcessing {
 				this.parseTd(trNode.childNodes[i], roomObj);
 			}
 		}
-		if(this.validateBuildInfo(roomObj)){
-			// console.log(roomObj);
+		if(this.validator.validateBuildInfo(roomObj)){
+			const geolocation: any = this.getGeolocation(roomObj[this.datasetID + "_address"]);
+			roomObj[this.datasetID + "_lat"] = geolocation["lat"];
+			roomObj[this.datasetID + "_lon"] = geolocation["lon"];
 			buildOrRoomData.push(roomObj);
-		}
-		if(this.validateRoomInfo(roomObj)) {
-			buildOrRoomData.push(roomObj);
+		} else {
+			if (this.validator.validateRoomInfo(roomObj)) {
+				let merged = {...roomObj, ...buildData};// merge room info with building info
+				merged[this.datasetID + "_name"] = merged[`${this.datasetID}_shortname`]
+					+ "_" + merged[`${this.datasetID}_number`];
+				delete merged[this.datasetID + "_fileHref"]; // don't need fileHref, just room href in final object, but can always add back in here if necessary
+				buildOrRoomData.push(merged);
+			}
 		}
 	}
 
-	private validateRoomInfo (roomObj: any) {
-		let keysArr = Object.keys(roomObj);
-		if(!keysArr.includes(`${this.datasetID}_seats`)){ // The default value for this field (should this value be missing in the dataset) is 0.
-			roomObj[this.datasetID + "_seats"] = 0;
-		}
-		return (keysArr.includes(`${this.datasetID}_number`) && keysArr.includes(`${this.datasetID}_href`)
-			&& keysArr.includes(`${this.datasetID}_href`) && keysArr.includes(`${this.datasetID}_furniture`)
-			&& keysArr.includes(`${this.datasetID}_type`));
-	}
+	private getGeolocation(address: any){
+		return new Promise((resolve, reject) => {
+			let encodedAddress = encodeURI(address);
+			let url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team565/${encodedAddress}`;
 
-	private validateBuildInfo (roomObj: any){
-		let keysArr = Object.keys(roomObj);
-		return (keysArr.includes(`${this.datasetID}_shortname`) && keysArr.includes(`${this.datasetID}_href`) &&
-		keysArr.includes(`${this.datasetID}_fullname`) && `${this.datasetID}_address`);
+			http.get(url, (res) => {
+				let data = "";
+				res.on("data", (chunk) => {
+					data += chunk;
+				});
+
+				res.on("end", () => {
+					Promise.resolve(JSON.parse(data));
+					console.log("done");
+				});
+
+			}).on("error", (err) => {
+				console.error("Error: " + err.message);
+			});
+
+		});
+
 	}
 
 
@@ -155,7 +174,7 @@ export class DatasetProcessing {
 						if (childNode.nodeName === "a") {
 							for (let attr of childNode.attrs) {
 								if (attr.name === "href") {
-									obj[this.datasetID + "_href"] = attr.value;  // this is the link for location of building in zip
+									obj[this.datasetID + "_fileHref"] = attr.value;  // this is the link for location of building in zip
 								}
 							}
 							for (let cn of childNode.childNodes) {
@@ -194,10 +213,9 @@ export class DatasetProcessing {
 		}
 	}
 
-
 	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
-		if (!this.isValidJSON(resultsArr)) {
+		if (!this.validator.isValidJSON(resultsArr)) {
 			return; // the entire file is invalid, move onto next course in the for each loop.
 		}
 		let courseObject = JSON.parse(resultsArr);
@@ -222,7 +240,7 @@ export class DatasetProcessing {
 			}
 
 			let sectionValues = Object.values(jsonSection);
-			if (!this.isMissingAttribute(sectionValues)) {
+			if (!this.validator.isMissingAttribute(sectionValues)) {
 				processedDataset.push(jsonSection);
 			}
 		}
@@ -244,42 +262,6 @@ export class DatasetProcessing {
 		}
 	}
 
-	private isMissingAttribute(sectionValues: any[]) {
-		for (let value of sectionValues) {
-			if (value === undefined) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private isValidJSON(resultArr: string) {
-		try {
-			JSON.parse(resultArr);
-		} catch (e) {
-			return false;
-		}
-		return true;
-	}
-
-	public async isZip(content: string) {
-		let newZip = new JSZip();
-		try {
-			await newZip.loadAsync(content, {base64: true});
-			return true;
-		} catch (err) {
-			return false;
-		}
-	}
-
-	public isValidID(addedIds: string[]) {
-		if (this.datasetID.includes("_") || addedIds.includes(this.datasetID)) {
-			return false;
-		}
-		return this.datasetID.replace(/\s/g, "").length; // removes all whitespace in string
-		// then checks length. if 0, the string was all whitespace and we return false
-	}
-
 	public loadDataset() {
 		let dataset;
 		try {
@@ -290,5 +272,4 @@ export class DatasetProcessing {
 			throw new Error("Dataset does not exist");
 		}
 	}
-
 }

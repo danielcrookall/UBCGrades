@@ -11,6 +11,7 @@ import path from "path";
 import {DatasetProcessing} from "./DatasetProcessing";
 import {PerformQueryFilters} from "./PerformQueryFilters";
 import {QueryValidator} from "./QueryValidator";
+import {DatasetValidation} from "./DatasetValidation";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -20,19 +21,19 @@ import {QueryValidator} from "./QueryValidator";
 
 export default class InsightFacade implements IInsightFacade {
 	private dataDir = "./data/";
-
 	constructor() {
 		let a = 5;
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		let dataProcessing = new DatasetProcessing(id);
+		let validator = new DatasetValidation(id);
 		let addedIds: string[] = [];
 		await dataProcessing.getExistingDataSetIds(addedIds);
-		if(!dataProcessing.isValidID(addedIds)) { // reject if invalid ID or same as previously added
+		if(!validator.isValidID(addedIds)) { // reject if invalid ID or same as previously added
 			return Promise.reject(new InsightError());
 		}
-		const isZip = await dataProcessing.isZip(content);
+		const isZip = await validator.isZip(content);
 		if(!isZip){
 			console.error("Not a zip file.");
 			return Promise.reject(new InsightError());
@@ -50,8 +51,9 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async removeDataset(id: string): Promise<string> {
 		let dataProcessing = new DatasetProcessing(id);
+		let validator = new DatasetValidation(id);
 		let addedIds: string[] = [];
-		if(!dataProcessing.isValidID(addedIds)){
+		if(!validator.isValidID(addedIds)){
 			return Promise.reject(new InsightError()); // invalid id
 		}
 		await dataProcessing.getExistingDataSetIds(addedIds);
