@@ -30,6 +30,8 @@ describe("InsightFacade", function () {
 	let playgroundHTML: string;
 	let indexText: string;
 	let noIndex: string;
+	let roomDatasetWithNoBuildingFiles: string;
+	let roomsWithInvalidHREF: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -49,6 +51,8 @@ describe("InsightFacade", function () {
 		playgroundHTML = getContentFromArchives("defaultPlaygroundHTML.zip");
 		indexText = getContentFromArchives("indexTextFileInsteadOfHTML.zip");
 		noIndex = getContentFromArchives("noIndex.zip");
+		roomDatasetWithNoBuildingFiles = getContentFromArchives("roomDatasetWithNoBuildingFiles.zip");
+		roomsWithInvalidHREF = getContentFromArchives("roomsWhereBUCHisNotInsideSpecifiedHREFPATH.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -69,7 +73,7 @@ describe("InsightFacade", function () {
 
 		});
 
-		it("should list one dataset", function () {
+		it("should list one courses dataset", function () {
 
 			return facade.addDataset("courses", courses, InsightDatasetKind.Courses)
 				.then((addedIDs) => facade.listDatasets())
@@ -78,6 +82,20 @@ describe("InsightFacade", function () {
 						id: "courses",
 						kind: InsightDatasetKind.Courses,
 						numRows: 64612,
+					}]);
+
+				});
+		});
+
+		it("should list one rooms dataset", function () {
+
+			return facade.addDataset("roomsXL", rooms, InsightDatasetKind.Rooms)
+				.then((addedIDs) => facade.listDatasets())
+				.then((insightDatasets) => {
+					expect(insightDatasets).to.deep.equal([{
+						id: "roomsXL",
+						kind: InsightDatasetKind.Rooms,
+						numRows: 364,
 					}]);
 
 				});
@@ -249,9 +267,25 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject if rooms dataset does not contain any rooms (because there are no building files)",
+			async function () {
+				try {
+					await facade.addDataset("noRooms", roomDatasetWithNoBuildingFiles, InsightDatasetKind.Rooms);
+					expect.fail("Should have rejected!");
+				} catch (err) {
+					expect(err).to.be.an.instanceof(InsightError);
+				}
+			});
+
+
 		it("should resolve if one valid rooms dataset is added and id is valid", async function () {
 			const addedIds = await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 			expect(addedIds).to.deep.equal(["rooms"]);
+		});
+
+		it("should resolve if an index.htm building href doesn't exist at specified path (buch)", async function () {
+			const addedIds = await facade.addDataset("rooms3", roomsWithInvalidHREF, InsightDatasetKind.Rooms);
+			expect(addedIds).to.deep.equal(["rooms3"]);
 		});
 
 	});

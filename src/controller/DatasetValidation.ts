@@ -11,11 +11,8 @@ export class DatasetValidation {
 
 	public validateRoomInfo (roomObj: any) {
 		let keysArr = Object.keys(roomObj);
-		if(!keysArr.includes(`${this.datasetID}_seats`)){ // The default value for this field (should this value be missing in the dataset) is 0.
-			roomObj[this.datasetID + "_seats"] = 0;
-		}
 		return (keysArr.includes(`${this.datasetID}_number`) && keysArr.includes(`${this.datasetID}_href`)
-			&& keysArr.includes(`${this.datasetID}_href`) && keysArr.includes(`${this.datasetID}_furniture`)
+			&& keysArr.includes(`${this.datasetID}_furniture`) && keysArr.includes(`${this.datasetID}_seats`)
 			&& keysArr.includes(`${this.datasetID}_type`));
 	}
 

@@ -47,10 +47,6 @@ export class DatasetProcessing {
 			}
 			));
 			await Promise.all(promises);
-			if (processedDataset.length === 0) {
-				throw new Error("A dataset needs at least one valid section overall.");
-			}
-			await this.writeDataSet(processedDataset);
 		} else { // kind == rooms
 			let indexHTMLFile: any;
 			let htmlTree: any;
@@ -64,22 +60,32 @@ export class DatasetProcessing {
 				throw new Error("The index indexHTML in a rooms dataset is either invalid HTML or does not exist.");
 			}
 
-			await this.parseRooms(htmlTree, zip);
+			processedDataset = await this.parseRooms(htmlTree, zip);
 		}
+		if (processedDataset.length === 0) {
+			throw new Error("A dataset needs at least one valid section overall.");
+		}
+		await this.writeDataSet(processedDataset);
 	}
 
 	private async parseRooms(htmlTree: any, zip: JSZip) {
-		let result = [];
+		let roomsNoGeolocation = [];
+		let parsedRooms = [];
 		let buildingInfo: any[] = [];
 		let roomInfo: any[] = [];
 
 		this.searchTree(htmlTree, buildingInfo,null);  // have no buildData info , maybe shouldn't be null though
 		for(let building of buildingInfo){
-			result.push(this.getRooms(building, zip, roomInfo));
+			roomsNoGeolocation.push(this.getRooms(building, zip, roomInfo));
 		}
-		await Promise.all(result);
+		await Promise.all(roomsNoGeolocation);
+
+		for(let room of roomInfo){
+			parsedRooms.push(this.getGeolocation(room[this.datasetID + "_address"], room));
+		}
 		// console.log(buildingInfo);
-		console.log(roomInfo);
+		await Promise.all(parsedRooms);
+		return roomInfo;
 
 	}
 
@@ -91,10 +97,8 @@ export class DatasetProcessing {
 		let roomFile = await zip.file(filePath)?.async("string");
 		if (roomFile !== undefined) {
 			roomTree = parse5.parse(roomFile);
+			this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
 		}
-
-		this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
-
 	}
 
 	private searchTree(node: any, buildOrRoomData: any[], buildData: any ) {
@@ -123,12 +127,15 @@ export class DatasetProcessing {
 			}
 		}
 		if(this.validator.validateBuildInfo(roomObj)){
-			const geolocation: any = this.getGeolocation(roomObj[this.datasetID + "_address"]);
-			roomObj[this.datasetID + "_lat"] = geolocation["lat"];
-			roomObj[this.datasetID + "_lon"] = geolocation["lon"];
+			// const geolocation: any = this.getGeolocation(roomObj[this.datasetID + "_address"]).;
+			// roomObj[this.datasetID + "_lat"] = geolocation["lat"];
+			// roomObj[this.datasetID + "_lon"] = geolocation["lon"];
 			buildOrRoomData.push(roomObj);
 		} else {
 			if (this.validator.validateRoomInfo(roomObj)) {
+				if(roomObj[`${this.datasetID}_seats`] === ""){  // The default value for this field (should this value be missing in the dataset) is 0.
+					roomObj[`${this.datasetID}_seats`] = 0;
+				}
 				let merged = {...roomObj, ...buildData};// merge room info with building info
 				merged[this.datasetID + "_name"] = merged[`${this.datasetID}_shortname`]
 					+ "_" + merged[`${this.datasetID}_number`];
@@ -138,8 +145,8 @@ export class DatasetProcessing {
 		}
 	}
 
-	private getGeolocation(address: any){
-		return new Promise((resolve, reject) => {
+	private getGeolocation(address: any, room: any){
+		return new Promise<void>((resolve, reject) => {
 			let encodedAddress = encodeURI(address);
 			let url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team565/${encodedAddress}`;
 
@@ -150,12 +157,14 @@ export class DatasetProcessing {
 				});
 
 				res.on("end", () => {
-					Promise.resolve(JSON.parse(data));
-					console.log("done");
+					let dataObj = JSON.parse(data);
+					room[this.datasetID + "_lat"] = dataObj["lat"];
+					room[this.datasetID + "_lon"] = dataObj["lon"];
+					return resolve();
 				});
 
 			}).on("error", (err) => {
-				console.error("Error: " + err.message);
+				console.error("Error: in get request " + err.message);
 			});
 
 		});

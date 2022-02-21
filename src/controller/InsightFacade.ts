@@ -130,10 +130,17 @@ export default class InsightFacade implements IInsightFacade {
 				let filename = file.name;
 				let id = path.parse(filename).name;
 				let dataProcessor = new DatasetProcessing(id);
-				const numRows = dataProcessor.loadDataset().length;
+				const dataset = dataProcessor.loadDataset();
+				const numRows = dataset.length;
+				let datasetKind;
+				if(Object.keys(dataset[0]).includes(`${id}_href`)){
+					datasetKind = InsightDatasetKind.Rooms;
+				} else {
+					datasetKind = InsightDatasetKind.Courses;
+				}
 				const datasetInfo = {
 					id: id,
-					kind: InsightDatasetKind.Courses,
+					kind: datasetKind,
 					numRows: numRows
 				};
 				currentlyAddedDatasets.push(datasetInfo);
