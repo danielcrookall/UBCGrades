@@ -309,6 +309,16 @@ describe("InsightFacade", function () {
 			expect(addedDatasets).to.have.length(0);
 		});
 
+		it("should fulfill upon a successful removal of one room dataset", async function () {
+			await facade.addDataset("rooms500", rooms, InsightDatasetKind.Rooms);
+			const removedId = await facade.removeDataset("rooms500");
+			expect(removedId).to.be.a("string");
+			expect(removedId).to.deep.equal("rooms500");
+			const addedDatasets = await facade.listDatasets();
+			expect(addedDatasets).to.be.an.instanceof(Array);
+			expect(addedDatasets).to.have.length(0);
+		});
+
 		it("should fulfill upon a successful removal of one dataset when 2 datasets have been added",
 			async function () {
 				await facade.addDataset("courses", courses, InsightDatasetKind.Courses);

@@ -69,21 +69,14 @@ export class DatasetProcessing {
 	}
 
 	private async parseRooms(htmlTree: any, zip: JSZip) {
-		let roomsNoGeolocation = [];
 		let parsedRooms = [];
 		let buildingInfo: any[] = [];
 		let roomInfo: any[] = [];
 
-		this.searchTree(htmlTree, buildingInfo,null);  // have no buildData info , maybe shouldn't be null though
+		await this.searchTree(htmlTree, buildingInfo, null);  // have no buildData info , maybe shouldn't be null though
 		for(let building of buildingInfo){
-			roomsNoGeolocation.push(this.getRooms(building, zip, roomInfo));
+			parsedRooms.push(this.getRooms(building, zip, roomInfo));
 		}
-		await Promise.all(roomsNoGeolocation);
-
-		for(let room of roomInfo){
-			parsedRooms.push(this.getGeolocation(room[this.datasetID + "_address"], room));
-		}
-		// console.log(buildingInfo);
 		await Promise.all(parsedRooms);
 		return roomInfo;
 
@@ -97,25 +90,27 @@ export class DatasetProcessing {
 		let roomFile = await zip.file(filePath)?.async("string");
 		if (roomFile !== undefined) {
 			roomTree = parse5.parse(roomFile);
-			this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
+			await this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
 		}
 	}
 
-	private searchTree(node: any, buildOrRoomData: any[], buildData: any ) {
+	private async searchTree(node: any, buildOrRoomData: any[], buildData: any ) {
+		let promises = [];
 
 		if (node.childNodes === undefined) {
 			return;
 		}
 
 		if (node.nodeName === "tr") {
-			this.parseTr(node, buildOrRoomData, buildData);
+			await this.parseTr(node, buildOrRoomData, buildData);
 			return;
 		}
 
 		let childNodeCount = node.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
-			this.searchTree(node.childNodes[i], buildOrRoomData, buildData);
+			promises.push(this.searchTree(node.childNodes[i], buildOrRoomData, buildData));
 		}
+		await Promise.all(promises);
 	}
 
 	private parseTr(trNode: any, buildOrRoomData: any[], buildData: any) {
@@ -127,10 +122,14 @@ export class DatasetProcessing {
 			}
 		}
 		if(this.validator.validateBuildInfo(roomObj)){
-			// const geolocation: any = this.getGeolocation(roomObj[this.datasetID + "_address"]).;
-			// roomObj[this.datasetID + "_lat"] = geolocation["lat"];
-			// roomObj[this.datasetID + "_lon"] = geolocation["lon"];
-			buildOrRoomData.push(roomObj);
+			return this.getGeolocation(roomObj[this.datasetID + "_address"]).then((geolocation: any)=> {
+
+				if(geolocation["error"] === undefined) { // API request completed successfully, building should be added
+					roomObj[this.datasetID + "_lat"] = geolocation["lat"];
+					roomObj[this.datasetID + "_lon"] = geolocation["lon"];
+					buildOrRoomData.push(roomObj);
+				}
+			});
 		} else {
 			if (this.validator.validateRoomInfo(roomObj)) {
 				if(roomObj[`${this.datasetID}_seats`] === ""){  // The default value for this field (should this value be missing in the dataset) is 0.
@@ -145,8 +144,8 @@ export class DatasetProcessing {
 		}
 	}
 
-	private getGeolocation(address: any, room: any){
-		return new Promise<void>((resolve, reject) => {
+	private getGeolocation(address: any){
+		return new Promise((resolve, reject) => {
 			let encodedAddress = encodeURI(address);
 			let url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team565/${encodedAddress}`;
 
@@ -157,20 +156,16 @@ export class DatasetProcessing {
 				});
 
 				res.on("end", () => {
-					let dataObj = JSON.parse(data);
-					room[this.datasetID + "_lat"] = dataObj["lat"];
-					room[this.datasetID + "_lon"] = dataObj["lon"];
-					return resolve();
+					return resolve(JSON.parse(data));
 				});
 
 			}).on("error", (err) => {
-				console.error("Error: in get request " + err.message);
+				console.error("Error in get geolocation request: " + err.message);
 			});
 
 		});
 
 	}
-
 
 	private parseTd(tdNode: any, obj: any) {
 		for (let attrbObj of tdNode.attrs) {
