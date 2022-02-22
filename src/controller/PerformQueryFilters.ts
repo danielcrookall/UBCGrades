@@ -10,23 +10,28 @@ export  class PerformQueryFilters {
 
 	public performFilter(filter: any, dataset: any[]){
 		let filterKey = Object.keys(filter);
-		switch(filterKey[0]) {
-			case "IS":
-				return this.doIS(filter.IS, dataset);
-			case "LT":
-				return this.doLT(filter.LT, dataset);
-			case "GT":
-				return this.doGT(filter.GT,dataset);
-			case "EQ":
-				return this.doEQ(filter.EQ,dataset);
-			case "NOT":
-				return this.doNOT(filter.NOT,dataset);
-			case "AND":
-				return this.doAND(filter.AND,dataset);
-			case "OR":
-				return this.doOR(filter.OR,dataset);
-			default:
-				throw new Error("Illegal filter key");
+		if(filterKey.length === 0) { // empty where clause
+			return dataset;
+		} else {
+			switch (filterKey[0]) {
+				case "IS":
+					return this.doIS(filter.IS, dataset);
+				case "LT":
+					return this.doLT(filter.LT, dataset);
+				case "GT":
+					return this.doGT(filter.GT, dataset);
+				case "EQ":
+					return this.doEQ(filter.EQ, dataset);
+				case "NOT":
+					return this.doNOT(filter.NOT, dataset);
+				case "AND":
+					return this.doAND(filter.AND, dataset);
+				case "OR":
+					return this.doOR(filter.OR, dataset);
+				default:
+					throw new Error("Illegal filter key");
+			}
+
 		}
 	}
 
@@ -48,23 +53,55 @@ export  class PerformQueryFilters {
 
 	public performOrder(options: any, dataset: any){
 		let orderKey = options.ORDER;
-		dataset.sort((a: any, b: any) => {
-			let valA = a[orderKey];
-			let valB = b[orderKey];
-			if (valA < valB) {
-				return -1;
+		if(typeof orderKey === "object"){
+			this.performSort(options,dataset);
+		} else {
+			if (orderKey !== undefined) { // using old sort where order isn't an object
+				dataset.sort(this.fieldSorter([orderKey]));
 			}
-			if (valA > valB) {
-				return 1;
-			}
-			return 0;
-
-		});
+		}
 
 		return dataset;
-
-
 	}
+
+	public performSort(options: any, dataset: any){
+		let dir = options.ORDER.dir;
+		let keys = options.ORDER.keys; // an array of keys, 1 or more. IN CASE OF ANYKEY, you can just SPECIFY 1 and not put it in array I THINK (That's the or statement at end of sort in EBNF)
+		if(dir === "DOWN") {
+			keys = keys.map((key: any) => (
+				"_" + key  // can't put a negative sign in front as a flag because anykey may contain one, which would cause incorrect sorting order.
+				// underscore isn't allowed in any of the keys and at this point query is validated, so it should be fine.
+			));
+		}
+		console.log(keys);
+		dataset.sort(this.fieldSorter(keys));
+	}
+
+	public fieldSorter(keys: any[]) {
+		return function (a: any, b: any) {
+			return keys
+				.map(function (object) {
+					let dir = 1;
+					if (object[0] === "_") {
+						dir = -1;
+						object = object.substring(1);
+					}
+					if (a[object] > b[object]) {
+						return dir;
+					}
+					if (a[object] < b[object]) {
+						return -(dir);
+					}
+					return 0;
+				})
+				.reduce(function firstNonZeroValue (previous,current) { // at this point you have an array of 1, 0s or -1 according to each filter
+					// passed in ie, pass in [year,instructor] after comparing object[year] on 2 objects, then object [instructor] on the same 2 objects
+					// it's only when there's a tie in the first field that you want to consult ordering of 2nd (that's why we want the first non-zero value)
+					return previous ? previous : current;
+				}, 0);
+		};
+	}
+
 
 	// Take an isObj with format {skey: inputstring} and return list of all course sections
 	// where the sfield of the skey matches inputstring (no wild cards atm).

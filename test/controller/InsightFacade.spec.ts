@@ -101,6 +101,28 @@ describe("InsightFacade", function () {
 				});
 		});
 
+		it("should list rooms dataset and courses dataset", async function () {
+			await facade.addDataset("roomsXL", rooms, InsightDatasetKind.Rooms);
+			await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+			let datasets = await facade.listDatasets();
+			const roomDataset = datasets.find((dataset) => dataset.id === "roomsXL");
+			expect(roomDataset).to.exist;
+			expect(roomDataset).to.deep.equal({
+				id: "roomsXL",
+				kind: InsightDatasetKind.Rooms,
+				numRows: 364,
+			});
+			const coursesDataset = datasets.find((dataset) => dataset.id === "courses");
+			expect(coursesDataset).to.exist;
+			expect(coursesDataset).to.deep.equal({
+				id: "courses",
+				kind: InsightDatasetKind.Courses,
+				numRows: 64612,
+			});
+		}
+		);
+
+
 		it("should list multiple datasets", function () {
 			return facade.addDataset("courses", courses, InsightDatasetKind.Courses)
 				.then(() => {

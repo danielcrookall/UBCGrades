@@ -1,0 +1,31 @@
+{
+	"title": "Room query using C1 filters only",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"rooms_seats": 150
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_name"
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_name": "BUCH_A102"
+		},
+		{
+			"rooms_name": "BUCH_A104"
+		},
+		{
+			"rooms_name": "ESB_1012"
+		},
+		{
+			"rooms_name": "HENN_202"
+		}
+	]
+}
+
