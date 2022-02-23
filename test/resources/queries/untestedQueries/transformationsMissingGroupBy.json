@@ -1,0 +1,21 @@
+{
+	"title": "TRANSFORMATIONS missing GROUP",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title"
+			]
+		},
+		"TRANSFORMATIONS": {
+
+			"APPLY":[
+
+			]
+		}
+	}
+
+,
+	"errorExpected": true,
+	"expected": "InsightError"
+}

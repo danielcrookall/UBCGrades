@@ -12,6 +12,7 @@ import {DatasetProcessing} from "./DatasetProcessing";
 import {PerformQueryFilters} from "./PerformQueryFilters";
 import {QueryValidator} from "./QueryValidator";
 import {DatasetValidation} from "./DatasetValidation";
+import {GroupByProcessing} from "./GroupByProcessing";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -76,14 +77,14 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		let performQuery = new PerformQueryFilters();
-
+		let groupProcessing = new GroupByProcessing();
 		let dataset: any[];
 		let queryObject = performQuery.getQueryObject(query);
 		let filter = queryObject.WHERE;
 		let options = queryObject.OPTIONS;
 		let parser: any;
 		try {
-			parser = new QueryValidator(queryObject);
+			parser = new QueryValidator(queryObject); // can and probably should move everything below into query validator class and have 1 method to call.
 			// parser.queryValidation(queryObject); // checking here same reason as below
 			// parser.whereValidation(queryObject.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
 			// parser.optionsValidation(options);
@@ -98,15 +99,17 @@ export default class InsightFacade implements IInsightFacade {
 			return Promise.reject(new InsightError());
 		}
 		let queryResults: any;
+		let groupedResults: any;
 		let columnResults: any;
 		let orderedResults: any;
 
 		queryResults = performQuery.performFilter(filter,dataset);
-		if(queryResults.length > 5000){
-				// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
+		groupedResults = groupProcessing.performTransformations(queryObject.TRANSFORMATIONS, queryResults);
+		if(groupedResults.length > 5000){
+			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(new ResultTooLargeError());
 		}
-		columnResults = performQuery.performColumns(options, queryResults);
+		columnResults = performQuery.performColumns(options, groupedResults);
 		orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 
 

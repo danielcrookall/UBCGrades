@@ -1,0 +1,16 @@
+{
+	"title": "GT 5000 results, empty where, no order, no transformations",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title"
+			]
+		}
+	}
+
+
+,
+	"errorExpected": true,
+	"expected": "ResultTooLargeError"
+}
