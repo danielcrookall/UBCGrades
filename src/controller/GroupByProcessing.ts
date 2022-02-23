@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export class GroupByProcessing {
 	private dataDir;
 
@@ -6,11 +8,14 @@ export class GroupByProcessing {
 	}
 
 	public performTransformations(transformations: any, dataset: any[]) {
+		if(transformations === undefined) {
+			return dataset;
+		}
 		let groupKeys = transformations.GROUP; // an array of keys to group by, eg [rooms_shortname, rooms_uuid]
 		let groupedResults = this.groupBy(dataset, groupKeys);  // really just need to perform columns on the given groups, then eliminate any duplicates. Have to make sure we retain any keys the apply block will need though.
 		let applyResults = this.performApply(groupedResults, transformations.APPLY);
-		let reducedGroups = this.getReducedGroups(applyResults); // you have the grouped representation as an object (an object where each key has a value of an array and represents a grouping), we want all these groupings combined into one object after apply has been done.
-		return reducedGroups;
+		// you have the grouped representation as an object (an object where each key has a value of an array and represents a grouping), we want all these groupings combined into one object after apply has been done.
+		return this.getReducedGroups(applyResults);
 	}
 
 	private getReducedGroups(applyResults: any) {
@@ -55,14 +60,21 @@ export class GroupByProcessing {
 					break;
 				}
 				default:
-					throw new Error("Illegal filter key");
+					throw new Error("Illegal applyToken");
 			}
 
 		}
 		return objGroupArrs;
 	}
 
-	private doMax(objGroups: any, key: any, applyKey: any) {
+	private getAggregatedObj(applyKey: string, aggregatedValue: number | string) {
+		const aggregatedResult = {
+			[applyKey]: aggregatedValue
+		};
+		return aggregatedResult;
+	}
+
+	private doMax(objGroups: any, key: string, applyKey: string) {
 		let groupArrs: any = Object.values(objGroups);
 		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
 			let max = arr[0][key];
@@ -77,27 +89,59 @@ export class GroupByProcessing {
 
 	}
 
-	private getAggregatedObj(applyKey: any, aggregatedValue: any) {
-		const aggregatedResult = {
-			[applyKey]: aggregatedValue
-		};
-		return aggregatedResult;
+	private doMin(objGroups: any, key: string, applyKey: string) {
+		let groupArrs: any = Object.values(objGroups);
+		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
+			let min = arr[0][key];
+			for (let groupObj of arr) {
+				if (groupObj[key] < min) {
+					min = groupObj[key];
+				}
+			}
+			const aggregatedResult = this.getAggregatedObj(applyKey, min);
+			arr.push(aggregatedResult);
+		}
+
 	}
 
-	private doMin(objGroups: any, key: any, groupKeys: any) {
-		// TODO
+	private doAvg(objGroups: any, key: string, applyKey: string) {
+		let groupArrs: any = Object.values(objGroups);
+		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
+			let sum: Decimal = new Decimal (0);
+			const count = arr.length;
+			for (let groupObj of arr) {
+				let decimalValue = new Decimal(groupObj[key]);
+				sum = Decimal.add(decimalValue, sum);
+			}
+			let avg = sum.toNumber() / count;
+			let res = Number(avg.toFixed(2));
+			const aggregatedResult = this.getAggregatedObj(applyKey, res);
+			arr.push(aggregatedResult);
+		}
 	}
 
-	private doAvg(objGroups: any, key: any, groupKeys: any) {
-		// TODO
+	private doCount(objGroups: any, key: string, applyKey: string) {
+		let groupArrs: any = Object.values(objGroups);
+		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
+			const set = new Set();
+			for (let groupObj of arr) {
+				set.add(groupObj[key]);
+			}
+			const aggregatedResult = this.getAggregatedObj(applyKey, set.size);
+			arr.push(aggregatedResult);
+		}
 	}
 
-	private doCount(objGroups: any, key: any, groupKeys: any) {
-		// TODO
-	}
-
-	private doSum(objGroups: any, key: any, groupKeys: any) {
-		// TODO
+	private doSum(objGroups: any, key: string, applyKey: string) {
+		let groupArrs: any = Object.values(objGroups);
+		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
+			let sum = 0;
+			for (let groupObj of arr) {
+				sum += groupObj[key];
+			}
+			const aggregatedResult = this.getAggregatedObj(applyKey, Number(sum.toFixed(2)));
+			arr.push(aggregatedResult);
+		}
 	}
 
 	private groupBy(datasetArr: any, keysArr: any) {

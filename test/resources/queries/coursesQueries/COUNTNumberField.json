@@ -1,0 +1,473 @@
+{
+	"title": "COUNT aggregate function with a number field",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"courses_avg": 60
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title",
+				"count"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"count"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_title"
+			],
+			"APPLY": [
+				{
+					"count": {
+						"COUNT": "courses_year"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_title": "dif calc phys ap",
+			"count": 9
+		},
+		{
+			"courses_title": "re crit analysis",
+			"count": 8
+		},
+		{
+			"courses_title": "calc socsci comm",
+			"count": 8
+		},
+		{
+			"courses_title": "stat&comp ap val",
+			"count": 7
+		},
+		{
+			"courses_title": "intr biometrics",
+			"count": 7
+		},
+		{
+			"courses_title": "hist 1500 - 20 c",
+			"count": 7
+		},
+		{
+			"courses_title": "fndtns rl es mth",
+			"count": 6
+		},
+		{
+			"courses_title": "int calc ap ph s",
+			"count": 6
+		},
+		{
+			"courses_title": "diff calculus",
+			"count": 6
+		},
+		{
+			"courses_title": "math proof",
+			"count": 6
+		},
+		{
+			"courses_title": "ord diff equtns",
+			"count": 6
+		},
+		{
+			"courses_title": "financial acctng",
+			"count": 5
+		},
+		{
+			"courses_title": "int calc ap c&ss",
+			"count": 5
+		},
+		{
+			"courses_title": "partl diff equat",
+			"count": 5
+		},
+		{
+			"courses_title": "cell biology 1",
+			"count": 4
+		},
+		{
+			"courses_title": "urb&rl es econ",
+			"count": 4
+		},
+		{
+			"courses_title": "found re apprai",
+			"count": 4
+		},
+		{
+			"courses_title": "cpt aid ms pr as",
+			"count": 4
+		},
+		{
+			"courses_title": "org chem biol sc",
+			"count": 4
+		},
+		{
+			"courses_title": "begin japn i",
+			"count": 4
+		},
+		{
+			"courses_title": "log & crit think",
+			"count": 4
+		},
+		{
+			"courses_title": "fund cell bio",
+			"count": 3
+		},
+		{
+			"courses_title": "bc law & ethics",
+			"count": 3
+		},
+		{
+			"courses_title": "rl es fnc ca ctt",
+			"count": 3
+		},
+		{
+			"courses_title": "resdnt prp study",
+			"count": 3
+		},
+		{
+			"courses_title": "rl es manage i",
+			"count": 3
+		},
+		{
+			"courses_title": "mass&enrgy balnc",
+			"count": 3
+		},
+		{
+			"courses_title": "electrochem eng",
+			"count": 3
+		},
+		{
+			"courses_title": "chem integ lab i",
+			"count": 3
+		},
+		{
+			"courses_title": "adv org chem",
+			"count": 3
+		},
+		{
+			"courses_title": "plant physlgy i",
+			"count": 3
+		},
+		{
+			"courses_title": "intro acad writ",
+			"count": 3
+		},
+		{
+			"courses_title": "crit read&writ",
+			"count": 3
+		},
+		{
+			"courses_title": "calculus 3",
+			"count": 3
+		},
+		{
+			"courses_title": "mech beh matls",
+			"count": 3
+		},
+		{
+			"courses_title": "phse transformtn",
+			"count": 3
+		},
+		{
+			"courses_title": "psyc of gender",
+			"count": 3
+		},
+		{
+			"courses_title": "plnt phys",
+			"count": 2
+		},
+		{
+			"courses_title": "technical commun",
+			"count": 2
+		},
+		{
+			"courses_title": "mic fnd rl es ec",
+			"count": 2
+		},
+		{
+			"courses_title": "intr mgmt acct",
+			"count": 2
+		},
+		{
+			"courses_title": "rl es manage ii",
+			"count": 2
+		},
+		{
+			"courses_title": "structural chem",
+			"count": 2
+		},
+		{
+			"courses_title": "phys & org chem",
+			"count": 2
+		},
+		{
+			"courses_title": "intr quantm mech",
+			"count": 2
+		},
+		{
+			"courses_title": "nuclear chemisty",
+			"count": 2
+		},
+		{
+			"courses_title": "engr econ anlys",
+			"count": 2
+		},
+		{
+			"courses_title": "foundat'n eng i",
+			"count": 2
+		},
+		{
+			"courses_title": "language & curr",
+			"count": 2
+		},
+		{
+			"courses_title": "microsys design",
+			"count": 2
+		},
+		{
+			"courses_title": "18th cent genre",
+			"count": 2
+		},
+		{
+			"courses_title": "physics lab tech",
+			"count": 2
+		},
+		{
+			"courses_title": "hist post 1900",
+			"count": 2
+		},
+		{
+			"courses_title": "in land food com",
+			"count": 2
+		},
+		{
+			"courses_title": "ling thry&anl ii",
+			"count": 2
+		},
+		{
+			"courses_title": "abstr linear alg",
+			"count": 2
+		},
+		{
+			"courses_title": "intr number thry",
+			"count": 2
+		},
+		{
+			"courses_title": "immunogenetics",
+			"count": 2
+		},
+		{
+			"courses_title": "met thermodyn ii",
+			"count": 2
+		},
+		{
+			"courses_title": "comp materials",
+			"count": 2
+		},
+		{
+			"courses_title": "phar chem ii",
+			"count": 2
+		},
+		{
+			"courses_title": "intro to politic",
+			"count": 2
+		},
+		{
+			"courses_title": "analys beh data",
+			"count": 2
+		},
+		{
+			"courses_title": "childhood & adol",
+			"count": 2
+		},
+		{
+			"courses_title": "wood-phy dryg",
+			"count": 2
+		},
+		{
+			"courses_title": "rsrch&writ human",
+			"count": 2
+		},
+		{
+			"courses_title": "intr soil scie",
+			"count": 1
+		},
+		{
+			"courses_title": "intr modern asia",
+			"count": 1
+		},
+		{
+			"courses_title": "gentcs ecol&evol",
+			"count": 1
+		},
+		{
+			"courses_title": "real est inv an",
+			"count": 1
+		},
+		{
+			"courses_title": "real est dev i",
+			"count": 1
+		},
+		{
+			"courses_title": "intm fnc acct ii",
+			"count": 1
+		},
+		{
+			"courses_title": "incom prop study",
+			"count": 1
+		},
+		{
+			"courses_title": "proc ctrl eng",
+			"count": 1
+		},
+		{
+			"courses_title": "fluid mech i",
+			"count": 1
+		},
+		{
+			"courses_title": "soil mechanic ii",
+			"count": 1
+		},
+		{
+			"courses_title": "wtr treat&wst mg",
+			"count": 1
+		},
+		{
+			"courses_title": "oral micr&immun",
+			"count": 1
+		},
+		{
+			"courses_title": "iss first ntns",
+			"count": 1
+		},
+		{
+			"courses_title": "strat univ writ",
+			"count": 1
+		},
+		{
+			"courses_title": "traditnl grammar",
+			"count": 1
+		},
+		{
+			"courses_title": "catastroph earth",
+			"count": 1
+		},
+		{
+			"courses_title": "harvest syst&ops",
+			"count": 1
+		},
+		{
+			"courses_title": "sustnbt&frst ops",
+			"count": 1
+		},
+		{
+			"courses_title": "managerial econ",
+			"count": 1
+		},
+		{
+			"courses_title": "forest ecology",
+			"count": 1
+		},
+		{
+			"courses_title": "prin frst econ",
+			"count": 1
+		},
+		{
+			"courses_title": "begin germ 2",
+			"count": 1
+		},
+		{
+			"courses_title": "tpcs world hist",
+			"count": 1
+		},
+		{
+			"courses_title": "int rel grt pwrs",
+			"count": 1
+		},
+		{
+			"courses_title": "df calc ap ph sc",
+			"count": 1
+		},
+		{
+			"courses_title": "df calc app lf s",
+			"count": 1
+		},
+		{
+			"courses_title": "int calc ap lf s",
+			"count": 1
+		},
+		{
+			"courses_title": "linear systems",
+			"count": 1
+		},
+		{
+			"courses_title": "elem diff eq i",
+			"count": 1
+		},
+		{
+			"courses_title": "vctr calc el eng",
+			"count": 1
+		},
+		{
+			"courses_title": "intr complex var",
+			"count": 1
+		},
+		{
+			"courses_title": "eng concepts i",
+			"count": 1
+		},
+		{
+			"courses_title": "mech of material",
+			"count": 1
+		},
+		{
+			"courses_title": "eng economics",
+			"count": 1
+		},
+		{
+			"courses_title": "intro musc thry",
+			"count": 1
+		},
+		{
+			"courses_title": "class piano ii",
+			"count": 1
+		},
+		{
+			"courses_title": "pharmacology ii",
+			"count": 1
+		},
+		{
+			"courses_title": "therapeutics ii",
+			"count": 1
+		},
+		{
+			"courses_title": "phar chem iii",
+			"count": 1
+		},
+		{
+			"courses_title": "intr phys eng i",
+			"count": 1
+		},
+		{
+			"courses_title": "health psycholgy",
+			"count": 1
+		},
+		{
+			"courses_title": "vant col project",
+			"count": 1
+		},
+		{
+			"courses_title": "prpty,ident&uses",
+			"count": 1
+		}
+	]
+}

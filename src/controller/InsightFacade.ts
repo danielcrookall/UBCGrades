@@ -10,7 +10,7 @@ import * as fs from "fs-extra";
 import path from "path";
 import {DatasetProcessing} from "./DatasetProcessing";
 import {PerformQueryFilters} from "./PerformQueryFilters";
-import {QueryValidator} from "./QueryValidator";
+import {QueryValidation} from "./QueryValidation";
 import {DatasetValidation} from "./DatasetValidation";
 import {GroupByProcessing} from "./GroupByProcessing";
 
@@ -84,7 +84,7 @@ export default class InsightFacade implements IInsightFacade {
 		let options = queryObject.OPTIONS;
 		let parser: any;
 		try {
-			parser = new QueryValidator(queryObject); // can and probably should move everything below into query validator class and have 1 method to call.
+			parser = new QueryValidation(queryObject); // can and probably should move everything below into query validator class and have 1 method to call.
 			// parser.queryValidation(queryObject); // checking here same reason as below
 			// parser.whereValidation(queryObject.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
 			// parser.optionsValidation(options);
@@ -112,7 +112,7 @@ export default class InsightFacade implements IInsightFacade {
 		columnResults = performQuery.performColumns(options, groupedResults);
 		orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 
-
+		//
 		console.log(orderedResults);
 		// console.log(orderedResults.length);
 		return Promise.resolve(orderedResults);

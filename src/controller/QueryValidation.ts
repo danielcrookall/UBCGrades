@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import {InsightError} from "./IInsightFacade";
 
-export class QueryValidator {
+export class QueryValidation {
 	public datasetID: string;
 	private validSfields;
 	private validMfields;
@@ -169,8 +169,14 @@ export class QueryValidator {
 	}
 
 	private getDatasetIdFromQuery(queryObject: any) {  // columns must exist with at least one entry for the query to be valid which we can use to extract the dataset ID from
-		try {
-			let str = queryObject.OPTIONS.COLUMNS[0];
+		let str: string ;
+		try { // HOWEVER, it's possible for columns to just contain applyKeys, which don't necessarily have the dataset ID associated with them.
+			str = queryObject.OPTIONS.COLUMNS[0];
+			if(str.includes("_")) { // if string doesn't have an underscore, then we're dealing with anykeys, check for dataset id in group clause instead
+
+			}else {
+				str = queryObject.TRANSFORMATIONS.GROUP[0];
+			}
 			let datasetID = str.substring(0, str.indexOf("_"));
 			return datasetID;
 		}catch(err){

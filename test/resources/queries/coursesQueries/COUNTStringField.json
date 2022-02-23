@@ -1,0 +1,81 @@
+{
+	"title": "COUNT aggregate function with a string field",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"courses_avg": 60
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_year",
+				"count"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"count"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_year"
+			],
+			"APPLY": [
+				{
+					"count": {
+						"COUNT": "courses_title"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_year": 1900,
+			"count": 51
+		},
+		{
+			"courses_year": 2013,
+			"count": 28
+		},
+		{
+			"courses_year": 2008,
+			"count": 27
+		},
+		{
+			"courses_year": 2011,
+			"count": 26
+		},
+		{
+			"courses_year": 2012,
+			"count": 24
+		},
+		{
+			"courses_year": 2015,
+			"count": 24
+		},
+		{
+			"courses_year": 2007,
+			"count": 22
+		},
+		{
+			"courses_year": 2010,
+			"count": 22
+		},
+		{
+			"courses_year": 2009,
+			"count": 20
+		},
+		{
+			"courses_year": 2014,
+			"count": 18
+		},
+		{
+			"courses_year": 2016,
+			"count": 6
+		}
+	]
+}
