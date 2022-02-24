@@ -1,6 +1,6 @@
 
 {
-	"title": "Excess keys in query. Query should only contain WHERe and OPTIONS.",
+	"title": "Excess keys in query. Query should only contain WHERE and OPTIONS.",
 	"input": {
 		"WHERE": {
 			"AND": [

@@ -135,7 +135,7 @@ module.exports = {
 	],
 		"max-lines": [
 		"error",
-		300
+		500
 	],
 		"new-parens": "error",
 		"no-await-in-loop": "error",

@@ -21,21 +21,22 @@ import {GroupByProcessing} from "./GroupByProcessing";
  */
 
 export default class InsightFacade implements IInsightFacade {
-	private dataDir = "./data/";
+	private dataDir;
+
 	constructor() {
-		let a = 5;
+		this.dataDir = "./data/";
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		let dataProcessing = new DatasetProcessing(id);
-		let validator = new DatasetValidation(id);
-		let addedIds: string[] = [];
+		const dataProcessing = new DatasetProcessing(id);
+		const validator = new DatasetValidation(id);
+		const addedIds: string[] = [];
 		await dataProcessing.getExistingDataSetIds(addedIds);
-		if(!validator.isValidID(addedIds)) { // reject if invalid ID or same as previously added
+		if (!validator.isValidID(addedIds)) { // reject if invalid ID or same as previously added
 			return Promise.reject(new InsightError());
 		}
 		const isZip = await validator.isZip(content);
-		if(!isZip){
+		if (!isZip) {
 			console.error("Not a zip file.");
 			return Promise.reject(new InsightError());
 		}
@@ -51,10 +52,10 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		let dataProcessing = new DatasetProcessing(id);
-		let validator = new DatasetValidation(id);
-		let addedIds: string[] = [];
-		if(!validator.isValidID(addedIds)){
+		const dataProcessing = new DatasetProcessing(id);
+		const validator = new DatasetValidation(id);
+		const addedIds: string[] = [];
+		if (!validator.isValidID(addedIds)) {
 			return Promise.reject(new InsightError()); // invalid id
 		}
 		await dataProcessing.getExistingDataSetIds(addedIds);
@@ -66,46 +67,37 @@ export default class InsightFacade implements IInsightFacade {
 		try {
 			fs.unlinkSync(this.dataDir + id + ".json"); // can be assured file exists at this point
 
-		} catch(err: any){
+		} catch (err: any) {
 			console.error(err.message);
 			return Promise.reject(new InsightError());
 		}
-
-
 		return Promise.resolve(id);
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		let performQuery = new PerformQueryFilters();
-		let groupProcessing = new GroupByProcessing();
+		const performQuery = new PerformQueryFilters();
+		const groupProcessing = new GroupByProcessing();
 		let dataset: any[];
-		let queryObject = performQuery.getQueryObject(query);
-		let filter = queryObject.WHERE;
-		let options = queryObject.OPTIONS;
-		let parser: any;
-		try {
-			parser = new QueryValidation(queryObject); // can and probably should move everything below into query validator class and have 1 method to call.
-			// parser.queryValidation(queryObject); // checking here same reason as below
-			// parser.whereValidation(queryObject.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
-			// parser.optionsValidation(options);
-			// parser.validateFilter(filter);
-			// parser.validateColumns(options.COLUMNS);
-			// parser.validateOrder(options.ORDER, options.COLUMNS);
-
-			let dataProcessor = new DatasetProcessing(parser.datasetID);
-			dataset = dataProcessor.loadDataset();
-		} catch (err: any){
-			console.error(err.message);
-			return Promise.reject(new InsightError());
-		}
+		const queryObject = performQuery.getQueryObject(query);
+		const filter = queryObject.WHERE;
+		const options = queryObject.OPTIONS;
 		let queryResults: any;
 		let groupedResults: any;
 		let columnResults: any;
 		let orderedResults: any;
+		try {
+			const parser = new QueryValidation(queryObject);
+			parser.validateQuery();
+			const dataProcessor = new DatasetProcessing(parser.datasetID);
+			dataset = dataProcessor.loadDataset();
+		} catch (err: any) {
+			console.error(err.message);
+			return Promise.reject(new InsightError());
+		}
 
-		queryResults = performQuery.performFilter(filter,dataset);
+		queryResults = performQuery.performFilter(filter, dataset);
 		groupedResults = groupProcessing.performTransformations(queryObject.TRANSFORMATIONS, queryResults);
-		if(groupedResults.length > 5000){
+		if (groupedResults.length > 5000) {
 			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(new ResultTooLargeError());
 		}
@@ -123,13 +115,13 @@ export default class InsightFacade implements IInsightFacade {
 		if (fs.existsSync(this.dataDir)) {
 			const dir = await fs.promises.opendir(this.dataDir);
 			for await (const file of dir) {
-				let filename = file.name;
-				let id = path.parse(filename).name;
-				let dataProcessor = new DatasetProcessing(id);
+				const filename = file.name;
+				const id = path.parse(filename).name;
+				const dataProcessor = new DatasetProcessing(id);
 				const dataset = dataProcessor.loadDataset();
 				const numRows = dataset.length;
 				let datasetKind;
-				if(Object.keys(dataset[0]).includes(`${id}_href`)){
+				if (Object.keys(dataset[0]).includes(`${id}_href`)) {
 					datasetKind = InsightDatasetKind.Rooms;
 				} else {
 					datasetKind = InsightDatasetKind.Courses;
