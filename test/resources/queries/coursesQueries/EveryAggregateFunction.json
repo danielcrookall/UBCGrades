@@ -1,0 +1,1909 @@
+{
+	"title": "Every aggregate function applied",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"courses_avg": 95
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_uuid",
+				"Sum",
+				"Max",
+				"Min",
+				"Avg",
+				"Count"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"Sum"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_uuid"
+			],
+			"APPLY": [
+				{
+					"Sum": {
+						"SUM": "courses_avg"
+					}
+				},
+				{
+					"Count": {
+						"COUNT": "courses_avg"
+					}
+				},
+				{
+					"Max": {
+						"MAX": "courses_avg"
+					}
+				},
+				{
+					"Min": {
+						"MIN": "courses_avg"
+					}
+				},
+				{
+					"Avg": {
+						"AVG": "courses_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_uuid": "19859",
+			"Sum": 95.05,
+			"Max": 95.05,
+			"Min": 95.05,
+			"Avg": 95.05,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "83047",
+			"Sum": 95.07,
+			"Max": 95.07,
+			"Min": 95.07,
+			"Avg": 95.07,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "47781",
+			"Sum": 95.09,
+			"Max": 95.09,
+			"Min": 95.09,
+			"Avg": 95.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "47782",
+			"Sum": 95.09,
+			"Max": 95.09,
+			"Min": 95.09,
+			"Avg": 95.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "67367",
+			"Sum": 95.1,
+			"Max": 95.1,
+			"Min": 95.1,
+			"Avg": 95.1,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "67368",
+			"Sum": 95.1,
+			"Max": 95.1,
+			"Min": 95.1,
+			"Avg": 95.1,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "47727",
+			"Sum": 95.11,
+			"Max": 95.11,
+			"Min": 95.11,
+			"Avg": 95.11,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86901",
+			"Sum": 95.11,
+			"Max": 95.11,
+			"Min": 95.11,
+			"Avg": 95.11,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "29327",
+			"Sum": 95.13,
+			"Max": 95.13,
+			"Min": 95.13,
+			"Avg": 95.13,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61390",
+			"Sum": 95.13,
+			"Max": 95.13,
+			"Min": 95.13,
+			"Avg": 95.13,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61391",
+			"Sum": 95.13,
+			"Max": 95.13,
+			"Min": 95.13,
+			"Avg": 95.13,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78717",
+			"Sum": 95.13,
+			"Max": 95.13,
+			"Min": 95.13,
+			"Avg": 95.13,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78718",
+			"Sum": 95.13,
+			"Max": 95.13,
+			"Min": 95.13,
+			"Avg": 95.13,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "28972",
+			"Sum": 95.14,
+			"Max": 95.14,
+			"Min": 95.14,
+			"Avg": 95.14,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49634",
+			"Sum": 95.15,
+			"Max": 95.15,
+			"Min": 95.15,
+			"Avg": 95.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49635",
+			"Sum": 95.15,
+			"Max": 95.15,
+			"Min": 95.15,
+			"Avg": 95.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73457",
+			"Sum": 95.15,
+			"Max": 95.15,
+			"Min": 95.15,
+			"Avg": 95.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73458",
+			"Sum": 95.15,
+			"Max": 95.15,
+			"Min": 95.15,
+			"Avg": 95.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "13142",
+			"Sum": 95.16,
+			"Max": 95.16,
+			"Min": 95.16,
+			"Avg": 95.16,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "87253",
+			"Sum": 95.16,
+			"Max": 95.16,
+			"Min": 95.16,
+			"Avg": 95.16,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3245",
+			"Sum": 95.17,
+			"Max": 95.17,
+			"Min": 95.17,
+			"Avg": 95.17,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3246",
+			"Sum": 95.17,
+			"Max": 95.17,
+			"Min": 95.17,
+			"Avg": 95.17,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "67762",
+			"Sum": 95.18,
+			"Max": 95.18,
+			"Min": 95.18,
+			"Avg": 95.18,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76476",
+			"Sum": 95.19,
+			"Max": 95.19,
+			"Min": 95.19,
+			"Avg": 95.19,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76477",
+			"Sum": 95.19,
+			"Max": 95.19,
+			"Min": 95.19,
+			"Avg": 95.19,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "63432",
+			"Sum": 95.2,
+			"Max": 95.2,
+			"Min": 95.2,
+			"Avg": 95.2,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "63433",
+			"Sum": 95.2,
+			"Max": 95.2,
+			"Min": 95.2,
+			"Avg": 95.2,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33773",
+			"Sum": 95.22,
+			"Max": 95.22,
+			"Min": 95.22,
+			"Avg": 95.22,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33774",
+			"Sum": 95.22,
+			"Max": 95.22,
+			"Min": 95.22,
+			"Avg": 95.22,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "25740",
+			"Sum": 95.25,
+			"Max": 95.25,
+			"Min": 95.25,
+			"Avg": 95.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "25741",
+			"Sum": 95.25,
+			"Max": 95.25,
+			"Min": 95.25,
+			"Avg": 95.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "52199",
+			"Sum": 95.26,
+			"Max": 95.26,
+			"Min": 95.26,
+			"Avg": 95.26,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "52200",
+			"Sum": 95.26,
+			"Max": 95.26,
+			"Min": 95.26,
+			"Avg": 95.26,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35950",
+			"Sum": 95.27,
+			"Max": 95.27,
+			"Min": 95.27,
+			"Avg": 95.27,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35951",
+			"Sum": 95.27,
+			"Max": 95.27,
+			"Min": 95.27,
+			"Avg": 95.27,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "32070",
+			"Sum": 95.29,
+			"Max": 95.29,
+			"Min": 95.29,
+			"Avg": 95.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "32071",
+			"Sum": 95.29,
+			"Max": 95.29,
+			"Min": 95.29,
+			"Avg": 95.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "88117",
+			"Sum": 95.29,
+			"Max": 95.29,
+			"Min": 95.29,
+			"Avg": 95.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "88118",
+			"Sum": 95.29,
+			"Max": 95.29,
+			"Min": 95.29,
+			"Avg": 95.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61426",
+			"Sum": 95.3,
+			"Max": 95.3,
+			"Min": 95.3,
+			"Avg": 95.3,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "45711",
+			"Sum": 95.31,
+			"Max": 95.31,
+			"Min": 95.31,
+			"Avg": 95.31,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "45712",
+			"Sum": 95.31,
+			"Max": 95.31,
+			"Min": 95.31,
+			"Avg": 95.31,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61452",
+			"Sum": 95.31,
+			"Max": 95.31,
+			"Min": 95.31,
+			"Avg": 95.31,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61453",
+			"Sum": 95.31,
+			"Max": 95.31,
+			"Min": 95.31,
+			"Avg": 95.31,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78576",
+			"Sum": 95.32,
+			"Max": 95.32,
+			"Min": 95.32,
+			"Avg": 95.32,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78577",
+			"Sum": 95.32,
+			"Max": 95.32,
+			"Min": 95.32,
+			"Avg": 95.32,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3272",
+			"Sum": 95.33,
+			"Max": 95.33,
+			"Min": 95.33,
+			"Avg": 95.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76473",
+			"Sum": 95.33,
+			"Max": 95.33,
+			"Min": 95.33,
+			"Avg": 95.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5692",
+			"Sum": 95.36,
+			"Max": 95.36,
+			"Min": 95.36,
+			"Avg": 95.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5693",
+			"Sum": 95.36,
+			"Max": 95.36,
+			"Min": 95.36,
+			"Avg": 95.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "70475",
+			"Sum": 95.36,
+			"Max": 95.36,
+			"Min": 95.36,
+			"Avg": 95.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86841",
+			"Sum": 95.36,
+			"Max": 95.36,
+			"Min": 95.36,
+			"Avg": 95.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86842",
+			"Sum": 95.36,
+			"Max": 95.36,
+			"Min": 95.36,
+			"Avg": 95.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "66657",
+			"Sum": 95.37,
+			"Max": 95.37,
+			"Min": 95.37,
+			"Avg": 95.37,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "66658",
+			"Sum": 95.37,
+			"Max": 95.37,
+			"Min": 95.37,
+			"Avg": 95.37,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "7254",
+			"Sum": 95.38,
+			"Max": 95.38,
+			"Min": 95.38,
+			"Avg": 95.38,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61425",
+			"Sum": 95.41,
+			"Max": 95.41,
+			"Min": 95.41,
+			"Avg": 95.41,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "509",
+			"Sum": 95.43,
+			"Max": 95.43,
+			"Min": 95.43,
+			"Avg": 95.43,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "510",
+			"Sum": 95.43,
+			"Max": 95.43,
+			"Min": 95.43,
+			"Avg": 95.43,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "80143",
+			"Sum": 95.43,
+			"Max": 95.43,
+			"Min": 95.43,
+			"Avg": 95.43,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96214",
+			"Sum": 95.43,
+			"Max": 95.43,
+			"Min": 95.43,
+			"Avg": 95.43,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96215",
+			"Sum": 95.43,
+			"Max": 95.43,
+			"Min": 95.43,
+			"Avg": 95.43,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "6396",
+			"Sum": 95.44,
+			"Max": 95.44,
+			"Min": 95.44,
+			"Avg": 95.44,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "89498",
+			"Sum": 95.44,
+			"Max": 95.44,
+			"Min": 95.44,
+			"Avg": 95.44,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44402",
+			"Sum": 95.47,
+			"Max": 95.47,
+			"Min": 95.47,
+			"Avg": 95.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "56550",
+			"Sum": 95.47,
+			"Max": 95.47,
+			"Min": 95.47,
+			"Avg": 95.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "56551",
+			"Sum": 95.47,
+			"Max": 95.47,
+			"Min": 95.47,
+			"Avg": 95.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38143",
+			"Sum": 95.5,
+			"Max": 95.5,
+			"Min": 95.5,
+			"Avg": 95.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38144",
+			"Sum": 95.5,
+			"Max": 95.5,
+			"Min": 95.5,
+			"Avg": 95.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "7932",
+			"Sum": 95.54,
+			"Max": 95.54,
+			"Min": 95.54,
+			"Avg": 95.54,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "7933",
+			"Sum": 95.54,
+			"Max": 95.54,
+			"Min": 95.54,
+			"Avg": 95.54,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "13938",
+			"Sum": 95.56,
+			"Max": 95.56,
+			"Min": 95.56,
+			"Avg": 95.56,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "13939",
+			"Sum": 95.56,
+			"Max": 95.56,
+			"Min": 95.56,
+			"Avg": 95.56,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "21700",
+			"Sum": 95.58,
+			"Max": 95.58,
+			"Min": 95.58,
+			"Avg": 95.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "21701",
+			"Sum": 95.58,
+			"Max": 95.58,
+			"Min": 95.58,
+			"Avg": 95.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "80144",
+			"Sum": 95.6,
+			"Max": 95.6,
+			"Min": 95.6,
+			"Avg": 95.6,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96832",
+			"Sum": 95.63,
+			"Max": 95.63,
+			"Min": 95.63,
+			"Avg": 95.63,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "7255",
+			"Sum": 95.67,
+			"Max": 95.67,
+			"Min": 95.67,
+			"Avg": 95.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38145",
+			"Sum": 95.67,
+			"Max": 95.67,
+			"Min": 95.67,
+			"Avg": 95.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38146",
+			"Sum": 95.67,
+			"Max": 95.67,
+			"Min": 95.67,
+			"Avg": 95.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "90202",
+			"Sum": 95.67,
+			"Max": 95.67,
+			"Min": 95.67,
+			"Avg": 95.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "90203",
+			"Sum": 95.67,
+			"Max": 95.67,
+			"Min": 95.67,
+			"Avg": 95.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "71155",
+			"Sum": 95.7,
+			"Max": 95.7,
+			"Min": 95.7,
+			"Avg": 95.7,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "71156",
+			"Sum": 95.7,
+			"Max": 95.7,
+			"Min": 95.7,
+			"Avg": 95.7,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "28944",
+			"Sum": 95.72,
+			"Max": 95.72,
+			"Min": 95.72,
+			"Avg": 95.72,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78257",
+			"Sum": 95.75,
+			"Max": 95.75,
+			"Min": 95.75,
+			"Avg": 95.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78258",
+			"Sum": 95.75,
+			"Max": 95.75,
+			"Min": 95.75,
+			"Avg": 95.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "85914",
+			"Sum": 95.75,
+			"Max": 95.75,
+			"Min": 95.75,
+			"Avg": 95.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "85915",
+			"Sum": 95.75,
+			"Max": 95.75,
+			"Min": 95.75,
+			"Avg": 95.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "65068",
+			"Sum": 95.76,
+			"Max": 95.76,
+			"Min": 95.76,
+			"Avg": 95.76,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "6683",
+			"Sum": 95.78,
+			"Max": 95.78,
+			"Min": 95.78,
+			"Avg": 95.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "6684",
+			"Sum": 95.78,
+			"Max": 95.78,
+			"Min": 95.78,
+			"Avg": 95.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "50979",
+			"Sum": 95.78,
+			"Max": 95.78,
+			"Min": 95.78,
+			"Avg": 95.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "50980",
+			"Sum": 95.78,
+			"Max": 95.78,
+			"Min": 95.78,
+			"Avg": 95.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35988",
+			"Sum": 95.83,
+			"Max": 95.83,
+			"Min": 95.83,
+			"Avg": 95.83,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35989",
+			"Sum": 95.83,
+			"Max": 95.83,
+			"Min": 95.83,
+			"Avg": 95.83,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49682",
+			"Sum": 95.86,
+			"Max": 95.86,
+			"Min": 95.86,
+			"Avg": 95.86,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49683",
+			"Sum": 95.86,
+			"Max": 95.86,
+			"Min": 95.86,
+			"Avg": 95.86,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "13141",
+			"Sum": 95.9,
+			"Max": 95.9,
+			"Min": 95.9,
+			"Avg": 95.9,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "43299",
+			"Sum": 95.93,
+			"Max": 95.93,
+			"Min": 95.93,
+			"Avg": 95.93,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "43300",
+			"Sum": 95.93,
+			"Max": 95.93,
+			"Min": 95.93,
+			"Avg": 95.93,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "18718",
+			"Sum": 95.94,
+			"Max": 95.94,
+			"Min": 95.94,
+			"Avg": 95.94,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "22441",
+			"Sum": 95.95,
+			"Max": 95.95,
+			"Min": 95.95,
+			"Avg": 95.95,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "16985",
+			"Sum": 95.96,
+			"Max": 95.96,
+			"Min": 95.96,
+			"Avg": 95.96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "16986",
+			"Sum": 95.96,
+			"Max": 95.96,
+			"Min": 95.96,
+			"Avg": 95.96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "19858",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "20190",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26254",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26258",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "29285",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33374",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33760",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33761",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "46409",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "59528",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "70959",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "71164",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78244",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78245",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78270",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "92879",
+			"Sum": 96,
+			"Max": 96,
+			"Min": 96,
+			"Avg": 96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3148",
+			"Sum": 96.03,
+			"Max": 96.03,
+			"Min": 96.03,
+			"Avg": 96.03,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3149",
+			"Sum": 96.03,
+			"Max": 96.03,
+			"Min": 96.03,
+			"Avg": 96.03,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "59539",
+			"Sum": 96.06,
+			"Max": 96.06,
+			"Min": 96.06,
+			"Avg": 96.06,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "59540",
+			"Sum": 96.06,
+			"Max": 96.06,
+			"Min": 96.06,
+			"Avg": 96.06,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "43325",
+			"Sum": 96.09,
+			"Max": 96.09,
+			"Min": 96.09,
+			"Avg": 96.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "77290",
+			"Sum": 96.1,
+			"Max": 96.1,
+			"Min": 96.1,
+			"Avg": 96.1,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "77291",
+			"Sum": 96.1,
+			"Max": 96.1,
+			"Min": 96.1,
+			"Avg": 96.1,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "68539",
+			"Sum": 96.11,
+			"Max": 96.11,
+			"Min": 96.11,
+			"Avg": 96.11,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86023",
+			"Sum": 96.15,
+			"Max": 96.15,
+			"Min": 96.15,
+			"Avg": 96.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86024",
+			"Sum": 96.15,
+			"Max": 96.15,
+			"Min": 96.15,
+			"Avg": 96.15,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33375",
+			"Sum": 96.16,
+			"Max": 96.16,
+			"Min": 96.16,
+			"Avg": 96.16,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38152",
+			"Sum": 96.21,
+			"Max": 96.21,
+			"Min": 96.21,
+			"Avg": 96.21,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "38153",
+			"Sum": 96.21,
+			"Max": 96.21,
+			"Min": 96.21,
+			"Avg": 96.21,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76254",
+			"Sum": 96.21,
+			"Max": 96.21,
+			"Min": 96.21,
+			"Avg": 96.21,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76285",
+			"Sum": 96.23,
+			"Max": 96.23,
+			"Min": 96.23,
+			"Avg": 96.23,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3181",
+			"Sum": 96.24,
+			"Max": 96.24,
+			"Min": 96.24,
+			"Avg": 96.24,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "2667",
+			"Sum": 96.25,
+			"Max": 96.25,
+			"Min": 96.25,
+			"Avg": 96.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "2668",
+			"Sum": 96.25,
+			"Max": 96.25,
+			"Min": 96.25,
+			"Avg": 96.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "90206",
+			"Sum": 96.25,
+			"Max": 96.25,
+			"Min": 96.25,
+			"Avg": 96.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "90207",
+			"Sum": 96.25,
+			"Max": 96.25,
+			"Min": 96.25,
+			"Avg": 96.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "84887",
+			"Sum": 96.27,
+			"Max": 96.27,
+			"Min": 96.27,
+			"Avg": 96.27,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "84888",
+			"Sum": 96.27,
+			"Max": 96.27,
+			"Min": 96.27,
+			"Avg": 96.27,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33373",
+			"Sum": 96.33,
+			"Max": 96.33,
+			"Min": 96.33,
+			"Avg": 96.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "34240",
+			"Sum": 96.33,
+			"Max": 96.33,
+			"Min": 96.33,
+			"Avg": 96.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44426",
+			"Sum": 96.33,
+			"Max": 96.33,
+			"Min": 96.33,
+			"Avg": 96.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44427",
+			"Sum": 96.33,
+			"Max": 96.33,
+			"Min": 96.33,
+			"Avg": 96.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "55026",
+			"Sum": 96.36,
+			"Max": 96.36,
+			"Min": 96.36,
+			"Avg": 96.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "55027",
+			"Sum": 96.36,
+			"Max": 96.36,
+			"Min": 96.36,
+			"Avg": 96.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "75176",
+			"Sum": 96.4,
+			"Max": 96.4,
+			"Min": 96.4,
+			"Avg": 96.4,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "75177",
+			"Sum": 96.4,
+			"Max": 96.4,
+			"Min": 96.4,
+			"Avg": 96.4,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5351",
+			"Sum": 96.44,
+			"Max": 96.44,
+			"Min": 96.44,
+			"Avg": 96.44,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5352",
+			"Sum": 96.44,
+			"Max": 96.44,
+			"Min": 96.44,
+			"Avg": 96.44,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "59203",
+			"Sum": 96.46,
+			"Max": 96.46,
+			"Min": 96.46,
+			"Avg": 96.46,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "59204",
+			"Sum": 96.46,
+			"Max": 96.46,
+			"Min": 96.46,
+			"Avg": 96.46,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "45905",
+			"Sum": 96.47,
+			"Max": 96.47,
+			"Min": 96.47,
+			"Avg": 96.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "45906",
+			"Sum": 96.47,
+			"Max": 96.47,
+			"Min": 96.47,
+			"Avg": 96.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "57511",
+			"Sum": 96.47,
+			"Max": 96.47,
+			"Min": 96.47,
+			"Avg": 96.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "57512",
+			"Sum": 96.47,
+			"Max": 96.47,
+			"Min": 96.47,
+			"Avg": 96.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "17267",
+			"Sum": 96.5,
+			"Max": 96.5,
+			"Min": 96.5,
+			"Avg": 96.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "17268",
+			"Sum": 96.5,
+			"Max": 96.5,
+			"Min": 96.5,
+			"Avg": 96.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78041",
+			"Sum": 96.5,
+			"Max": 96.5,
+			"Min": 96.5,
+			"Avg": 96.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "78042",
+			"Sum": 96.5,
+			"Max": 96.5,
+			"Min": 96.5,
+			"Avg": 96.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "67760",
+			"Sum": 96.59,
+			"Max": 96.59,
+			"Min": 96.59,
+			"Avg": 96.59,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "47427",
+			"Sum": 96.64,
+			"Max": 96.64,
+			"Min": 96.64,
+			"Avg": 96.64,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "47428",
+			"Sum": 96.64,
+			"Max": 96.64,
+			"Min": 96.64,
+			"Avg": 96.64,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "93115",
+			"Sum": 96.73,
+			"Max": 96.73,
+			"Min": 96.73,
+			"Avg": 96.73,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "93116",
+			"Sum": 96.73,
+			"Max": 96.73,
+			"Min": 96.73,
+			"Avg": 96.73,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "68029",
+			"Sum": 96.8,
+			"Max": 96.8,
+			"Min": 96.8,
+			"Avg": 96.8,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "68030",
+			"Sum": 96.8,
+			"Max": 96.8,
+			"Min": 96.8,
+			"Avg": 96.8,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "4011",
+			"Sum": 96.83,
+			"Max": 96.83,
+			"Min": 96.83,
+			"Avg": 96.83,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "4012",
+			"Sum": 96.83,
+			"Max": 96.83,
+			"Min": 96.83,
+			"Avg": 96.83,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44372",
+			"Sum": 96.9,
+			"Max": 96.9,
+			"Min": 96.9,
+			"Avg": 96.9,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44373",
+			"Sum": 96.9,
+			"Max": 96.9,
+			"Min": 96.9,
+			"Avg": 96.9,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61632",
+			"Sum": 96.9,
+			"Max": 96.9,
+			"Min": 96.9,
+			"Avg": 96.9,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "61633",
+			"Sum": 96.9,
+			"Max": 96.9,
+			"Min": 96.9,
+			"Avg": 96.9,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26287",
+			"Sum": 96.94,
+			"Max": 96.94,
+			"Min": 96.94,
+			"Avg": 96.94,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26288",
+			"Sum": 96.94,
+			"Max": 96.94,
+			"Min": 96.94,
+			"Avg": 96.94,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "65066",
+			"Sum": 96.96,
+			"Max": 96.96,
+			"Min": 96.96,
+			"Avg": 96.96,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26255",
+			"Sum": 97,
+			"Max": 97,
+			"Min": 97,
+			"Avg": 97,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "54846",
+			"Sum": 97,
+			"Max": 97,
+			"Min": 97,
+			"Avg": 97,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76310",
+			"Sum": 97,
+			"Max": 97,
+			"Min": 97,
+			"Avg": 97,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73173",
+			"Sum": 97.09,
+			"Max": 97.09,
+			"Min": 97.09,
+			"Avg": 97.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73174",
+			"Sum": 97.09,
+			"Max": 97.09,
+			"Min": 97.09,
+			"Avg": 97.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86962",
+			"Sum": 97.09,
+			"Max": 97.09,
+			"Min": 97.09,
+			"Avg": 97.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86963",
+			"Sum": 97.09,
+			"Max": 97.09,
+			"Min": 97.09,
+			"Avg": 97.09,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "32014",
+			"Sum": 97.25,
+			"Max": 97.25,
+			"Min": 97.25,
+			"Avg": 97.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "32015",
+			"Sum": 97.25,
+			"Max": 97.25,
+			"Min": 97.25,
+			"Avg": 97.25,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35870",
+			"Sum": 97.29,
+			"Max": 97.29,
+			"Min": 97.29,
+			"Avg": 97.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "35871",
+			"Sum": 97.29,
+			"Max": 97.29,
+			"Min": 97.29,
+			"Avg": 97.29,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96261",
+			"Sum": 97.33,
+			"Max": 97.33,
+			"Min": 97.33,
+			"Avg": 97.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96262",
+			"Sum": 97.33,
+			"Max": 97.33,
+			"Min": 97.33,
+			"Avg": 97.33,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "28943",
+			"Sum": 97.41,
+			"Max": 97.41,
+			"Min": 97.41,
+			"Avg": 97.41,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76311",
+			"Sum": 97.41,
+			"Max": 97.41,
+			"Min": 97.41,
+			"Avg": 97.41,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "87779",
+			"Sum": 97.47,
+			"Max": 97.47,
+			"Min": 97.47,
+			"Avg": 97.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "87780",
+			"Sum": 97.47,
+			"Max": 97.47,
+			"Min": 97.47,
+			"Avg": 97.47,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73165",
+			"Sum": 97.48,
+			"Max": 97.48,
+			"Min": 97.48,
+			"Avg": 97.48,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73166",
+			"Sum": 97.48,
+			"Max": 97.48,
+			"Min": 97.48,
+			"Avg": 97.48,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "50495",
+			"Sum": 97.5,
+			"Max": 97.5,
+			"Min": 97.5,
+			"Avg": 97.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73665",
+			"Sum": 97.53,
+			"Max": 97.53,
+			"Min": 97.53,
+			"Avg": 97.53,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73666",
+			"Sum": 97.53,
+			"Max": 97.53,
+			"Min": 97.53,
+			"Avg": 97.53,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "86966",
+			"Sum": 97.67,
+			"Max": 97.67,
+			"Min": 97.67,
+			"Avg": 97.67,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "3228",
+			"Sum": 97.69,
+			"Max": 97.69,
+			"Min": 97.69,
+			"Avg": 97.69,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "76309",
+			"Sum": 97.78,
+			"Max": 97.78,
+			"Min": 97.78,
+			"Avg": 97.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "46405",
+			"Sum": 98,
+			"Max": 98,
+			"Min": 98,
+			"Avg": 98,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "46412",
+			"Sum": 98,
+			"Max": 98,
+			"Min": 98,
+			"Avg": 98,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33779",
+			"Sum": 98.08,
+			"Max": 98.08,
+			"Min": 98.08,
+			"Avg": 98.08,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73638",
+			"Sum": 98.21,
+			"Max": 98.21,
+			"Min": 98.21,
+			"Avg": 98.21,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "73639",
+			"Sum": 98.21,
+			"Max": 98.21,
+			"Min": 98.21,
+			"Avg": 98.21,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33781",
+			"Sum": 98.36,
+			"Max": 98.36,
+			"Min": 98.36,
+			"Avg": 98.36,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49677",
+			"Sum": 98.45,
+			"Max": 98.45,
+			"Min": 98.45,
+			"Avg": 98.45,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "49678",
+			"Sum": 98.45,
+			"Max": 98.45,
+			"Min": 98.45,
+			"Avg": 98.45,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "88151",
+			"Sum": 98.5,
+			"Max": 98.5,
+			"Min": 98.5,
+			"Avg": 98.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "88152",
+			"Sum": 98.5,
+			"Max": 98.5,
+			"Min": 98.5,
+			"Avg": 98.5,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "29255",
+			"Sum": 98.58,
+			"Max": 98.58,
+			"Min": 98.58,
+			"Avg": 98.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "29256",
+			"Sum": 98.58,
+			"Max": 98.58,
+			"Min": 98.58,
+			"Avg": 98.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96250",
+			"Sum": 98.58,
+			"Max": 98.58,
+			"Min": 98.58,
+			"Avg": 98.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "96251",
+			"Sum": 98.58,
+			"Max": 98.58,
+			"Min": 98.58,
+			"Avg": 98.58,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "33780",
+			"Sum": 98.7,
+			"Max": 98.7,
+			"Min": 98.7,
+			"Avg": 98.7,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "15343",
+			"Sum": 98.71,
+			"Max": 98.71,
+			"Min": 98.71,
+			"Avg": 98.71,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "15344",
+			"Sum": 98.71,
+			"Max": 98.71,
+			"Min": 98.71,
+			"Avg": 98.71,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "10235",
+			"Sum": 98.75,
+			"Max": 98.75,
+			"Min": 98.75,
+			"Avg": 98.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "10236",
+			"Sum": 98.75,
+			"Max": 98.75,
+			"Min": 98.75,
+			"Avg": 98.75,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44816",
+			"Sum": 98.76,
+			"Max": 98.76,
+			"Min": 98.76,
+			"Avg": 98.76,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "44817",
+			"Sum": 98.76,
+			"Max": 98.76,
+			"Min": 98.76,
+			"Avg": 98.76,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "6320",
+			"Sum": 98.8,
+			"Max": 98.8,
+			"Min": 98.8,
+			"Avg": 98.8,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "65069",
+			"Sum": 98.98,
+			"Max": 98.98,
+			"Min": 98.98,
+			"Avg": 98.98,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "65070",
+			"Sum": 98.98,
+			"Max": 98.98,
+			"Min": 98.98,
+			"Avg": 98.98,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "26777",
+			"Sum": 99.19,
+			"Max": 99.19,
+			"Min": 99.19,
+			"Avg": 99.19,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5373",
+			"Sum": 99.78,
+			"Max": 99.78,
+			"Min": 99.78,
+			"Avg": 99.78,
+			"Count": 1
+		},
+		{
+			"courses_uuid": "5374",
+			"Sum": 99.78,
+			"Max": 99.78,
+			"Min": 99.78,
+			"Avg": 99.78,
+			"Count": 1
+		}
+	]
+}
