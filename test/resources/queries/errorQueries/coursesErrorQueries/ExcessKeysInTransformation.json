@@ -1,0 +1,37 @@
+{
+	"title": "Excess keys in transformation (should only have group and apply",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"courses_avg": 60
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title",
+				"count"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"count"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_title"
+			],
+			"APPLY": [
+				{
+					"count": {
+						"COUNT": "courses_year"
+					}
+				}
+			],
+			"RANDOM": "TEST"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

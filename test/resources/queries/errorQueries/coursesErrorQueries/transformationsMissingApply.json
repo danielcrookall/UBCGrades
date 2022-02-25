@@ -1,0 +1,19 @@
+{
+	"title": "Transformations missing an apply key",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_title"
+			]
+		}
+	}
+,
+	"errorExpected": true,
+	"expected": "InsightError"
+}

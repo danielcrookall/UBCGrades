@@ -30,6 +30,8 @@ describe("InsightFacade", function () {
 	let playgroundHTML: string;
 	let indexText: string;
 	let noIndex: string;
+	let roomDatasetWithNoBuildingFiles: string;
+	let roomsWithInvalidHREF: string;
 
 	before(function () {
 		courses = getContentFromArchives("courses.zip");
@@ -49,6 +51,8 @@ describe("InsightFacade", function () {
 		playgroundHTML = getContentFromArchives("defaultPlaygroundHTML.zip");
 		indexText = getContentFromArchives("indexTextFileInsteadOfHTML.zip");
 		noIndex = getContentFromArchives("noIndex.zip");
+		roomDatasetWithNoBuildingFiles = getContentFromArchives("roomDatasetWithNoBuildingFiles.zip");
+		roomsWithInvalidHREF = getContentFromArchives("roomsWhereBUCHisNotInsideSpecifiedHREFPATH.zip");
 	});
 
 	describe("List Datasets", function () {
@@ -69,7 +73,7 @@ describe("InsightFacade", function () {
 
 		});
 
-		it("should list one dataset", function () {
+		it("should list one courses dataset", function () {
 
 			return facade.addDataset("courses", courses, InsightDatasetKind.Courses)
 				.then((addedIDs) => facade.listDatasets())
@@ -82,6 +86,42 @@ describe("InsightFacade", function () {
 
 				});
 		});
+
+		it("should list one rooms dataset", function () {
+
+			return facade.addDataset("roomsXL", rooms, InsightDatasetKind.Rooms)
+				.then((addedIDs) => facade.listDatasets())
+				.then((insightDatasets) => {
+					expect(insightDatasets).to.deep.equal([{
+						id: "roomsXL",
+						kind: InsightDatasetKind.Rooms,
+						numRows: 364,
+					}]);
+
+				});
+		});
+
+		it("should list rooms dataset and courses dataset", async function () {
+			await facade.addDataset("roomsXL", rooms, InsightDatasetKind.Rooms);
+			await facade.addDataset("courses", courses, InsightDatasetKind.Courses);
+			let datasets = await facade.listDatasets();
+			const roomDataset = datasets.find((dataset) => dataset.id === "roomsXL");
+			expect(roomDataset).to.exist;
+			expect(roomDataset).to.deep.equal({
+				id: "roomsXL",
+				kind: InsightDatasetKind.Rooms,
+				numRows: 364,
+			});
+			const coursesDataset = datasets.find((dataset) => dataset.id === "courses");
+			expect(coursesDataset).to.exist;
+			expect(coursesDataset).to.deep.equal({
+				id: "courses",
+				kind: InsightDatasetKind.Courses,
+				numRows: 64612,
+			});
+		}
+		);
+
 
 		it("should list multiple datasets", function () {
 			return facade.addDataset("courses", courses, InsightDatasetKind.Courses)
@@ -249,9 +289,25 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject if rooms dataset does not contain any rooms (because there are no building files)",
+			async function () {
+				try {
+					await facade.addDataset("noRooms", roomDatasetWithNoBuildingFiles, InsightDatasetKind.Rooms);
+					expect.fail("Should have rejected!");
+				} catch (err) {
+					expect(err).to.be.an.instanceof(InsightError);
+				}
+			});
+
+
 		it("should resolve if one valid rooms dataset is added and id is valid", async function () {
 			const addedIds = await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 			expect(addedIds).to.deep.equal(["rooms"]);
+		});
+
+		it("should resolve if an index.htm building href doesn't exist at specified path (buch)", async function () {
+			const addedIds = await facade.addDataset("rooms3", roomsWithInvalidHREF, InsightDatasetKind.Rooms);
+			expect(addedIds).to.deep.equal(["rooms3"]);
 		});
 
 	});
@@ -270,6 +326,16 @@ describe("InsightFacade", function () {
 			const removedId = await facade.removeDataset("courses");
 			expect(removedId).to.be.a("string");
 			expect(removedId).to.deep.equal("courses");
+			const addedDatasets = await facade.listDatasets();
+			expect(addedDatasets).to.be.an.instanceof(Array);
+			expect(addedDatasets).to.have.length(0);
+		});
+
+		it("should fulfill upon a successful removal of one room dataset", async function () {
+			await facade.addDataset("rooms500", rooms, InsightDatasetKind.Rooms);
+			const removedId = await facade.removeDataset("rooms500");
+			expect(removedId).to.be.a("string");
+			expect(removedId).to.deep.equal("rooms500");
 			const addedDatasets = await facade.listDatasets();
 			expect(addedDatasets).to.be.an.instanceof(Array);
 			expect(addedDatasets).to.have.length(0);
@@ -336,7 +402,7 @@ describe("InsightFacade", function () {
 		folderTest<unknown, Promise<InsightResult[]>, Error>(
 			"Add Dynamic Test",
 			(input: unknown): Promise<InsightResult[]> => facade.performQuery(input),
-			"./test/resources/queries/singleQuery",
+			"./test/resources/queries/errorQueries/coursesErrorQueries",
 			{
 				errorValidator(error: any): error is Error {
 					return error === "InsightError" || error === "ResultTooLargeError";

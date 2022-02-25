@@ -1,0 +1,63 @@
+{
+	"title": "Columns that only contain apply keys (testing ID retrieval since it's based off of columns)",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Tables*"
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 300
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"maxSeats",
+				"maxLon"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"maxSeats"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"maxLon": {
+						"MAX": "rooms_lon"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"maxSeats": 350,
+			"maxLon": -123.24494
+		},
+		{
+			"maxSeats": 375,
+			"maxLon": -123.25165
+		},
+		{
+			"maxSeats": 442,
+			"maxLon": -123.24467
+		}
+	]
+}

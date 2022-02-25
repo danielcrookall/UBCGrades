@@ -3,14 +3,18 @@ import path from "path";
 import JSZip from "jszip";
 import parse5 from "parse5";
 import {InsightDatasetKind} from "./IInsightFacade";
+import {DatasetValidation} from "./DatasetValidation";
+import * as http from "http";
 
 export class DatasetProcessing {
 	private dataDir;
 	private datasetID;
+	private validator;
 
 	constructor(datasetID: string) {
 		this.dataDir = "./data/";
 		this.datasetID = datasetID;
+		this.validator = new DatasetValidation(this.datasetID);
 	}
 
 	public async getExistingDataSetIds(addedIds: string[]) {
@@ -43,10 +47,6 @@ export class DatasetProcessing {
 			}
 			));
 			await Promise.all(promises);
-			if (processedDataset.length === 0) {
-				throw new Error("A dataset needs at least one valid section overall.");
-			}
-			await this.writeDataSet(processedDataset);
 		} else { // kind == rooms
 			let indexHTMLFile: any;
 			let htmlTree: any;
@@ -55,71 +55,130 @@ export class DatasetProcessing {
 				if (indexHTMLFile === undefined) { // move this check outside of try catch
 					throw new Error("no rooms directory");
 				}
-
 				htmlTree = parse5.parse(indexHTMLFile);
-
 			} catch (err) {
 				throw new Error("The index indexHTML in a rooms dataset is either invalid HTML or does not exist.");
 			}
 
-			promises.push(this.parseRooms(processedDataset, htmlTree));
+			processedDataset = await this.parseRooms(htmlTree, zip);
+		}
+		if (processedDataset.length === 0) {
+			throw new Error("A dataset needs at least one valid section overall.");
+		}
+		await this.writeDataSet(processedDataset);
+	}
 
+	private async parseRooms(htmlTree: any, zip: JSZip) {
+		let parsedRooms = [];
+		let buildingInfo: any[] = [];
+		let roomInfo: any[] = [];
 
+		await this.searchTree(htmlTree, buildingInfo, null);  // have no buildData info , maybe shouldn't be null though
+		for (let building of buildingInfo) {
+			parsedRooms.push(this.getRooms(building, zip, roomInfo));
+		}
+		await Promise.all(parsedRooms);
+		return roomInfo;
+
+	}
+
+	private async getRooms(buildData: any, zip: JSZip, buildOrRoomData: any) {
+		// console.log(building.rooms_href);
+		let roomTree: any;
+
+		const filePath = "rooms" + buildData[`${this.datasetID}_fileHref`].substring(1);
+		let roomFile = await zip.file(filePath)?.async("string");
+		if (roomFile !== undefined) {
+			roomTree = parse5.parse(roomFile);
+			await this.searchTree(roomTree, buildOrRoomData, buildData);  // should rename getBulidings if using for both bulding info and room, and name of array storing results
 		}
 	}
 
-	private async parseRooms(processedDataset: any[], htmlTree: any) {
-
-		this.getBuildings(htmlTree);
-
-	}
-
-	private getBuildings(node: any) {
-
-		const obj: any = {};
+	private async searchTree(node: any, buildOrRoomData: any[], buildData: any) {
+		let promises = [];
 
 		if (node.childNodes === undefined) {
 			return;
 		}
 
 		if (node.nodeName === "tr") {
-			this.parseTr(node);
+			await this.parseTr(node, buildOrRoomData, buildData);
 			return;
 		}
 
 		let childNodeCount = node.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
-			this.getBuildings(node.childNodes[i]);
+			promises.push(this.searchTree(node.childNodes[i], buildOrRoomData, buildData));
 		}
+		await Promise.all(promises);
 	}
 
-	private parseTr(trNode: any) {
-		const obj: any = {};
+	private parseTr(trNode: any, buildOrRoomData: any[], buildData: any) {
+		const roomObj: any = {};
 		let childNodeCount = trNode.childNodes.length;
 		for (let i = 0; i < childNodeCount; i++) {
 			if (trNode.childNodes[i].nodeName === "td") {
-				this.parseTd(trNode.childNodes[i], obj);
+				this.parseTd(trNode.childNodes[i], roomObj);
 			}
 		}
+		if (this.validator.validateBuildInfo(roomObj)) {
+			return this.getGeolocation(roomObj[this.datasetID + "_address"]).then((geolocation: any) => {
 
-		console.log(obj); // the first one is undefined because it's the building image which we're doing nothing for.
+				if (geolocation["error"] === undefined) { // API request completed successfully, building should be added
+					roomObj[this.datasetID + "_lat"] = geolocation["lat"];
+					roomObj[this.datasetID + "_lon"] = geolocation["lon"];
+					buildOrRoomData.push(roomObj);
+				}
+			});
+		} else {
+			if (this.validator.validateRoomInfo(roomObj)) {
+				if (roomObj[`${this.datasetID}_seats`] === "") {  // The default value for this field (should this value be missing in the dataset) is 0.
+					roomObj[`${this.datasetID}_seats`] = 0;
+				}
+				let merged = {...roomObj, ...buildData};// merge room info with building info
+				merged[this.datasetID + "_name"] = merged[`${this.datasetID}_shortname`]
+					+ "_" + merged[`${this.datasetID}_number`];
+				delete merged[this.datasetID + "_fileHref"]; // don't need fileHref, just room href in final object, but can always add back in here if necessary
+				buildOrRoomData.push(merged);
+			}
+		}
+	}
+
+	private getGeolocation(address: any) {
+		return new Promise((resolve, reject) => {
+			let encodedAddress = encodeURI(address);
+			let url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team565/${encodedAddress}`;
+
+			http.get(url, (res) => {
+				let data = "";
+				res.on("data", (chunk) => {
+					data += chunk;
+				});
+
+				res.on("end", () => {
+					return resolve(JSON.parse(data));
+				});
+
+			}).on("error", (err) => {
+				console.error("Error in get geolocation request: " + err.message);
+			});
+
+		});
+
 	}
 
 	private parseTd(tdNode: any, obj: any) {
-
 		for (let attrbObj of tdNode.attrs) {
 			switch (attrbObj.value) {
-				case "views-field views-field-field-building-code":
-					for (let childNode of tdNode.childNodes) { // there's just 1 childnode and I think that will always be the case, don't think you can even put another html element inside the TDnode
-						obj[this.datasetID + "_shortname"] = childNode.value.trim(); // remove the /n and whitespaces
-					}
+				case "views-field views-field-field-building-code":// there's just 1 childnode and I think that will always be the case, don't think you can even put another html element inside the TDnode
+					obj[this.datasetID + "_shortname"] = tdNode.childNodes[0].value.trim(); // remove the /n and whitespaces
 					break;
 				case "views-field views-field-title":
 					for (let childNode of tdNode.childNodes) {
 						if (childNode.nodeName === "a") {
 							for (let attr of childNode.attrs) {
 								if (attr.name === "href") {
-									obj[this.datasetID + "_href"] = attr.value;
+									obj[this.datasetID + "_fileHref"] = attr.value;  // this is the link for location of building in zip
 								}
 							}
 							for (let cn of childNode.childNodes) {
@@ -133,16 +192,34 @@ export class DatasetProcessing {
 						obj[this.datasetID + "_address"] = childNode.value.trim();
 					}
 					break;
-
+				case "views-field views-field-field-room-number":
+					for (let childNode of tdNode.childNodes) {
+						if (childNode.nodeName === "a") {
+							for (let attr of childNode.attrs) {
+								if (attr.name === "href") {
+									obj[this.datasetID + "_href"] = attr.value; // this is the href for full details of specific room
+								}
+							}
+							obj[this.datasetID + "_number"] = childNode.childNodes[0].value;
+						}
+					}
+					break;
+				case "views-field views-field-field-room-capacity":
+					obj[this.datasetID + "_seats"] = (Number)(tdNode.childNodes[0].value.trim()); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
+				case "views-field views-field-field-room-furniture":
+					obj[this.datasetID + "_furniture"] = tdNode.childNodes[0].value.trim(); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
+				case "views-field views-field-field-room-type":
+					obj[this.datasetID + "_type"] = tdNode.childNodes[0].value.trim(); // if there's more than 1 element here literally impossible to know what info to extract, so there surely can only be one childnode inside the td, same applies for most of other ones (no need to loop through but idk)
+					break;
 			}
 		}
-
 	}
-
 
 	private async parseCourses(processedDataset: any[], file: JSZip.JSZipObject) {
 		let resultsArr = await file.async("string"); // results = the results array in given file where each entry is a section
-		if (!this.isValidJSON(resultsArr)) {
+		if (!this.validator.isValidJSON(resultsArr)) {
 			return; // the entire file is invalid, move onto next course in the for each loop.
 		}
 		let courseObject = JSON.parse(resultsArr);
@@ -167,7 +244,7 @@ export class DatasetProcessing {
 			}
 
 			let sectionValues = Object.values(jsonSection);
-			if (!this.isMissingAttribute(sectionValues)) {
+			if (!this.validator.isMissingAttribute(sectionValues)) {
 				processedDataset.push(jsonSection);
 			}
 		}
@@ -189,42 +266,6 @@ export class DatasetProcessing {
 		}
 	}
 
-	private isMissingAttribute(sectionValues: any[]) {
-		for (let value of sectionValues) {
-			if (value === undefined) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private isValidJSON(resultArr: string) {
-		try {
-			JSON.parse(resultArr);
-		} catch (e) {
-			return false;
-		}
-		return true;
-	}
-
-	public async isZip(content: string) {
-		let newZip = new JSZip();
-		try {
-			await newZip.loadAsync(content, {base64: true});
-			return true;
-		} catch (err) {
-			return false;
-		}
-	}
-
-	public isValidID(addedIds: string[]) {
-		if (this.datasetID.includes("_") || addedIds.includes(this.datasetID)) {
-			return false;
-		}
-		return this.datasetID.replace(/\s/g, "").length; // removes all whitespace in string
-		// then checks length. if 0, the string was all whitespace and we return false
-	}
-
 	public loadDataset() {
 		let dataset;
 		try {
@@ -235,5 +276,4 @@ export class DatasetProcessing {
 			throw new Error("Dataset does not exist");
 		}
 	}
-
 }

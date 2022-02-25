@@ -1,0 +1,27 @@
+{
+	"title": "Invalid key type in SUM (must be an mfield not an sfield)",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title",
+				"sum"
+			],
+			"ORDER": "courses_title"
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_title"
+			],
+			"APPLY": [
+				{
+					"sum": {
+						"SUM": "courses_instructor"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

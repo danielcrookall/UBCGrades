@@ -1,0 +1,34 @@
+{
+	"title": "ORDER keys array is empty",
+	"input": {
+		"WHERE": {
+			"LT": {
+				"courses_avg": 60
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_title",
+				"count"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": []
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_title"
+			],
+			"APPLY": [
+				{
+					"count": {
+						"COUNT": "courses_year"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
