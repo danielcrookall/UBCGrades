@@ -1,11 +1,12 @@
 import * as fs from "fs-extra";
 import {InsightError} from "./IInsightFacade";
+import {FilterValidation} from "./FilterValidation";
 
 export class QueryValidation {
 	private queryObj: any;
 	public datasetID: string;
-	private validSfields;
-	private validMfields;
+	protected validSfields;
+	protected validMfields;
 	private validApplyTokens;
 
 
@@ -16,50 +17,6 @@ export class QueryValidation {
 			"address", "type", "furniture", "href"];
 		this.validMfields = ["avg", "pass", "fail", "audit", "year", "lat", "lon", "seats"];
 		this.validApplyTokens = ["MAX", "MIN", "AVG", "COUNT", "SUM"];
-	}
-
-	public validateQuery() {
-		const filter = this.queryObj.WHERE;
-		const options = this.queryObj.OPTIONS;
-		this.queryValidation(this.queryObj); // checking here same reason as below
-		this.whereValidation(this.queryObj.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
-		this.optionsValidation(options);
-		this.validateFilter(filter);
-		this.validateTransformations(this.queryObj.TRANSFORMATIONS);
-		this.validateColumns(options.COLUMNS); // should validate transformations before columns.
-		this.validateOrder(options.ORDER, options.COLUMNS);
-	}
-
-	public validateFilter(filter: any) {
-		let filterKey = Object.keys(filter);
-
-		switch (filterKey[0]) {
-			case "IS":
-				this.validateIS(filter.IS);
-				break;
-			case "LT":
-				this.validateLT(filter.LT);
-				break;
-			case "GT":
-				this.validateGT(filter.GT);
-				break;
-			case "EQ":
-				this.validateEQ(filter.EQ);
-				break;
-			case "NOT":
-				this.validateNOT(filter.NOT);
-				break;
-			case "AND":
-				this.validateAND(filter.AND);
-				break;
-			case "OR":
-				this.validateOR(filter.OR);
-				break;
-			case undefined: // this is case where where filter is empty and we can just continue executing safely.
-				return;
-			default:
-				throw new Error("Illegal filter key");
-		}
 	}
 
 	public validateColumns(columns: any) {
@@ -194,7 +151,7 @@ export class QueryValidation {
 					}
 				} else { // order key must be an mkey or skey or an invalid applykey containing an underscore
 					if (!this.isValidKey(orderKey)) {
-						throw new Error(`Order key '${orderKey}' is not a mfield, sfield or applykey`);
+						throw new Error(`Order key '${orderKey}' is an invalid mfield, sfield or applykey`);
 					}
 				}
 				if (!columns.includes(orderKey)) {
@@ -250,89 +207,14 @@ export class QueryValidation {
 		return !key.includes("_");
 	}
 
-	private validateIS(filter: any) {
-		let skey = Object.keys(filter)[0]; // something like courses_instructor
-		if (!this.datasetIdMatches(skey)) {
-			throw new Error(`${skey} is inconsistent with datasetID`);
-		}
-		this.isValidSField(this.trimId(skey)); // removes dataset id
-		let inputString = Object.values(filter)[0]; // this is something like "313" or "313*"
-		if (typeof inputString !== "string") {
-			throw new Error("Invalid value type in IS, should be string");
-		}
-		if ((this.containsAsterix(inputString))) {
-			if (this.isAsterixInMiddle(inputString)) {
-				throw new Error("Wildcards can only be the first or last characters of input strings");
-			}
-		}
-	}
 
-	private validateLT(filter: any) {
-		this.validateMComparators(filter, "LT");
-	}
-
-	private validateGT(filter: any) {
-		this.validateMComparators(filter, "GT");
-	}
-
-	private validateEQ(filter: any) {
-		this.validateMComparators(filter, "EQ");
-	}
-
-	private validateMComparators(filter: any, mComptr: string) {
-		let mkey = Object.keys(filter)[0];
-		if (!this.datasetIdMatches(mkey)) {
-			throw new Error(`${mkey} is inconsistent with datasetID`);
-		}
-		this.isValidMField(this.trimId(mkey));
-
-		let number: any = Object.values(filter)[0];
-		if (isNaN(number)) {
-			throw new Error(`Invalid value type in ${mComptr}, should be number`);
-		}
-	}
-
-	private validateNOT(filter: any) {
-		this.validateFilter(filter);
-	}
-
-	private validateAND(filterArr: any) {
-		this.logicValidator(filterArr, "AND");
-	}
-
-	private validateOR(filterArr: any) {
-		this.logicValidator(filterArr, "OR");
-	}
-
-	private logicValidator(filterArr: any, logic: string) {
-		if (filterArr.length === 0) {
-			throw new Error(`Empty ${logic} clause not supported`);
-		}
-		for (const filter of filterArr) {
-			this.validateFilter(filter);
-		}
-
-	}
-
-	private trimId(str: any) {
+	protected trimId(str: any) {
 		let trimmedStr = (str.slice(str.indexOf("_") + 1)); // find the first underscore and return everything after
 		return trimmedStr;
 	}
 
-	private isAsterixInMiddle(str: any) {
-		for (let i = 0; i < str.length; i++) {
-			if (str.charAt(i) === "*" && i !== 0 && i !== str.length - 1) {
-				return true;
-			}
-		}
-		return false;
-	}
 
-	private containsAsterix(intputString: any) {
-		return (intputString.charAt(0) === "*" || intputString.charAt(intputString.length - 1) === "*");
-	}
-
-	private datasetIdMatches(key: string) { // checks if id passed in matches the field of the dataset ID.
+	protected datasetIdMatches(key: string) { // checks if id passed in matches the field of the dataset ID.
 		let datasetID = key.substring(0, key.indexOf("_"));
 		return (datasetID === this.datasetID);
 	}
@@ -354,17 +236,6 @@ export class QueryValidation {
 		}
 	}
 
-	private isValidSField(sfield: string) {
-		if (!this.validSfields.includes(sfield)) {
-			throw new Error("Invalid sfield");
-		}
-	}
-
-	private isValidMField(mfield: string) {
-		if (!this.validMfields.includes(mfield)) {
-			throw new Error("Invalid mfield");
-		}
-	}
 
 	public isEmpty(obj: any) {
 		return Object.keys(obj).length === 0;

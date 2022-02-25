@@ -74,7 +74,7 @@ export class DatasetProcessing {
 		let roomInfo: any[] = [];
 
 		await this.searchTree(htmlTree, buildingInfo, null);  // have no buildData info , maybe shouldn't be null though
-		for(let building of buildingInfo){
+		for (let building of buildingInfo) {
 			parsedRooms.push(this.getRooms(building, zip, roomInfo));
 		}
 		await Promise.all(parsedRooms);
@@ -82,7 +82,7 @@ export class DatasetProcessing {
 
 	}
 
-	private async getRooms(buildData: any, zip: JSZip, buildOrRoomData: any){
+	private async getRooms(buildData: any, zip: JSZip, buildOrRoomData: any) {
 		// console.log(building.rooms_href);
 		let roomTree: any;
 
@@ -94,7 +94,7 @@ export class DatasetProcessing {
 		}
 	}
 
-	private async searchTree(node: any, buildOrRoomData: any[], buildData: any ) {
+	private async searchTree(node: any, buildOrRoomData: any[], buildData: any) {
 		let promises = [];
 
 		if (node.childNodes === undefined) {
@@ -121,10 +121,10 @@ export class DatasetProcessing {
 				this.parseTd(trNode.childNodes[i], roomObj);
 			}
 		}
-		if(this.validator.validateBuildInfo(roomObj)){
-			return this.getGeolocation(roomObj[this.datasetID + "_address"]).then((geolocation: any)=> {
+		if (this.validator.validateBuildInfo(roomObj)) {
+			return this.getGeolocation(roomObj[this.datasetID + "_address"]).then((geolocation: any) => {
 
-				if(geolocation["error"] === undefined) { // API request completed successfully, building should be added
+				if (geolocation["error"] === undefined) { // API request completed successfully, building should be added
 					roomObj[this.datasetID + "_lat"] = geolocation["lat"];
 					roomObj[this.datasetID + "_lon"] = geolocation["lon"];
 					buildOrRoomData.push(roomObj);
@@ -132,7 +132,7 @@ export class DatasetProcessing {
 			});
 		} else {
 			if (this.validator.validateRoomInfo(roomObj)) {
-				if(roomObj[`${this.datasetID}_seats`] === ""){  // The default value for this field (should this value be missing in the dataset) is 0.
+				if (roomObj[`${this.datasetID}_seats`] === "") {  // The default value for this field (should this value be missing in the dataset) is 0.
 					roomObj[`${this.datasetID}_seats`] = 0;
 				}
 				let merged = {...roomObj, ...buildData};// merge room info with building info
@@ -144,7 +144,7 @@ export class DatasetProcessing {
 		}
 	}
 
-	private getGeolocation(address: any){
+	private getGeolocation(address: any) {
 		return new Promise((resolve, reject) => {
 			let encodedAddress = encodeURI(address);
 			let url = `http://cs310.students.cs.ubc.ca:11316/api/v1/project_team565/${encodedAddress}`;
@@ -194,7 +194,7 @@ export class DatasetProcessing {
 					break;
 				case "views-field views-field-field-room-number":
 					for (let childNode of tdNode.childNodes) {
-						if(childNode.nodeName === "a") {
+						if (childNode.nodeName === "a") {
 							for (let attr of childNode.attrs) {
 								if (attr.name === "href") {
 									obj[this.datasetID + "_href"] = attr.value; // this is the href for full details of specific room

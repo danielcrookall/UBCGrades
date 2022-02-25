@@ -13,6 +13,7 @@ import {PerformQueryFilters} from "./PerformQueryFilters";
 import {QueryValidation} from "./QueryValidation";
 import {DatasetValidation} from "./DatasetValidation";
 import {GroupByProcessing} from "./GroupByProcessing";
+import {FilterValidation} from "./FilterValidation";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -78,16 +79,23 @@ export default class InsightFacade implements IInsightFacade {
 		const performQuery = new PerformQueryFilters();
 		const groupProcessing = new GroupByProcessing();
 		let dataset: any[];
-		const queryObject = performQuery.getQueryObject(query);
-		const filter = queryObject.WHERE;
-		const options = queryObject.OPTIONS;
+		const queryObj = performQuery.getQueryObject(query);
+		const filter = queryObj.WHERE;
+		const options = queryObj.OPTIONS;
 		let queryResults: any;
 		let groupedResults: any;
 		let columnResults: any;
 		let orderedResults: any;
 		try {
-			const parser = new QueryValidation(queryObject);
-			parser.validateQuery();
+			const parser = new QueryValidation(queryObj);
+			const filterValidator = new FilterValidation(queryObj);
+			parser.queryValidation(queryObj); // checking here same reason as below
+			parser.whereValidation(queryObj.WHERE); // checking for validation of where block here, because it should only be checked once, not on subsequent iterations for nest queried like AND
+			parser.optionsValidation(options);
+			filterValidator.validateFilter(filter);
+			parser.validateTransformations(queryObj.TRANSFORMATIONS);
+			parser.validateColumns(options.COLUMNS); // should validate transformations before columns.
+			parser.validateOrder(options.ORDER, options.COLUMNS);
 			const dataProcessor = new DatasetProcessing(parser.datasetID);
 			dataset = dataProcessor.loadDataset();
 		} catch (err: any) {
@@ -96,7 +104,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		queryResults = performQuery.performFilter(filter, dataset);
-		groupedResults = groupProcessing.performTransformations(queryObject.TRANSFORMATIONS, queryResults);
+		groupedResults = groupProcessing.performTransformations(queryObj.TRANSFORMATIONS, queryResults);
 		if (groupedResults.length > 5000) {
 			// console.error("The result is too big. Only queries with a maximum of 5000 results are supported.");
 			return Promise.reject(new ResultTooLargeError());
@@ -104,8 +112,8 @@ export default class InsightFacade implements IInsightFacade {
 		columnResults = performQuery.performColumns(options, groupedResults);
 		orderedResults = performQuery.performOrder(options, columnResults); // note this will modify the array in place meaning column results will also be ordered automatically.
 
-		//
-		console.log(orderedResults);
+
+		// console.log(orderedResults);
 		// console.log(orderedResults.length);
 		return Promise.resolve(orderedResults);
 	}
