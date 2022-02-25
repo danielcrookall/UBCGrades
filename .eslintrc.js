@@ -205,4 +205,5 @@ module.exports = {
 	],
 		"max-statements-per-line": "error"
 }
+
 };
