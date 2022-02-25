@@ -8,7 +8,7 @@ export class GroupByProcessing {
 	}
 
 	public performTransformations(transformations: any, dataset: any[]) {
-		if(transformations === undefined) {
+		if (transformations === undefined) {
 			return dataset;
 		}
 		let groupKeys = transformations.GROUP; // an array of keys to group by, eg [rooms_shortname, rooms_uuid]
@@ -67,13 +67,6 @@ export class GroupByProcessing {
 		return objGroupArrs;
 	}
 
-	private getAggregatedObj(applyKey: string, aggregatedValue: number | string) {
-		const aggregatedResult = {
-			[applyKey]: aggregatedValue
-		};
-		return aggregatedResult;
-	}
-
 	private doMax(objGroups: any, key: string, applyKey: string) {
 		let groupArrs: any = Object.values(objGroups);
 		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
@@ -83,8 +76,9 @@ export class GroupByProcessing {
 					max = groupObj[key];
 				}
 			}
-			const aggregatedResult = this.getAggregatedObj(applyKey, max);
-			arr.push(aggregatedResult);
+			for (let groupObj of arr) {
+				groupObj[applyKey] = max;
+			}
 		}
 
 	}
@@ -98,8 +92,9 @@ export class GroupByProcessing {
 					min = groupObj[key];
 				}
 			}
-			const aggregatedResult = this.getAggregatedObj(applyKey, min);
-			arr.push(aggregatedResult);
+			for (let groupObj of arr) {
+				groupObj[applyKey] = min;
+			}
 		}
 
 	}
@@ -107,7 +102,7 @@ export class GroupByProcessing {
 	private doAvg(objGroups: any, key: string, applyKey: string) {
 		let groupArrs: any = Object.values(objGroups);
 		for (let arr of groupArrs) { // each array holds a list of objects that have been grouped together
-			let sum: Decimal = new Decimal (0);
+			let sum: Decimal = new Decimal(0);
 			const count = arr.length;
 			for (let groupObj of arr) {
 				let decimalValue = new Decimal(groupObj[key]);
@@ -115,8 +110,9 @@ export class GroupByProcessing {
 			}
 			let avg = sum.toNumber() / count;
 			let res = Number(avg.toFixed(2));
-			const aggregatedResult = this.getAggregatedObj(applyKey, res);
-			arr.push(aggregatedResult);
+			for (let groupObj of arr) { // add the new applykey (ie. overallAvg) to each of the group objs
+				groupObj[applyKey] = res;
+			}
 		}
 	}
 
@@ -127,8 +123,9 @@ export class GroupByProcessing {
 			for (let groupObj of arr) {
 				set.add(groupObj[key]);
 			}
-			const aggregatedResult = this.getAggregatedObj(applyKey, set.size);
-			arr.push(aggregatedResult);
+			for (let groupObj of arr) {
+				groupObj[applyKey] = set.size;
+			}
 		}
 	}
 
@@ -139,8 +136,9 @@ export class GroupByProcessing {
 			for (let groupObj of arr) {
 				sum += groupObj[key];
 			}
-			const aggregatedResult = this.getAggregatedObj(applyKey, Number(sum.toFixed(2)));
-			arr.push(aggregatedResult);
+			for (let groupObj of arr) {
+				groupObj[applyKey] = Number(sum.toFixed(2));
+			}
 		}
 	}
 

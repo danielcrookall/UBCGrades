@@ -1,0 +1,1198 @@
+{
+	"title": "Sum applied 2 times",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"courses_avg": 95
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_uuid",
+				"overallSum",
+				"SumRecalculated"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"overallSum"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_uuid"
+			],
+			"APPLY": [
+				{
+					"overallSum": {
+						"SUM": "courses_avg"
+					}
+				},
+				{
+					"SumRecalculated": {
+						"SUM": "courses_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_uuid": "19859",
+			"overallSum": 95.05,
+			"SumRecalculated": 95.05
+		},
+		{
+			"courses_uuid": "83047",
+			"overallSum": 95.07,
+			"SumRecalculated": 95.07
+		},
+		{
+			"courses_uuid": "47781",
+			"overallSum": 95.09,
+			"SumRecalculated": 95.09
+		},
+		{
+			"courses_uuid": "47782",
+			"overallSum": 95.09,
+			"SumRecalculated": 95.09
+		},
+		{
+			"courses_uuid": "67367",
+			"overallSum": 95.1,
+			"SumRecalculated": 95.1
+		},
+		{
+			"courses_uuid": "67368",
+			"overallSum": 95.1,
+			"SumRecalculated": 95.1
+		},
+		{
+			"courses_uuid": "47727",
+			"overallSum": 95.11,
+			"SumRecalculated": 95.11
+		},
+		{
+			"courses_uuid": "86901",
+			"overallSum": 95.11,
+			"SumRecalculated": 95.11
+		},
+		{
+			"courses_uuid": "29327",
+			"overallSum": 95.13,
+			"SumRecalculated": 95.13
+		},
+		{
+			"courses_uuid": "61390",
+			"overallSum": 95.13,
+			"SumRecalculated": 95.13
+		},
+		{
+			"courses_uuid": "61391",
+			"overallSum": 95.13,
+			"SumRecalculated": 95.13
+		},
+		{
+			"courses_uuid": "78717",
+			"overallSum": 95.13,
+			"SumRecalculated": 95.13
+		},
+		{
+			"courses_uuid": "78718",
+			"overallSum": 95.13,
+			"SumRecalculated": 95.13
+		},
+		{
+			"courses_uuid": "28972",
+			"overallSum": 95.14,
+			"SumRecalculated": 95.14
+		},
+		{
+			"courses_uuid": "49634",
+			"overallSum": 95.15,
+			"SumRecalculated": 95.15
+		},
+		{
+			"courses_uuid": "49635",
+			"overallSum": 95.15,
+			"SumRecalculated": 95.15
+		},
+		{
+			"courses_uuid": "73457",
+			"overallSum": 95.15,
+			"SumRecalculated": 95.15
+		},
+		{
+			"courses_uuid": "73458",
+			"overallSum": 95.15,
+			"SumRecalculated": 95.15
+		},
+		{
+			"courses_uuid": "13142",
+			"overallSum": 95.16,
+			"SumRecalculated": 95.16
+		},
+		{
+			"courses_uuid": "87253",
+			"overallSum": 95.16,
+			"SumRecalculated": 95.16
+		},
+		{
+			"courses_uuid": "3245",
+			"overallSum": 95.17,
+			"SumRecalculated": 95.17
+		},
+		{
+			"courses_uuid": "3246",
+			"overallSum": 95.17,
+			"SumRecalculated": 95.17
+		},
+		{
+			"courses_uuid": "67762",
+			"overallSum": 95.18,
+			"SumRecalculated": 95.18
+		},
+		{
+			"courses_uuid": "76476",
+			"overallSum": 95.19,
+			"SumRecalculated": 95.19
+		},
+		{
+			"courses_uuid": "76477",
+			"overallSum": 95.19,
+			"SumRecalculated": 95.19
+		},
+		{
+			"courses_uuid": "63432",
+			"overallSum": 95.2,
+			"SumRecalculated": 95.2
+		},
+		{
+			"courses_uuid": "63433",
+			"overallSum": 95.2,
+			"SumRecalculated": 95.2
+		},
+		{
+			"courses_uuid": "33773",
+			"overallSum": 95.22,
+			"SumRecalculated": 95.22
+		},
+		{
+			"courses_uuid": "33774",
+			"overallSum": 95.22,
+			"SumRecalculated": 95.22
+		},
+		{
+			"courses_uuid": "25740",
+			"overallSum": 95.25,
+			"SumRecalculated": 95.25
+		},
+		{
+			"courses_uuid": "25741",
+			"overallSum": 95.25,
+			"SumRecalculated": 95.25
+		},
+		{
+			"courses_uuid": "52199",
+			"overallSum": 95.26,
+			"SumRecalculated": 95.26
+		},
+		{
+			"courses_uuid": "52200",
+			"overallSum": 95.26,
+			"SumRecalculated": 95.26
+		},
+		{
+			"courses_uuid": "35950",
+			"overallSum": 95.27,
+			"SumRecalculated": 95.27
+		},
+		{
+			"courses_uuid": "35951",
+			"overallSum": 95.27,
+			"SumRecalculated": 95.27
+		},
+		{
+			"courses_uuid": "32070",
+			"overallSum": 95.29,
+			"SumRecalculated": 95.29
+		},
+		{
+			"courses_uuid": "32071",
+			"overallSum": 95.29,
+			"SumRecalculated": 95.29
+		},
+		{
+			"courses_uuid": "88117",
+			"overallSum": 95.29,
+			"SumRecalculated": 95.29
+		},
+		{
+			"courses_uuid": "88118",
+			"overallSum": 95.29,
+			"SumRecalculated": 95.29
+		},
+		{
+			"courses_uuid": "61426",
+			"overallSum": 95.3,
+			"SumRecalculated": 95.3
+		},
+		{
+			"courses_uuid": "45711",
+			"overallSum": 95.31,
+			"SumRecalculated": 95.31
+		},
+		{
+			"courses_uuid": "45712",
+			"overallSum": 95.31,
+			"SumRecalculated": 95.31
+		},
+		{
+			"courses_uuid": "61452",
+			"overallSum": 95.31,
+			"SumRecalculated": 95.31
+		},
+		{
+			"courses_uuid": "61453",
+			"overallSum": 95.31,
+			"SumRecalculated": 95.31
+		},
+		{
+			"courses_uuid": "78576",
+			"overallSum": 95.32,
+			"SumRecalculated": 95.32
+		},
+		{
+			"courses_uuid": "78577",
+			"overallSum": 95.32,
+			"SumRecalculated": 95.32
+		},
+		{
+			"courses_uuid": "3272",
+			"overallSum": 95.33,
+			"SumRecalculated": 95.33
+		},
+		{
+			"courses_uuid": "76473",
+			"overallSum": 95.33,
+			"SumRecalculated": 95.33
+		},
+		{
+			"courses_uuid": "5692",
+			"overallSum": 95.36,
+			"SumRecalculated": 95.36
+		},
+		{
+			"courses_uuid": "5693",
+			"overallSum": 95.36,
+			"SumRecalculated": 95.36
+		},
+		{
+			"courses_uuid": "70475",
+			"overallSum": 95.36,
+			"SumRecalculated": 95.36
+		},
+		{
+			"courses_uuid": "86841",
+			"overallSum": 95.36,
+			"SumRecalculated": 95.36
+		},
+		{
+			"courses_uuid": "86842",
+			"overallSum": 95.36,
+			"SumRecalculated": 95.36
+		},
+		{
+			"courses_uuid": "66657",
+			"overallSum": 95.37,
+			"SumRecalculated": 95.37
+		},
+		{
+			"courses_uuid": "66658",
+			"overallSum": 95.37,
+			"SumRecalculated": 95.37
+		},
+		{
+			"courses_uuid": "7254",
+			"overallSum": 95.38,
+			"SumRecalculated": 95.38
+		},
+		{
+			"courses_uuid": "61425",
+			"overallSum": 95.41,
+			"SumRecalculated": 95.41
+		},
+		{
+			"courses_uuid": "509",
+			"overallSum": 95.43,
+			"SumRecalculated": 95.43
+		},
+		{
+			"courses_uuid": "510",
+			"overallSum": 95.43,
+			"SumRecalculated": 95.43
+		},
+		{
+			"courses_uuid": "80143",
+			"overallSum": 95.43,
+			"SumRecalculated": 95.43
+		},
+		{
+			"courses_uuid": "96214",
+			"overallSum": 95.43,
+			"SumRecalculated": 95.43
+		},
+		{
+			"courses_uuid": "96215",
+			"overallSum": 95.43,
+			"SumRecalculated": 95.43
+		},
+		{
+			"courses_uuid": "6396",
+			"overallSum": 95.44,
+			"SumRecalculated": 95.44
+		},
+		{
+			"courses_uuid": "89498",
+			"overallSum": 95.44,
+			"SumRecalculated": 95.44
+		},
+		{
+			"courses_uuid": "44402",
+			"overallSum": 95.47,
+			"SumRecalculated": 95.47
+		},
+		{
+			"courses_uuid": "56550",
+			"overallSum": 95.47,
+			"SumRecalculated": 95.47
+		},
+		{
+			"courses_uuid": "56551",
+			"overallSum": 95.47,
+			"SumRecalculated": 95.47
+		},
+		{
+			"courses_uuid": "38143",
+			"overallSum": 95.5,
+			"SumRecalculated": 95.5
+		},
+		{
+			"courses_uuid": "38144",
+			"overallSum": 95.5,
+			"SumRecalculated": 95.5
+		},
+		{
+			"courses_uuid": "7932",
+			"overallSum": 95.54,
+			"SumRecalculated": 95.54
+		},
+		{
+			"courses_uuid": "7933",
+			"overallSum": 95.54,
+			"SumRecalculated": 95.54
+		},
+		{
+			"courses_uuid": "13938",
+			"overallSum": 95.56,
+			"SumRecalculated": 95.56
+		},
+		{
+			"courses_uuid": "13939",
+			"overallSum": 95.56,
+			"SumRecalculated": 95.56
+		},
+		{
+			"courses_uuid": "21700",
+			"overallSum": 95.58,
+			"SumRecalculated": 95.58
+		},
+		{
+			"courses_uuid": "21701",
+			"overallSum": 95.58,
+			"SumRecalculated": 95.58
+		},
+		{
+			"courses_uuid": "80144",
+			"overallSum": 95.6,
+			"SumRecalculated": 95.6
+		},
+		{
+			"courses_uuid": "96832",
+			"overallSum": 95.63,
+			"SumRecalculated": 95.63
+		},
+		{
+			"courses_uuid": "7255",
+			"overallSum": 95.67,
+			"SumRecalculated": 95.67
+		},
+		{
+			"courses_uuid": "38145",
+			"overallSum": 95.67,
+			"SumRecalculated": 95.67
+		},
+		{
+			"courses_uuid": "38146",
+			"overallSum": 95.67,
+			"SumRecalculated": 95.67
+		},
+		{
+			"courses_uuid": "90202",
+			"overallSum": 95.67,
+			"SumRecalculated": 95.67
+		},
+		{
+			"courses_uuid": "90203",
+			"overallSum": 95.67,
+			"SumRecalculated": 95.67
+		},
+		{
+			"courses_uuid": "71155",
+			"overallSum": 95.7,
+			"SumRecalculated": 95.7
+		},
+		{
+			"courses_uuid": "71156",
+			"overallSum": 95.7,
+			"SumRecalculated": 95.7
+		},
+		{
+			"courses_uuid": "28944",
+			"overallSum": 95.72,
+			"SumRecalculated": 95.72
+		},
+		{
+			"courses_uuid": "78257",
+			"overallSum": 95.75,
+			"SumRecalculated": 95.75
+		},
+		{
+			"courses_uuid": "78258",
+			"overallSum": 95.75,
+			"SumRecalculated": 95.75
+		},
+		{
+			"courses_uuid": "85914",
+			"overallSum": 95.75,
+			"SumRecalculated": 95.75
+		},
+		{
+			"courses_uuid": "85915",
+			"overallSum": 95.75,
+			"SumRecalculated": 95.75
+		},
+		{
+			"courses_uuid": "65068",
+			"overallSum": 95.76,
+			"SumRecalculated": 95.76
+		},
+		{
+			"courses_uuid": "6683",
+			"overallSum": 95.78,
+			"SumRecalculated": 95.78
+		},
+		{
+			"courses_uuid": "6684",
+			"overallSum": 95.78,
+			"SumRecalculated": 95.78
+		},
+		{
+			"courses_uuid": "50979",
+			"overallSum": 95.78,
+			"SumRecalculated": 95.78
+		},
+		{
+			"courses_uuid": "50980",
+			"overallSum": 95.78,
+			"SumRecalculated": 95.78
+		},
+		{
+			"courses_uuid": "35988",
+			"overallSum": 95.83,
+			"SumRecalculated": 95.83
+		},
+		{
+			"courses_uuid": "35989",
+			"overallSum": 95.83,
+			"SumRecalculated": 95.83
+		},
+		{
+			"courses_uuid": "49682",
+			"overallSum": 95.86,
+			"SumRecalculated": 95.86
+		},
+		{
+			"courses_uuid": "49683",
+			"overallSum": 95.86,
+			"SumRecalculated": 95.86
+		},
+		{
+			"courses_uuid": "13141",
+			"overallSum": 95.9,
+			"SumRecalculated": 95.9
+		},
+		{
+			"courses_uuid": "43299",
+			"overallSum": 95.93,
+			"SumRecalculated": 95.93
+		},
+		{
+			"courses_uuid": "43300",
+			"overallSum": 95.93,
+			"SumRecalculated": 95.93
+		},
+		{
+			"courses_uuid": "18718",
+			"overallSum": 95.94,
+			"SumRecalculated": 95.94
+		},
+		{
+			"courses_uuid": "22441",
+			"overallSum": 95.95,
+			"SumRecalculated": 95.95
+		},
+		{
+			"courses_uuid": "16985",
+			"overallSum": 95.96,
+			"SumRecalculated": 95.96
+		},
+		{
+			"courses_uuid": "16986",
+			"overallSum": 95.96,
+			"SumRecalculated": 95.96
+		},
+		{
+			"courses_uuid": "19858",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "20190",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "26254",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "26258",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "29285",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "33374",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "33760",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "33761",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "46409",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "59528",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "70959",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "71164",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "78244",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "78245",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "78270",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "92879",
+			"overallSum": 96,
+			"SumRecalculated": 96
+		},
+		{
+			"courses_uuid": "3148",
+			"overallSum": 96.03,
+			"SumRecalculated": 96.03
+		},
+		{
+			"courses_uuid": "3149",
+			"overallSum": 96.03,
+			"SumRecalculated": 96.03
+		},
+		{
+			"courses_uuid": "59539",
+			"overallSum": 96.06,
+			"SumRecalculated": 96.06
+		},
+		{
+			"courses_uuid": "59540",
+			"overallSum": 96.06,
+			"SumRecalculated": 96.06
+		},
+		{
+			"courses_uuid": "43325",
+			"overallSum": 96.09,
+			"SumRecalculated": 96.09
+		},
+		{
+			"courses_uuid": "77290",
+			"overallSum": 96.1,
+			"SumRecalculated": 96.1
+		},
+		{
+			"courses_uuid": "77291",
+			"overallSum": 96.1,
+			"SumRecalculated": 96.1
+		},
+		{
+			"courses_uuid": "68539",
+			"overallSum": 96.11,
+			"SumRecalculated": 96.11
+		},
+		{
+			"courses_uuid": "86023",
+			"overallSum": 96.15,
+			"SumRecalculated": 96.15
+		},
+		{
+			"courses_uuid": "86024",
+			"overallSum": 96.15,
+			"SumRecalculated": 96.15
+		},
+		{
+			"courses_uuid": "33375",
+			"overallSum": 96.16,
+			"SumRecalculated": 96.16
+		},
+		{
+			"courses_uuid": "38152",
+			"overallSum": 96.21,
+			"SumRecalculated": 96.21
+		},
+		{
+			"courses_uuid": "38153",
+			"overallSum": 96.21,
+			"SumRecalculated": 96.21
+		},
+		{
+			"courses_uuid": "76254",
+			"overallSum": 96.21,
+			"SumRecalculated": 96.21
+		},
+		{
+			"courses_uuid": "76285",
+			"overallSum": 96.23,
+			"SumRecalculated": 96.23
+		},
+		{
+			"courses_uuid": "3181",
+			"overallSum": 96.24,
+			"SumRecalculated": 96.24
+		},
+		{
+			"courses_uuid": "2667",
+			"overallSum": 96.25,
+			"SumRecalculated": 96.25
+		},
+		{
+			"courses_uuid": "2668",
+			"overallSum": 96.25,
+			"SumRecalculated": 96.25
+		},
+		{
+			"courses_uuid": "90206",
+			"overallSum": 96.25,
+			"SumRecalculated": 96.25
+		},
+		{
+			"courses_uuid": "90207",
+			"overallSum": 96.25,
+			"SumRecalculated": 96.25
+		},
+		{
+			"courses_uuid": "84887",
+			"overallSum": 96.27,
+			"SumRecalculated": 96.27
+		},
+		{
+			"courses_uuid": "84888",
+			"overallSum": 96.27,
+			"SumRecalculated": 96.27
+		},
+		{
+			"courses_uuid": "33373",
+			"overallSum": 96.33,
+			"SumRecalculated": 96.33
+		},
+		{
+			"courses_uuid": "34240",
+			"overallSum": 96.33,
+			"SumRecalculated": 96.33
+		},
+		{
+			"courses_uuid": "44426",
+			"overallSum": 96.33,
+			"SumRecalculated": 96.33
+		},
+		{
+			"courses_uuid": "44427",
+			"overallSum": 96.33,
+			"SumRecalculated": 96.33
+		},
+		{
+			"courses_uuid": "55026",
+			"overallSum": 96.36,
+			"SumRecalculated": 96.36
+		},
+		{
+			"courses_uuid": "55027",
+			"overallSum": 96.36,
+			"SumRecalculated": 96.36
+		},
+		{
+			"courses_uuid": "75176",
+			"overallSum": 96.4,
+			"SumRecalculated": 96.4
+		},
+		{
+			"courses_uuid": "75177",
+			"overallSum": 96.4,
+			"SumRecalculated": 96.4
+		},
+		{
+			"courses_uuid": "5351",
+			"overallSum": 96.44,
+			"SumRecalculated": 96.44
+		},
+		{
+			"courses_uuid": "5352",
+			"overallSum": 96.44,
+			"SumRecalculated": 96.44
+		},
+		{
+			"courses_uuid": "59203",
+			"overallSum": 96.46,
+			"SumRecalculated": 96.46
+		},
+		{
+			"courses_uuid": "59204",
+			"overallSum": 96.46,
+			"SumRecalculated": 96.46
+		},
+		{
+			"courses_uuid": "45905",
+			"overallSum": 96.47,
+			"SumRecalculated": 96.47
+		},
+		{
+			"courses_uuid": "45906",
+			"overallSum": 96.47,
+			"SumRecalculated": 96.47
+		},
+		{
+			"courses_uuid": "57511",
+			"overallSum": 96.47,
+			"SumRecalculated": 96.47
+		},
+		{
+			"courses_uuid": "57512",
+			"overallSum": 96.47,
+			"SumRecalculated": 96.47
+		},
+		{
+			"courses_uuid": "17267",
+			"overallSum": 96.5,
+			"SumRecalculated": 96.5
+		},
+		{
+			"courses_uuid": "17268",
+			"overallSum": 96.5,
+			"SumRecalculated": 96.5
+		},
+		{
+			"courses_uuid": "78041",
+			"overallSum": 96.5,
+			"SumRecalculated": 96.5
+		},
+		{
+			"courses_uuid": "78042",
+			"overallSum": 96.5,
+			"SumRecalculated": 96.5
+		},
+		{
+			"courses_uuid": "67760",
+			"overallSum": 96.59,
+			"SumRecalculated": 96.59
+		},
+		{
+			"courses_uuid": "47427",
+			"overallSum": 96.64,
+			"SumRecalculated": 96.64
+		},
+		{
+			"courses_uuid": "47428",
+			"overallSum": 96.64,
+			"SumRecalculated": 96.64
+		},
+		{
+			"courses_uuid": "93115",
+			"overallSum": 96.73,
+			"SumRecalculated": 96.73
+		},
+		{
+			"courses_uuid": "93116",
+			"overallSum": 96.73,
+			"SumRecalculated": 96.73
+		},
+		{
+			"courses_uuid": "68029",
+			"overallSum": 96.8,
+			"SumRecalculated": 96.8
+		},
+		{
+			"courses_uuid": "68030",
+			"overallSum": 96.8,
+			"SumRecalculated": 96.8
+		},
+		{
+			"courses_uuid": "4011",
+			"overallSum": 96.83,
+			"SumRecalculated": 96.83
+		},
+		{
+			"courses_uuid": "4012",
+			"overallSum": 96.83,
+			"SumRecalculated": 96.83
+		},
+		{
+			"courses_uuid": "44372",
+			"overallSum": 96.9,
+			"SumRecalculated": 96.9
+		},
+		{
+			"courses_uuid": "44373",
+			"overallSum": 96.9,
+			"SumRecalculated": 96.9
+		},
+		{
+			"courses_uuid": "61632",
+			"overallSum": 96.9,
+			"SumRecalculated": 96.9
+		},
+		{
+			"courses_uuid": "61633",
+			"overallSum": 96.9,
+			"SumRecalculated": 96.9
+		},
+		{
+			"courses_uuid": "26287",
+			"overallSum": 96.94,
+			"SumRecalculated": 96.94
+		},
+		{
+			"courses_uuid": "26288",
+			"overallSum": 96.94,
+			"SumRecalculated": 96.94
+		},
+		{
+			"courses_uuid": "65066",
+			"overallSum": 96.96,
+			"SumRecalculated": 96.96
+		},
+		{
+			"courses_uuid": "26255",
+			"overallSum": 97,
+			"SumRecalculated": 97
+		},
+		{
+			"courses_uuid": "54846",
+			"overallSum": 97,
+			"SumRecalculated": 97
+		},
+		{
+			"courses_uuid": "76310",
+			"overallSum": 97,
+			"SumRecalculated": 97
+		},
+		{
+			"courses_uuid": "73173",
+			"overallSum": 97.09,
+			"SumRecalculated": 97.09
+		},
+		{
+			"courses_uuid": "73174",
+			"overallSum": 97.09,
+			"SumRecalculated": 97.09
+		},
+		{
+			"courses_uuid": "86962",
+			"overallSum": 97.09,
+			"SumRecalculated": 97.09
+		},
+		{
+			"courses_uuid": "86963",
+			"overallSum": 97.09,
+			"SumRecalculated": 97.09
+		},
+		{
+			"courses_uuid": "32014",
+			"overallSum": 97.25,
+			"SumRecalculated": 97.25
+		},
+		{
+			"courses_uuid": "32015",
+			"overallSum": 97.25,
+			"SumRecalculated": 97.25
+		},
+		{
+			"courses_uuid": "35870",
+			"overallSum": 97.29,
+			"SumRecalculated": 97.29
+		},
+		{
+			"courses_uuid": "35871",
+			"overallSum": 97.29,
+			"SumRecalculated": 97.29
+		},
+		{
+			"courses_uuid": "96261",
+			"overallSum": 97.33,
+			"SumRecalculated": 97.33
+		},
+		{
+			"courses_uuid": "96262",
+			"overallSum": 97.33,
+			"SumRecalculated": 97.33
+		},
+		{
+			"courses_uuid": "28943",
+			"overallSum": 97.41,
+			"SumRecalculated": 97.41
+		},
+		{
+			"courses_uuid": "76311",
+			"overallSum": 97.41,
+			"SumRecalculated": 97.41
+		},
+		{
+			"courses_uuid": "87779",
+			"overallSum": 97.47,
+			"SumRecalculated": 97.47
+		},
+		{
+			"courses_uuid": "87780",
+			"overallSum": 97.47,
+			"SumRecalculated": 97.47
+		},
+		{
+			"courses_uuid": "73165",
+			"overallSum": 97.48,
+			"SumRecalculated": 97.48
+		},
+		{
+			"courses_uuid": "73166",
+			"overallSum": 97.48,
+			"SumRecalculated": 97.48
+		},
+		{
+			"courses_uuid": "50495",
+			"overallSum": 97.5,
+			"SumRecalculated": 97.5
+		},
+		{
+			"courses_uuid": "73665",
+			"overallSum": 97.53,
+			"SumRecalculated": 97.53
+		},
+		{
+			"courses_uuid": "73666",
+			"overallSum": 97.53,
+			"SumRecalculated": 97.53
+		},
+		{
+			"courses_uuid": "86966",
+			"overallSum": 97.67,
+			"SumRecalculated": 97.67
+		},
+		{
+			"courses_uuid": "3228",
+			"overallSum": 97.69,
+			"SumRecalculated": 97.69
+		},
+		{
+			"courses_uuid": "76309",
+			"overallSum": 97.78,
+			"SumRecalculated": 97.78
+		},
+		{
+			"courses_uuid": "46405",
+			"overallSum": 98,
+			"SumRecalculated": 98
+		},
+		{
+			"courses_uuid": "46412",
+			"overallSum": 98,
+			"SumRecalculated": 98
+		},
+		{
+			"courses_uuid": "33779",
+			"overallSum": 98.08,
+			"SumRecalculated": 98.08
+		},
+		{
+			"courses_uuid": "73638",
+			"overallSum": 98.21,
+			"SumRecalculated": 98.21
+		},
+		{
+			"courses_uuid": "73639",
+			"overallSum": 98.21,
+			"SumRecalculated": 98.21
+		},
+		{
+			"courses_uuid": "33781",
+			"overallSum": 98.36,
+			"SumRecalculated": 98.36
+		},
+		{
+			"courses_uuid": "49677",
+			"overallSum": 98.45,
+			"SumRecalculated": 98.45
+		},
+		{
+			"courses_uuid": "49678",
+			"overallSum": 98.45,
+			"SumRecalculated": 98.45
+		},
+		{
+			"courses_uuid": "88151",
+			"overallSum": 98.5,
+			"SumRecalculated": 98.5
+		},
+		{
+			"courses_uuid": "88152",
+			"overallSum": 98.5,
+			"SumRecalculated": 98.5
+		},
+		{
+			"courses_uuid": "29255",
+			"overallSum": 98.58,
+			"SumRecalculated": 98.58
+		},
+		{
+			"courses_uuid": "29256",
+			"overallSum": 98.58,
+			"SumRecalculated": 98.58
+		},
+		{
+			"courses_uuid": "96250",
+			"overallSum": 98.58,
+			"SumRecalculated": 98.58
+		},
+		{
+			"courses_uuid": "96251",
+			"overallSum": 98.58,
+			"SumRecalculated": 98.58
+		},
+		{
+			"courses_uuid": "33780",
+			"overallSum": 98.7,
+			"SumRecalculated": 98.7
+		},
+		{
+			"courses_uuid": "15343",
+			"overallSum": 98.71,
+			"SumRecalculated": 98.71
+		},
+		{
+			"courses_uuid": "15344",
+			"overallSum": 98.71,
+			"SumRecalculated": 98.71
+		},
+		{
+			"courses_uuid": "10235",
+			"overallSum": 98.75,
+			"SumRecalculated": 98.75
+		},
+		{
+			"courses_uuid": "10236",
+			"overallSum": 98.75,
+			"SumRecalculated": 98.75
+		},
+		{
+			"courses_uuid": "44816",
+			"overallSum": 98.76,
+			"SumRecalculated": 98.76
+		},
+		{
+			"courses_uuid": "44817",
+			"overallSum": 98.76,
+			"SumRecalculated": 98.76
+		},
+		{
+			"courses_uuid": "6320",
+			"overallSum": 98.8,
+			"SumRecalculated": 98.8
+		},
+		{
+			"courses_uuid": "65069",
+			"overallSum": 98.98,
+			"SumRecalculated": 98.98
+		},
+		{
+			"courses_uuid": "65070",
+			"overallSum": 98.98,
+			"SumRecalculated": 98.98
+		},
+		{
+			"courses_uuid": "26777",
+			"overallSum": 99.19,
+			"SumRecalculated": 99.19
+		},
+		{
+			"courses_uuid": "5373",
+			"overallSum": 99.78,
+			"SumRecalculated": 99.78
+		},
+		{
+			"courses_uuid": "5374",
+			"overallSum": 99.78,
+			"SumRecalculated": 99.78
+		}
+	]
+}

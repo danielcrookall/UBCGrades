@@ -1,0 +1,168 @@
+{
+	"title": "Count applied 2 times",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"courses_avg": 98
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"courses_uuid",
+				"overallCount",
+				"CountRecalculated"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"overallCount"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"courses_uuid"
+			],
+			"APPLY": [
+				{
+					"overallCount": {
+						"COUNT": "courses_avg"
+					}
+				},
+				{
+					"CountRecalculated": {
+						"COUNT": "courses_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"courses_uuid": "5373",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "5374",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "6320",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "10235",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "10236",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "15343",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "15344",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "26777",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "29255",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "29256",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "33779",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "33780",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "33781",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "44816",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "44817",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "49677",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "49678",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "65069",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "65070",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "73638",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "73639",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "88151",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "88152",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "96250",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		},
+		{
+			"courses_uuid": "96251",
+			"overallCount": 1,
+			"CountRecalculated": 1
+		}
+	]
+}
