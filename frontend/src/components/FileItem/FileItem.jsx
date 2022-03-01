@@ -21,7 +21,7 @@ const FileItem = ({file, deleteFile}) => {
 				}
 				{!file.isUploading &&
 				<FontAwesomeIcon
-					icon={faTrash}
+					icon={faTrash} className="fa-trash"
 					onClick={() => deleteFile(file.name)}/>
 				}
 			</div>

@@ -1,5 +1,5 @@
 * {
-	font-family: 'Open-Sans', sans-serif;
+	font-family: Quicksand,sans-serif;
 }
 
 .upload-card {
@@ -13,6 +13,7 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+
 }
 
 .file-inputs {
@@ -66,6 +67,39 @@
 	cursor: pointer;
 }
 
+.buttons {
+	display: flex;
+	flex-direction: column;
+}
+
+.default-courses-button {
+	padding: 10px 50px;
+	background-color: #32527b;
+	color: white;
+	cursor: pointer;
+	font-family: Quicksand,sans-serif;
+}
+
+.default-rooms-button {
+	padding: 10px 50px;
+	background-color: #32527b;
+	color: white;
+	cursor: pointer;
+	font-family: Quicksand,sans-serif;
+}
+
+
+.default-courses-button:hover {
+	background-color: #233956;
+
+}
+.default-rooms-button:hover {
+	background-color: #233956;
+}
+
+.main{
+	font-weight: bold;
+}
 
 
 

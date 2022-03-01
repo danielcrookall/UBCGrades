@@ -16,6 +16,10 @@ li {
 	margin-right: 0.8em;
 }
 
+.fa-trash:hover{
+	color: red;
+}
+
 .actions {
 	justify-self: flex-end;
 	cursor: pointer;

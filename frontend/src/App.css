@@ -1,7 +1,22 @@
-.title{
-
+.upload-title{
+	position: relative;
+	left: 150px;
 	font-weight: bold;
 	font-size: 1.5em;
+	font-family: Quicksand,sans-serif;
+}
+
+.title{
+color: white;
 
 }
+
+.title-container{
+	display: flex;
+	justify-content: center;
+	background-color: #32527b;
+	border-radius: 25px;
+
+}
+
 

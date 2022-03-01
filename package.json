@@ -50,7 +50,11 @@
 		"lint": "eslint src test --ext .ts",
 		"fix": "yarn lint --fix",
 		"frontend": "yarn --cwd frontend run start",
-		"backend": "nodemon backend/app.js",
+		"backend": "nodemon src/backend/app.ts",
 		"start": "concurrently \"yarn run backend\" \"yarn run frontend\""
+	},
+
+	"nodemonConfig": {
+		"ignore": ["./data", "./src/backend/uploads", "./src/backend/defaultDatasets"]
 	}
 }
