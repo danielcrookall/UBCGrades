@@ -1,22 +1,63 @@
 .upload-title{
-	position: relative;
-	left: 150px;
+
 	font-weight: bold;
 	font-size: 1.5em;
 	font-family: Quicksand,sans-serif;
+
 }
 
 .title{
 color: white;
+	margin: 0;
+	justify-content: center;
+	font-size: 3em;
+}
+
+.header{
+	background-color: #32527b;
+	min-height: 50px;
+}
+
+.main{
+	background-color: #678;
+	min-height: 2000px;
+	display: flex;
+	flex-flow: wrap;
+}
+
+
+.footer{
+	background-color: #456;
+	min-height: 50px;
+}
+
+.aside-1{
+	flex: 0 0 500px;
+	background-color: white;
 
 }
 
-.title-container{
+.aside-2{
+	flex: 1 0 auto;
+	background-color: #ffcccb ;
+}
+
+.article{
+	flex: 0 0 750px;
+	background-color: skyblue;
+}
+
+.grades-table {
 	display: flex;
 	justify-content: center;
-	background-color: #32527b;
-	border-radius: 25px;
+	font-weight: bold;
+	font-size: 300%;
+	color: white;
 
 }
+
+
+
+
 
 

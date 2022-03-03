@@ -5,7 +5,23 @@ import './FileUpload.css'
 import axios from "axios";
 
 
-const FileUpload = ({files, setFiles, removeFile}) => {
+const FileUpload = ({files, setFiles, removeFile, deptList, setDeptList}) => {
+
+
+
+	const setDepartments = ()=> {
+		const deptTitles = [];
+		axios.get('/deptList')
+			.then((res) => {
+				const deptObjs = res.data;
+				deptObjs.map((dept) => {
+					deptTitles.push(dept.courses_dept);
+				})
+				setDeptList([...deptList, ...deptTitles]);
+
+			})
+	}
+
 
 	const uploadHandler = (event) => {
 
@@ -29,6 +45,7 @@ const FileUpload = ({files, setFiles, removeFile}) => {
 					file.isUploading = false;
 					setFiles([...files, file])
 					event.target.value = '' //necessary so user can upload the same file twice in a row if they want.
+					setDepartments();
 				})
 				.catch((err) => {
 					console.error(`Failed to upload ${err}`);
@@ -49,13 +66,12 @@ const FileUpload = ({files, setFiles, removeFile}) => {
 
 	const defaultUploadHandler = (event) => {
 		const file = {};
-		console.log(event.target.className)
-		if (event.target.className === "default-courses-button") {
+
+		if (event.target.name === "default-courses-button") {
 			file.name = "courses.zip";
 		} else {
 			file.name = "rooms.zip";
 		}
-
 
 		if (isDuplicate(file)) {
 			alert("You can't upload duplicate files");
@@ -65,6 +81,7 @@ const FileUpload = ({files, setFiles, removeFile}) => {
 			axios.put(`/defaultUpload/${file.name}`).then((res) => {
 				file.isUploading = false;
 				setFiles([...files, file])
+				setDepartments();
 			})
 				.catch((err) => {
 					console.error(`Failed to upload ${err}`);
@@ -76,7 +93,6 @@ const FileUpload = ({files, setFiles, removeFile}) => {
 
 	return (
 		<div>
-			<div className="upload-card">
 				<div className="file-inputs">
 					<input type="file" className="upload-box" onChange={uploadHandler}/>
 					<button className="upload-button">
@@ -86,17 +102,16 @@ const FileUpload = ({files, setFiles, removeFile}) => {
 						Choose File
 					</button>
 				</div>
-				<p className="main"> Upload a courses or rooms zip file.</p>
-				<p className="main"> Or select a default dataset below. </p>
+			<p>Upload a courses or rooms zip or select a default file below.</p>
+
 				<div className="buttons">
-				<button onClick={defaultUploadHandler} className="default-courses-button">
+				<button name="default-courses-button" onClick={defaultUploadHandler} className="default-button">
 					courses.zip
 				</button>
-				<button onClick={defaultUploadHandler} className="default-rooms-button">
+				<button name="default-rooms-button" onClick={defaultUploadHandler} className="default-button">
 					rooms.zip
 				</button>
 					</div>
-			</div>
 
 		</div>
 	)

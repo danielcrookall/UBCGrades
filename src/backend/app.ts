@@ -52,7 +52,7 @@ app.put("/defaultUpload/:name", async (req: any, res: any) => {
 	const {name} = req.params;
 	let dataset;
 	try {
-		if(name === "courses.zip") {
+		if (name === "courses.zip") {
 			console.log("courses being added");
 			dataset = fs.readFileSync("src/backend/defaultDatasets/courses.zip").toString("base64");
 			await facade.addDataset("courses", dataset, InsightDatasetKind.Courses);
@@ -93,6 +93,85 @@ app.delete("/clearData", (req: any, res: any) => {
 		return res.status(500).send(err);
 	}
 	return res.status(200).json({result: true, msg: "data directory cleared"});
+
+});
+
+app.get("/deptList", async (req: any, res: any) => {
+	let deptArr;
+	try {
+		deptArr = await facade.performQuery({
+			WHERE: {}
+			,
+			OPTIONS: {
+				COLUMNS: [
+					"courses_dept"
+				],
+				ORDER: {
+					dir: "UP",
+					keys: [
+						"courses_dept"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_dept"
+				],
+				APPLY: []
+			}
+		}
+		);
+	} catch (err: any) {
+		console.error("Failed to fetch departments from dataset");
+		return res.status(500).send(err);
+	}
+	return res.status(200).json(deptArr);
+});
+
+app.get("/boosters/:dept", async (req: any, res: any) => {
+
+	let deptArr;
+	try {
+		deptArr = await facade.performQuery({
+			WHERE: {
+				IS: {
+					courses_dept: `${req.params.dept}`
+				}
+			},
+			OPTIONS: {
+				COLUMNS: [
+					"courses_dept",
+					"courses_id",
+					"avg"
+				],
+				ORDER: {
+					dir: "DOWN",
+					keys: [
+						"avg"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_dept",
+					"courses_id"
+				],
+				APPLY: [
+					{
+						avg: {
+							AVG: "courses_avg"
+						}
+					}
+				]
+			}
+		}
+
+		);
+	} catch (err: any) {
+		console.error("Failed to get GPA boosters");
+		return res.status(500).send(err);
+	}
+	return res.status(200).json(deptArr);
 
 });
 

@@ -24,7 +24,7 @@
 
 .upload-box {
 	position: relative;
-	max-width: 200px;
+	max-width: 500px;
 	height: 46px;
 	z-index: 2;
 	cursor: pointer;
@@ -49,7 +49,7 @@
 	border-radius: 4px;
 	border: none;
 	outline: none;
-	box-shadow: 0 8px 24px rgba(149, 157, 165, 0.5);
+
 }
 
 .upload-icon {
@@ -57,7 +57,7 @@
 	height: 1.5em;
 	padding: 0.4em;
 	background-color: #fff;
-	color: #f55e30;
+	color: #32527b;
 	border-radius: 50%;
 	display: flex;
 	justify-content: center;
@@ -72,35 +72,22 @@
 	flex-direction: column;
 }
 
-.default-courses-button {
-	padding: 10px 50px;
-	background-color: #32527b;
-	color: white;
-	cursor: pointer;
-	font-family: Quicksand,sans-serif;
-}
 
-.default-rooms-button {
-	padding: 10px 50px;
-	background-color: #32527b;
-	color: white;
-	cursor: pointer;
-	font-family: Quicksand,sans-serif;
-}
-
-
-.default-courses-button:hover {
-	background-color: #233956;
-
-}
-.default-rooms-button:hover {
-	background-color: #233956;
-}
 
 .main{
 	font-weight: bold;
 }
 
+.default-button{
+	padding: 10px 50px;
+	background-color: #32527b;
+	color: white;
+	cursor: pointer;
+}
+
+.default-button:hover{
+	background-color: #233956;
+}
 
 
 
