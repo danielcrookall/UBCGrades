@@ -1,58 +1,82 @@
-.upload-title{
+.upload-title {
 
 	font-weight: bold;
 	font-size: 1.5em;
-	font-family: Quicksand,sans-serif;
+	font-family: Quicksand, sans-serif;
+	padding: 1em 0;
+	margin: 0;
+	text-align:center;
+	color: black;
 
 }
 
-.title{
-color: white;
+.article-container {
+	display: flex;
+	justify-content: space-evenly;
+
+}
+
+.App {
+
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+
+.title {
+	color: white;
 	margin: 0;
+	padding-left: 5px;
 	justify-content: center;
 	font-size: 3em;
 }
 
-.header{
+.header {
 	background-color: #32527b;
-	min-height: 50px;
+	min-height: 100px;
 }
 
-.main{
+.main {
 	background-color: #678;
-	min-height: 2000px;
+	height: 100%;
+	width: 100%;
 	display: flex;
 	flex-flow: wrap;
+
 }
 
 
-.footer{
+.footer {
 	background-color: #456;
-	min-height: 50px;
+	min-height: 80px;
 }
 
-.aside-1{
+.aside-1 {
 	flex: 0 0 500px;
-	background-color: white;
+	background-image: linear-gradient(white, gray);
+
 
 }
 
-.aside-2{
-	flex: 1 0 auto;
-	background-color: #ffcccb ;
+
+.article {
+	flex: 1 0 1000px;
+
+	background-image: linear-gradient(white, gray);
+
 }
 
-.article{
-	flex: 0 0 750px;
-	background-color: skyblue;
-}
-
-.grades-table {
+.table-title {
 	display: flex;
 	justify-content: center;
 	font-weight: bold;
 	font-size: 300%;
-	color: white;
+	color: black;
+	margin-bottom: 30px;
+	margin-top: 30px;
 
 }
 

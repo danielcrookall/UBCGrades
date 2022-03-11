@@ -34,6 +34,7 @@ function App() {
 
 				<aside className="aside-1">
 
+
 					<p className="upload-title"> Upload File </p>
 					<FileUpload files={files} setFiles={setFiles} removeFile={removeFile} deptList={deptList}
 					setDeptList={setDeptList}/>
@@ -41,18 +42,21 @@ function App() {
 				</aside>
 
 				<article className="article">
-					<div className="grades-table">🕊️ GPA Boosters 👼🏻</div>
-					<DeptSearch deptList={deptList}  />
+					<div className="table-title">Averages by Course</div>
+					<div className="article-container">
+					<DeptSearch deptList={deptList} setDeptList ={setDeptList}  />
+					</div>
 
 					{/*<DataTable deptList={deptList}/>*/}
 				</article>
 
-				<aside className="aside-2">
-					<div className="grades-table">💀GPA Destroyers 🤯</div>
-					<DeptSearch deptList={deptList} />
-				</aside>
+				{/*<aside className="aside-2">*/}
+
+				{/*</aside>*/}
+
+
 			</main>
-			<footer className="footer">Footer</footer>
+			<footer className="footer"></footer>
 
 
 		</div>

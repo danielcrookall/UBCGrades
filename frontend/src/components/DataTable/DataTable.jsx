@@ -2,25 +2,33 @@ import React, {useState} from 'react'
 import "./DataTable.css"
 import {DeptSearch} from "../DeptSearch/DeptSearch";
 import axios from "axios";
+import {GradesLineChart} from "../charts/GradesLineChart";
 
-export const DataTable = ({data, selectedDept}) => {
+export const DataTable = ({data, dept, id, year}) => {
 
 	const renderTableData = () => {
 		if(data !== undefined){
 			return data.map((course) => {
-			const {courses_dept, courses_id, avg} = course
+			const {courses_dept, courses_id, courses_year, TotalPass, TotalFail, TotalAudit, OverallAvg, HighestAvg, LowestAvg} = course
 			return (
-				<tr key={courses_id}>
+				<tr key={courses_dept}>
 					<td>{courses_dept.toUpperCase()}</td>
 					<td>{courses_id}</td>
-					<td>{avg}</td>
+					<td>{courses_year}</td>
+					<td>{TotalPass}</td>
+					<td>{TotalFail}</td>
+					<td>{TotalAudit}</td>
+					<td>{OverallAvg}</td>
+					<td>{HighestAvg}</td>
+					<td>{LowestAvg}</td>
+
 				</tr>
 			)
 		})}
 	}
 
 	const renderTableHeader = () => {
-		if(data !== undefined && selectedDept !== undefined) {
+		if(data !== undefined && dept !== undefined) {
 			let header = Object.keys(data[0])
 			return header.map((key, index) => {
 				return <th key={index}>{trimId(key.toUpperCase())}</th>
@@ -37,15 +45,26 @@ export const DataTable = ({data, selectedDept}) => {
 
 	return (
 		<div>
-			<h1 id='title'>Courses with the highest average in {selectedDept && selectedDept.toUpperCase()}</h1>
-			<table id='courses'>
+			<div className="container">
+
+			<table className="courses-table" id='courses-table'>
+				<thead>
+				{ data && <th>Dept</th>}
+				{ data && <th>ID</th>}
+				{ data && <th>Year</th>}
+				{ data && <th>Total Pass</th>}
+				{ data && <th>Total Fail</th>}
+				{ data && <th>Total Audit</th>}
+				{ data && <th>Average over all sections</th>}
+				{ data && <th>Highest average over all sections</th>}
+				{ data && <th>Lowest average over all sections</th>}
+				</thead>
 				<tbody>
-				{renderTableHeader()}
 				{renderTableData()}
 				</tbody>
 			</table>
-
-
+		</div>
+			{data && <GradesLineChart dept={dept} id={id} year={year} />}
 
 		</div>
 	)

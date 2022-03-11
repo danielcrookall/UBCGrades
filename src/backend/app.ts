@@ -128,6 +128,93 @@ app.get("/deptList", async (req: any, res: any) => {
 	return res.status(200).json(deptArr);
 });
 
+app.get("/idList/:dept", async (req: any, res: any) => {
+	let idArr;
+	try {
+		idArr = await facade.performQuery({
+			WHERE: {
+				IS: {
+					courses_dept: `${req.params.dept}`
+				}
+			},
+			OPTIONS: {
+				COLUMNS: [
+					"courses_dept",
+					"courses_id",
+					"courses_title"
+				],
+				ORDER: {
+					dir: "UP",
+					keys: [
+						"courses_id"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_dept",
+					"courses_id",
+					"courses_title"
+				],
+				APPLY: []
+			}
+		}
+		);
+	} catch (err: any) {
+		console.error("Failed to fetch course IDS from dataset");
+		return res.status(500).send(err);
+	}
+	return res.status(200).json(idArr);
+});
+
+app.get("/yearList/:dept/:id", async (req: any, res: any) => {
+	let yearArr;
+	try {
+		yearArr = await facade.performQuery({
+			WHERE: {
+				AND: [
+					{
+						IS: {
+							courses_dept: `${req.params.dept}`
+						}
+					},
+					{
+						IS: {
+							courses_id: `${req.params.id}`
+						}
+					}
+				]
+			},
+			OPTIONS: {
+				COLUMNS: [
+					"courses_year"
+				],
+				ORDER: {
+					dir: "UP",
+					keys: [
+						"courses_year"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_dept",
+					"courses_id",
+					"courses_year"
+				],
+				APPLY: []
+			}
+		}
+
+		);
+	} catch (err: any) {
+		console.error("Failed to fetch year from dataset");
+		return res.status(500).send(err);
+	}
+	return res.status(200).json(yearArr);
+});
+
+
 app.get("/boosters/:dept", async (req: any, res: any) => {
 
 	let deptArr;
@@ -165,13 +252,166 @@ app.get("/boosters/:dept", async (req: any, res: any) => {
 				]
 			}
 		}
-
 		);
 	} catch (err: any) {
 		console.error("Failed to get GPA boosters");
 		return res.status(500).send(err);
 	}
 	return res.status(200).json(deptArr);
+
+});
+
+app.get("/dataByCourse/:dept/:id/:year", async (req: any, res: any) => {
+	const year = Number(req.params.year);
+	let dataArr;
+	try {
+		dataArr = await facade.performQuery({
+			WHERE: {
+				AND: [
+					{
+						IS: {
+							courses_dept: `${req.params.dept}`
+						}
+					},
+					{
+						EQ: {
+							courses_year: year
+						}
+					},
+					{
+						IS: {
+							courses_id: `${req.params.id}`
+						}
+					}
+				]
+			},
+			OPTIONS: {
+				COLUMNS: [
+					"courses_dept",
+					"courses_id",
+					"courses_year",
+					"TotalPass",
+					"TotalFail",
+					"TotalAudit",
+					"OverallAvg",
+					"HighestAvg",
+					"LowestAvg"
+
+				],
+				ORDER: {
+					dir: "UP",
+					keys: [
+						"courses_id"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_id",
+					"courses_dept",
+					"courses_year"
+				],
+				APPLY: [
+					{
+						TotalPass: {
+							SUM: "courses_pass"
+						}
+					},
+					{
+						TotalFail: {
+							SUM: "courses_fail"
+						}
+					},
+					{
+						TotalAudit: {
+							SUM: "courses_audit"
+						}
+					},
+					{
+						LowestAvg: {
+							MIN: "courses_avg"
+						}
+					},
+					{
+						HighestAvg: {
+							MAX: "courses_avg"
+						}
+					},
+					{
+						OverallAvg: {
+							AVG: "courses_avg"
+						}
+					}
+				]
+			}
+		}
+		);
+	} catch (err: any) {
+		console.error("Failed to get data by course");
+		return res.status(500).send(err);
+	}
+	console.log(dataArr);
+	console.log(req.params.year);
+	console.log(req.params.dept);
+	console.log(req.params.id);
+	return res.status(200).json(dataArr);
+
+});
+
+app.get("/gradeDistribution/:dept/:id", async (req: any, res: any) => {
+	let dataArr;
+	try {
+		dataArr = await facade.performQuery({
+			WHERE: {
+				AND: [
+					{
+						IS: {
+							courses_dept: `${req.params.dept}`
+						}
+					},
+					{
+						IS: {
+							courses_id: `${req.params.id}`
+						}
+					}
+				]
+			},
+			OPTIONS: {
+				COLUMNS: [
+					"courses_dept",
+					"courses_id",
+					"courses_year",
+					"OverallAvg"
+				],
+				ORDER: {
+					dir: "UP",
+					keys: [
+						"courses_year"
+					]
+				}
+			},
+			TRANSFORMATIONS: {
+				GROUP: [
+					"courses_id",
+					"courses_dept",
+					"courses_year"
+				],
+				APPLY: [
+					{
+						OverallAvg: {
+							AVG: "courses_avg"
+						}
+					}
+				]
+			}
+		}
+		);
+	} catch (err: any) {
+		console.error("Failed to get data by course");
+		return res.status(500).send(err);
+	}
+
+	return res.status(200).json(dataArr);
 
 });
 

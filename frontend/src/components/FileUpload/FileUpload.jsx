@@ -81,7 +81,9 @@ const FileUpload = ({files, setFiles, removeFile, deptList, setDeptList}) => {
 			axios.put(`/defaultUpload/${file.name}`).then((res) => {
 				file.isUploading = false;
 				setFiles([...files, file])
-				setDepartments();
+				if(file.name === "courses.zip") {
+					setDepartments();
+				}
 			})
 				.catch((err) => {
 					console.error(`Failed to upload ${err}`);
@@ -93,6 +95,7 @@ const FileUpload = ({files, setFiles, removeFile, deptList, setDeptList}) => {
 
 	return (
 		<div>
+			<div className="flex-container">
 				<div className="file-inputs">
 					<input type="file" className="upload-box" onChange={uploadHandler}/>
 					<button className="upload-button">
@@ -102,7 +105,7 @@ const FileUpload = ({files, setFiles, removeFile, deptList, setDeptList}) => {
 						Choose File
 					</button>
 				</div>
-			<p>Upload a courses or rooms zip or select a default file below.</p>
+			<p className="upload-description">Upload a courses or rooms zip or select a default file below.</p>
 
 				<div className="buttons">
 				<button name="default-courses-button" onClick={defaultUploadHandler} className="default-button">
@@ -112,6 +115,7 @@ const FileUpload = ({files, setFiles, removeFile, deptList, setDeptList}) => {
 					rooms.zip
 				</button>
 					</div>
+			</div>
 
 		</div>
 	)

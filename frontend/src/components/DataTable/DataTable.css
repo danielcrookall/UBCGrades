@@ -1,0 +1,26 @@
+.container{
+margin-top: 50px;
+	background: rgb(2,0,36);
+	background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(62,62,215,1) 0%, rgba(0,212,255,1) 100%);
+	border-radius: 10px;
+
+
+}
+
+.courses-table thead {
+	color: black;
+	font-weight: bold;
+	padding: 30px 15px;
+}
+
+.courses-table th{
+	padding: 30px 15px;
+
+}
+
+.courses-table td{
+color: white;
+	padding: 12px 15px;
+	font-size: 1em;
+
+}

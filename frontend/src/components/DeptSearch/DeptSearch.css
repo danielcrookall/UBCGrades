@@ -1,0 +1,19 @@
+.flexbox-container {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+
+}
+
+.dept-container{
+
+
+}
+
+.submit-button{
+
+}
+
+input[type=text]:hover{
+cursor: pointer;
+}

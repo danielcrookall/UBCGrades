@@ -2,19 +2,7 @@
 	font-family: Quicksand,sans-serif;
 }
 
-.upload-card {
-	background-color: #edf2f7;
-	border: 3px dashed #cbd5e0;
-	padding: 5em;
-	min-width: 270px;
-	min-height: 50px;
-	max-width: 100px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
 
-}
 
 .file-inputs {
 	position: relative;
@@ -32,11 +20,20 @@
 
 }
 
+.upload-description{
+
+	padding: 1em 0;
+	margin: 0;
+	text-align:center;
+	color: black;
+}
+
 .upload-button {
+	margin-left: 20px;
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	width: 100%;
+	width: 90%;
 	height: 100%;
 	z-index: 1;
 	display: flex;
@@ -69,9 +66,10 @@
 
 .buttons {
 	display: flex;
+	width: 90%;
 	flex-direction: column;
-}
 
+}
 
 
 .main{
@@ -79,14 +77,32 @@
 }
 
 .default-button{
-	padding: 10px 50px;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	padding: 5px 50px;
 	background-color: #32527b;
 	color: white;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
 .default-button:hover{
 	background-color: #233956;
+}
+
+.flex-container{
+	margin-left: 30px;
+	background-color: #edf2f7;
+	border: 3px dashed #cbd5e0;
+	padding: 5em;
+	min-width: 270px;
+	min-height: 50px;
+	max-width: 100px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 10px;
 }
 
 
