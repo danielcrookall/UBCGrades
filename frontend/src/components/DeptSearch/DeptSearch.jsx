@@ -61,15 +61,13 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 			.then((res) => {
 				setIdList(res.data);
 			})
-
-
 	}
 
 	const handleID = (event) => {
 		setID((selecteID) => {
 			return (selecteID = event.target.value);
 		})
-		updateYearList(dept, id)
+		updateYearList(dept, event.target.value);
 	}
 
 	const handleYear = (event) => {
@@ -89,9 +87,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 
 	const clearInput = (event) => {
 		event.target.value = ''
-		getDepts()
-		getIDs()
-		getYears()
+		
 	}
 
 
@@ -100,7 +96,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 			<div className="flexbox-container">
 				<div className="dept-container">
 					<p>Enter department</p>
-					<input type="text" list="dept" onInput={handleDept} onClick={clearInput}/>
+					<input type="text" list="dept" onInput={handleDept} onClick={clearInput} />
 					<datalist id="dept">
 						{getDepts()}
 					</datalist>
@@ -108,7 +104,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 
 				<div className="course-ID-container">
 					<p>Enter course ID</p>
-					<input type="text" list="courseID" onInput={handleID} onClick={clearInput}/>
+					<input type="text" list="courseID" onInput={handleID} onClick={clearInput} />
 					<datalist id="courseID">
 						{getIDs()}
 					</datalist>
@@ -116,7 +112,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 
 				<div className="course_year-container">
 					<p>Enter year</p>
-					<input type="text" list="year" onInput={handleYear} onClick={clearInput}/>
+					<input type="text" list="year" onInput={handleYear} onClick={clearInput} />
 					<datalist id="year">
 						{getYears()}
 					</datalist>
