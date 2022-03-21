@@ -95,10 +95,9 @@ export default class Server {
 	private async uploadDataset(req: Request, res: Response) {
 		const {id, kind} = req.params;
 		const rawData = req.body;
-		const content = Buffer.from(rawData).toString("base64");
-
 		let addedIds;
 		try {
+			const content = Buffer.from(rawData).toString("base64");
 			addedIds = await this.facade.addDataset(id, content, kind as InsightDatasetKind);
 		} catch (err) {
 			return res.status(400).json(
@@ -126,7 +125,7 @@ export default class Server {
 	}
 
 	private async performQuery(req: Request, res: Response) {
-		const query = JSON.parse(req.body);
+		const query = req.body;
 
 		let queryResults;
 		try {
@@ -150,18 +149,18 @@ export default class Server {
 		let removedID;
 		try {
 			removedID = await this.facade.removeDataset(id);
-		} catch (err) {
-			if (err === InsightError) {
-				return res.status(400).json(
-					{
-						error: "Failed to remove dataset (InsightError)."
-					}
-				);
-			}
-			if (err === NotFoundError) {
+		} catch (err: any) {
+
+			if (err.message === "Dataset does not exist") {
 				return res.status(404).json(
 					{
 						error: "Failed to remove dataset (NotFoundError)"
+					}
+				);
+			} else {
+				return res.status(400).json(
+					{
+						error: "Failed to remove dataset (InsightError)."
 					}
 				);
 			}

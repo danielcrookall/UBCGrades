@@ -57,12 +57,12 @@ export default class InsightFacade implements IInsightFacade {
 		const validator = new DatasetValidation(id);
 		const addedIds: string[] = [];
 		if (!validator.isValidID(addedIds)) {
-			return Promise.reject(new InsightError()); // invalid id
+			return Promise.reject(new InsightError("InvalidID")); // invalid id
 		}
 		await dataProcessing.getExistingDataSetIds(addedIds);
 
 		if (!addedIds.includes(id)) {
-			return Promise.reject(new NotFoundError()); // valid id, but it has not been added yet
+			return Promise.reject(new NotFoundError("Dataset does not exist")); // valid id, but it has not been added yet
 		}
 
 		try {
