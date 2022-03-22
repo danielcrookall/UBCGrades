@@ -1,7 +1,7 @@
 li {
 	list-style: none;
 	margin: 1.2em 2em;
-	background-color: white;
+	background-color: #edf2f7;
 	border-radius: 3px;
 	display: flex;
 	align-items: center;
@@ -28,7 +28,6 @@ li {
 .fa-spinner {
 	font-size: 1.2em;
 }
-
 
 p {
 	flex: 1;

@@ -25,7 +25,6 @@ export const GradesLineChart = ({dept, id, year}) => {
 		PointElement,
 		Title,
 		Tooltip
-
 	)
 
 	const options = {
@@ -38,20 +37,16 @@ export const GradesLineChart = ({dept, id, year}) => {
 				display: true,
 				text: `${dept.toUpperCase()}${id} Overall Average by Year`
 			},
-			yAxisID: {
-				display: true
-			},
 			scales: {
-				yAxes: [{
-					scaleLabel: {
+				y: {
+					title: {
 						display: true,
-						labelString: 'Year'
+						text: 'yTitle'
 					}
-				}]
-			}
+				}
 
 		}
-	};
+	}};
 
 
 

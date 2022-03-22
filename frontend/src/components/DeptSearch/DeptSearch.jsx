@@ -87,7 +87,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 
 	const clearInput = (event) => {
 		event.target.value = ''
-		
+
 	}
 
 
@@ -95,7 +95,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 		<div>
 			<div className="flexbox-container">
 				<div className="dept-container">
-					<p>Enter department</p>
+					<p className= "dept-text">Enter department :</p>
 					<input type="text" list="dept" onInput={handleDept} onClick={clearInput} />
 					<datalist id="dept">
 						{getDepts()}
@@ -103,7 +103,7 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 				</div>
 
 				<div className="course-ID-container">
-					<p>Enter course ID</p>
+					<p className= "id-text">Enter course ID :</p>
 					<input type="text" list="courseID" onInput={handleID} onClick={clearInput} />
 					<datalist id="courseID">
 						{getIDs()}
@@ -111,13 +111,13 @@ export const DeptSearch = ({deptList, setDeptList}) => {
 				</div>
 
 				<div className="course_year-container">
-					<p>Enter year</p>
+					<p className= "year-text">Enter year :</p>
 					<input type="text" list="year" onInput={handleYear} onClick={clearInput} />
 					<datalist id="year">
 						{getYears()}
 					</datalist>
 				</div>
-				<div className="submit-button">
+				<div className="submit-button-container">
 					<button className="submit-button" onClick={getDataByCourse}>
 						submit
 					</button>

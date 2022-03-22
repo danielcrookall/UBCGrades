@@ -1,17 +1,48 @@
 .flexbox-container {
 	display: flex;
 	justify-content: space-evenly;
-	align-items: center;
-
+	align-items: flex-end;
 }
 
 .dept-container{
+margin-right: 50px;
+}
 
-
+.course-ID-container{
+	margin-right: 50px;
 }
 
 .submit-button{
 
+	padding: 5px 50px;
+	font-size: 1.1rem;
+	margin-left: 50px;
+	background-color: #32527b;
+	color: white;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.submit-button:hover{
+	background-color: #233956;
+}
+
+.dept-text{
+	font-size: 1.1rem;
+}
+
+.id-text{
+	font-size: 1.1rem;
+}
+
+.year-text{
+	font-size: 1.1rem;
+}
+
+
+
+.submit-button:hover{
+	cursor: pointer;
 }
 
 input[type=text]:hover{
