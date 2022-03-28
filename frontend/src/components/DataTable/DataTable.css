@@ -1,0 +1,25 @@
+.container {
+	margin-top: 50px;
+	background: white;
+	border-radius: 10px;
+
+
+}
+
+.courses-table thead {
+	color: black;
+	font-weight: bold;
+	padding: 30px 15px;
+}
+
+.courses-table th {
+	padding: 30px 15px;
+
+}
+
+.courses-table td {
+	color: black;
+	padding: 12px 15px;
+	font-size: 1em;
+
+}
