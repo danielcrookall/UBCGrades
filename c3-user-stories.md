@@ -8,7 +8,7 @@ Scenario 1: Valid File upload
 Given: The student is on the homepage.  
 When: The student clicks upload and selects a valid file. Definition of valid: name must be either rooms.zip or courses.zip and only
 1 of each type (rooms.zip or courses.zip) can be uploaded at a time).  
-Then: The application stores the dataset on disk.
+Then: The application displays the title of the uploaded file.
 
 Scenario 2: Invalid File upload
 
@@ -30,7 +30,7 @@ Then: The application displays the total number of students who failed and passe
 
 Scenario 2: Student enters a course (dept + id) or year that does not exist in the dataset they uploaded.
 
-Given: The student is on the homepage and has uploaded a valid dataset.
+Given: The student is on the homepage and has uploaded a valid dataset.\
 When: The student enters an invalid course or year.\
 Then: The application does not display the data for the course.
 
