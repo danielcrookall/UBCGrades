@@ -1,0 +1,20 @@
+.chart{
+
+	margin-top: 75px;
+	width: 100%;
+
+	background: white;
+	border-radius: 20px;
+	margin-bottom: 30px;
+
+}
+
+.chart-container{
+	display: flex;
+	justify-content: center;
+
+}
+
+.y-axis{
+
+}

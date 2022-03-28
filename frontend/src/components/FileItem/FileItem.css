@@ -1,0 +1,39 @@
+li {
+	list-style: none;
+	margin: 1.2em 2em;
+	background-color: #edf2f7;
+	border-radius: 3px;
+	display: flex;
+	align-items: center;
+	padding: 1.2em 1.5em;
+	max-width: 300px;
+}
+
+.icon {
+	color: black;
+	margin-right: 0.8em;
+	font-size: 1.2em;
+
+}
+
+.fa-trash:hover{
+	color: red;
+}
+
+.actions {
+	justify-self: flex-end;
+	cursor: pointer;
+}
+
+.fa-spinner {
+	font-size: 1.2em;
+}
+
+p {
+	flex: 1;
+	font-size: 0.9em;
+}
+
+
+
+
