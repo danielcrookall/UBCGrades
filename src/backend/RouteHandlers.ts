@@ -87,28 +87,7 @@ export default class RouteHandlers {
 	public static async getDeptList(req: any, res: any) {
 		let deptArr;
 		try {
-			deptArr = await RouteHandlers.facade.performQuery({
-				WHERE: {}
-				,
-				OPTIONS: {
-					COLUMNS: [
-						"courses_dept"
-					],
-					ORDER: {
-						dir: "UP",
-						keys: [
-							"courses_dept"
-						]
-					}
-				},
-				TRANSFORMATIONS: {
-					GROUP: [
-						"courses_dept"
-					],
-					APPLY: []
-				}
-			}
-			);
+			deptArr = await RouteHandlers.facade.performQuery(CourseQueries.deptListQuery());
 		} catch (err: any) {
 			console.error("Failed to fetch departments from dataset");
 			return res.status(500).send(err);
@@ -119,35 +98,7 @@ export default class RouteHandlers {
 	public static async getIdList(req: any, res: any) {
 		let idArr;
 		try {
-			idArr = await RouteHandlers.facade.performQuery({
-				WHERE: {
-					IS: {
-						courses_dept: `${req.params.dept}`
-					}
-				},
-				OPTIONS: {
-					COLUMNS: [
-						"courses_dept",
-						"courses_id",
-						"courses_title"
-					],
-					ORDER: {
-						dir: "UP",
-						keys: [
-							"courses_id"
-						]
-					}
-				},
-				TRANSFORMATIONS: {
-					GROUP: [
-						"courses_dept",
-						"courses_id",
-						"courses_title"
-					],
-					APPLY: []
-				}
-			}
-			);
+			idArr = await RouteHandlers.facade.performQuery(CourseQueries.idListQuery(req));
 		} catch (err: any) {
 			console.error("Failed to fetch course IDS from dataset");
 			return res.status(500).send(err);
@@ -158,42 +109,7 @@ export default class RouteHandlers {
 	public static async getYearList(req: any, res: any) {
 		let yearArr;
 		try {
-			yearArr = await RouteHandlers.facade.performQuery({
-				WHERE: {
-					AND: [
-						{
-							IS: {
-								courses_dept: `${req.params.dept}`
-							}
-						},
-						{
-							IS: {
-								courses_id: `${req.params.id}`
-							}
-						}
-					]
-				},
-				OPTIONS: {
-					COLUMNS: [
-						"courses_year"
-					],
-					ORDER: {
-						dir: "UP",
-						keys: [
-							"courses_year"
-						]
-					}
-				},
-				TRANSFORMATIONS: {
-					GROUP: [
-						"courses_dept",
-						"courses_id",
-						"courses_year"
-					],
-					APPLY: []
-				}
-			}
-			);
+			yearArr = await RouteHandlers.facade.performQuery(CourseQueries.yearListQuery(req));
 		} catch (err: any) {
 			console.error("Failed to fetch year from dataset");
 			return res.status(500).send(err);
@@ -204,40 +120,7 @@ export default class RouteHandlers {
 	public static async getBoosters(req: any, res: any) {
 		let deptArr;
 		try {
-			deptArr = await RouteHandlers.facade.performQuery({
-				WHERE: {
-					IS: {
-						courses_dept: `${req.params.dept}`
-					}
-				},
-				OPTIONS: {
-					COLUMNS: [
-						"courses_dept",
-						"courses_id",
-						"avg"
-					],
-					ORDER: {
-						dir: "DOWN",
-						keys: [
-							"avg"
-						]
-					}
-				},
-				TRANSFORMATIONS: {
-					GROUP: [
-						"courses_dept",
-						"courses_id"
-					],
-					APPLY: [
-						{
-							avg: {
-								AVG: "courses_avg"
-							}
-						}
-					]
-				}
-			}
-			);
+			deptArr = await RouteHandlers.facade.performQuery(CourseQueries.boostersQuery(req));
 		} catch (err: any) {
 			console.error("Failed to get GPA boosters");
 			return res.status(500).send(err);
