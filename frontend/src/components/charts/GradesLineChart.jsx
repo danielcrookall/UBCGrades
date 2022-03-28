@@ -17,6 +17,10 @@ export const GradesLineChart = ({dept, id, year}) => {
 
 	const [chartData, setChartData] = useState();
 
+	useEffect(() => {
+		chart();
+	}, [dept,id,year])
+
 
 	ChartJS.register(
 		CategoryScale,
@@ -82,9 +86,7 @@ export const GradesLineChart = ({dept, id, year}) => {
 			})
 	}
 
-	useEffect(() => {
-		chart();
-	}, [dept,id,year])
+
 
 	return (
 		<div className="chart-container" >
