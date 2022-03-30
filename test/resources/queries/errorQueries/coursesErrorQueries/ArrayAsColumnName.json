@@ -1,5 +1,5 @@
 {
-	"title": "Should return true",
+	"title": "Type of columns is not a string (array in this case)",
 	"input": {
 		"WHERE": {
 			"OR": [
@@ -37,9 +37,9 @@
 		"OPTIONS": {
 			"COLUMNS": [
 				"courses_pass",
-
-					["courses_avg"]
-				,
+				[
+					"courses_avg"
+				],
 				"courses_fail",
 				"courses_audit",
 				"courses_year"

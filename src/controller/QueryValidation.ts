@@ -23,6 +23,9 @@ export class QueryValidation {
 		let desiredColumns = columns; // this is an array of the columns to filter by, eg courses_dept
 		let transformationObj = this.queryObj.TRANSFORMATIONS;
 		for (let columnKey of desiredColumns) {
+			if(typeof columnKey !== "string"){
+				throw new Error(`Column key '${columnKey}' is not a string`);
+			}
 			if (!columnKey.includes("_")) { // keys that don't have underscores are apply keys
 				if (!this.isValidApplyKey(columnKey)) {
 					throw new Error(`Column key '${columnKey}' is not a valid applykey.`);
