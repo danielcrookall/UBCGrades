@@ -14,7 +14,7 @@ Scenario 2: Invalid File upload
 
 Given: The student is on the homepage.  
 When: The student clicks upload and selects an invalid file (see definition above).\
-Then: The application does not store the dataset on disk.
+Then: The application does not display the title of the uploaded file.
 
 
 ## User Story 2

@@ -24,7 +24,7 @@ export default class RouteHandlers {
 			return res.status(500).send(err);
 		}
 
-		const dataset = this.getContentFromUploads(`${file.name}`);
+		const dataset = RouteHandlers.getContentFromUploads(`${file.name}`);
 		try {
 			if (file.name === "courses.zip") {
 				await RouteHandlers.facade.addDataset("courses", dataset, InsightDatasetKind.Courses);
