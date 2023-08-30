@@ -25,5 +25,7 @@ In the project folder:
 1. `yarn test` to run the test suite.
 
 1. `yarn pretty` to prettify your project code.
+   
+![image](https://github.com/danielcrookall/UBCGrades/assets/83941101/7a14d13d-6503-4024-85d1-c0de491b356b)
 
 
